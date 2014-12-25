@@ -5,14 +5,19 @@
     'category': 'SUVIT',
     'complexity': 'easy',
     'description': """
+СУВИТ. Ядро
+============
 
 Базовые вещи нужные во всех проектах:
-* Убирание плашки регистрации
+
+   * Убирание плашки регистрации
+
 TODO
-    """,
+""",
     'author': 'Suvit LLC',
     'depends': ['base'],
     'data': [
+        'views/remove_registration.xml',
     ],
     'js': [
     ],
