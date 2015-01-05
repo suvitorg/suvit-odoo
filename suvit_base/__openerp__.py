@@ -15,12 +15,12 @@
 TODO
 """,
     'author': 'Suvit LLC',
-    'depends': ['base'],
+    'depends': ['base', 'web'],
     'data': [
         'views/remove_registration.xml',
     ],
     'js': [
     ],
     'installable': True,
-    'auto_install': True,
+    'auto_install': False,
 }
