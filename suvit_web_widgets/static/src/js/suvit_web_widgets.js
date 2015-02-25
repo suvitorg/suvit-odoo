@@ -1,4 +1,3 @@
-alert(123);
 openerp.suvit_web_widgets = function(instance, local) {
 
   /*** TREE IMAGE ***/
@@ -8,9 +7,10 @@ openerp.suvit_web_widgets = function(instance, local) {
         if (value){
           var download_url = instance.session.url('/web/binary/saveas',
                                                   {model: options.model, field: this.id, id: options.id});
-          console.log(download_url);
-          return _.template('<image src="<%-src%>" height="20px" />', {
+
+          return _.template('<image src="<%-src%>" height="<%-height%>px" />', {
             src: download_url,
+            height: this.height || '30'
           });
         } else {
           return '';
