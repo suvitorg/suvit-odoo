@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
     <t t-name="hide_cols_switcher">
-      <div class="oe_view_list_menu">
+      <div class="oe_view_list_menu btn-group">
         <button type="button" class="btn btn-default dropdown-toggle"
                 data-toggle="dropdown"><i class="glyphicon glyphicon-th icon-th"></i> <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
-          <li><label><input type="checkbox" data-field="stargazers_count"
-                            value="1" checked="checked"/> Stars</label></li>
-          <li><label><input type="checkbox" data-field="forks_count"
-                            value="2" checked="checked"/> Forks</label></li>
-          <li><label><input type="checkbox" data-field="description"
-                            value="3"/> Description</label></li>
+          <t t-foreach="columns" t-as="col">
+            <t t-set="checked" t-value="col.invisible !== '1' ? 'checked' : null"/>
+            <li><label><input type="checkbox" t-attf-data-field="{{ col.name }}"
+                              value="1" t-attf-checked="{{checked}}"/> <t t-esc="col.string"/></label></li>
+          </t>
         </ul>
       </div>
     </t>
     <t t-extend="ListView">
-        <t t-jquery="table" t-operation="before">
+        <t t-jquery="tr.oe_list_header_columns" t-operation="before">
             <t t-call="hide_cols_switcher" />
         </t>
     </t>
