@@ -3,7 +3,7 @@
     <t t-name="hide_cols_switcher">
       <div class="oe_view_list_menu btn-group">
         <button type="button" class="btn btn-default dropdown-toggle"
-                data-toggle="dropdown"><i class="glyphicon glyphicon-th icon-th"></i> <span class="caret"></span></button>
+                data-toggle="dropdown"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
           <t t-foreach="columns" t-as="col">
             <t t-set="checked" t-value="col.invisible !== '1' ? 'checked' : null"/>
