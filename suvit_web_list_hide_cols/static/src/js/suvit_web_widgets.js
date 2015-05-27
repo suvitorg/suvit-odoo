@@ -1,4 +1,4 @@
-openerp.suvit_web_widgets = function(instance, local) {
+openerp.suvit_web_list_hide_cols = function(instance, local) {
   var localStorage = window['localStorage'] || {},
       QWeb = instance.web.qweb;
 
