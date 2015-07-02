@@ -1,8 +1,6 @@
-openerp.suvit_web_widgets = function(instance, local) {
-  var localStorage = {};
-  if (typeof window.localStorage !== "undefined"){
-    localStorage = window.localStorage;
-  }
+openerp.suvit_web_list_hide_cols = function(instance, local) {
+  var localStorage = window['localStorage'] || {},
+      QWeb = instance.web.qweb;
 
   instance.web.ListView.include({
     load_hide_cols: function(){
@@ -38,7 +36,12 @@ openerp.suvit_web_widgets = function(instance, local) {
 
         this._super(data);
 
-        this.$el.find('.oe_view_list_menu li input').click(function(){
+        var $menu = this.$pager.find('.oe_view_hide_cols_menu');
+        if (!$menu.size()) {
+          this.$pager.prepend(QWeb.render("ListView.hide_cols", this));
+        }
+
+        this.$pager.find('.oe_view_hide_cols_menu li input').click(function(){
             checkbox = $(this);
             _.map(self.fields_view.arch.children, function(field){
                 if (field.attrs.name == checkbox.data('field')) {
