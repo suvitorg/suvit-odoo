@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="0">
+
+    <template id="suvit_web_diagram_assets_backend" name="suvit_web_diagram_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/suvit_web_diagram/static/src/js/diagram.js"></script>
+        </xpath>
+    </template>
+
+  </data>
+</openerp>
