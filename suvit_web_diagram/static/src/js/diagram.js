@@ -17,9 +17,7 @@ openerp.suvit_web_diagram = function(instance, local) {
     },
 
     draw_diagram: function(result) {
-
         var self = this;
-        diagram_result = result;
         var res_nodes  = result['nodes'];
         var res_edges  = result['conn'];
         this.parent_field = result.parent_field;
@@ -76,12 +74,10 @@ openerp.suvit_web_diagram = function(instance, local) {
             n.id = node.id;
             id_to_node[node.id] = n;
 
-            function save_coords(){
-              self.save_coords(this);
-            }
-
             var fig = n.get_fig();
-            fig.drag(null, null, save_coords);
+            fig.drag(null, null, function (){
+              self.save_coords(this);
+            });
             fig_to_node[fig.id] = n;
         });
 
