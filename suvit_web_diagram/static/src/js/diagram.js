@@ -10,11 +10,10 @@ openerp.suvit_web_diagram = function(instance, local) {
         var coords = node_obj.get_pos();
         coords['x'] = coords['x'] - 50;
         coords['y'] = coords['y'] - 50;
-        NodeModel.get_func('write')(node_obj.id, coords);
+        NodeModel.call('write', [node_obj.id, coords]);
     },
 
     draw_diagram: function(result) {
-
         var self = this;
         var res_nodes  = result['nodes'];
         var res_edges  = result['conn'];
