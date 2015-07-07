@@ -4,7 +4,7 @@ from openerp import models, fields
 
 
 class Diagram(models.AbstractModel):
-    _name = 'suvit.web.diagram'
+    _name = 'diagram.node.position'
 
     x = fields.Integer()
     y = fields.Integer()

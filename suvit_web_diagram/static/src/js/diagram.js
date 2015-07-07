@@ -3,12 +3,9 @@ openerp.suvit_web_diagram = function(instance, local) {
   var QWeb = instance.web.qweb;
 
 
-  var fig_to_node = {};
+  instance.web.DiagramView.include({
 
-  instance.web.DiagramView = instance.web.DiagramView.extend({
-
-    save_coords: function(fig){
-        var node_obj = fig_to_node[fig.id];
+    save_coords: function(fig, node_obj){
         var NodeModel = new instance.web.Model(this.node);
         var coords = node_obj.get_pos();
         coords['x'] = coords['x'] - 50;
@@ -19,7 +16,6 @@ openerp.suvit_web_diagram = function(instance, local) {
     draw_diagram: function(result) {
 
         var self = this;
-        diagram_result = result;
         var res_nodes  = result['nodes'];
         var res_edges  = result['conn'];
         this.parent_field = result.parent_field;
@@ -77,12 +73,11 @@ openerp.suvit_web_diagram = function(instance, local) {
             id_to_node[node.id] = n;
 
             function save_coords(){
-              self.save_coords(this);
+              self.save_coords(this, n);
             }
 
             var fig = n.get_fig();
             fig.drag(null, null, save_coords);
-            fig_to_node[fig.id] = n;
         });
 
         _.each(res_edges, function(edge) {
