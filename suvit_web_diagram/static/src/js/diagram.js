@@ -5,7 +5,7 @@ openerp.suvit_web_diagram = function(instance, local) {
 
   instance.web.DiagramView.include({
 
-    save_coords: function(fig, node_obj){
+    save_coords: function(node_obj){
         var NodeModel = new instance.web.Model(this.node);
         var coords = node_obj.get_pos();
         coords['x'] = coords['x'] - 50;
@@ -71,12 +71,10 @@ openerp.suvit_web_diagram = function(instance, local) {
             n.id = node.id;
             id_to_node[node.id] = n;
 
-            function save_coords(){
-              self.save_coords(this, n);
-            }
-
             var fig = n.get_fig();
-            fig.drag(null, null, save_coords);
+            fig.drag(null, null, function(){
+              self.save_coords(n);
+            });
         });
 
         _.each(res_edges, function(edge) {
