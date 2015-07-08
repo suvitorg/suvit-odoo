@@ -71,12 +71,10 @@ openerp.suvit_web_diagram = function(instance, local) {
             n.id = node.id;
             id_to_node[node.id] = n;
 
-            function save_coords(){
-              self.save_coords(n);
-            }
-
             var fig = n.get_fig();
-            fig.drag(null, null, save_coords);
+            fig.drag(null, null, function(){
+              self.save_coords(n);
+            });
         });
 
         _.each(res_edges, function(edge) {
