@@ -21,7 +21,6 @@ from raven.handlers.logging import SentryHandler
 from raven.middleware import Sentry
 from raven.conf import setup_logging, EXCLUDE_LOGGER_DEFAULTS
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -68,7 +67,7 @@ def serialize_exception(e):
 
 class ContextSentryHandler(SentryHandler):
     '''
-        extends SentryHandler, to capture logs only if 
+        extends SentryHandler, to capture logs only if
         `sentry_enable_logging` config options set to true
     '''
     def emit(self, rec):
