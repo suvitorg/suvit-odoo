@@ -82,6 +82,7 @@ class SentrySetup(models.AbstractModel):
                     # Class 42 — Syntax Error or Access Rule Violation; 42P01: undefined_table
                     # The table ir_config_parameter does not exist; this is probably not an OpenERP database.
                     _logger.warning('Tried to poll an undefined table on database %s.', db_name)
+                    continue
                 else:
                     raise
 
