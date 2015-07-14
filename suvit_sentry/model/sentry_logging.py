@@ -8,6 +8,8 @@ import sys
 from openerp import models
 from openerp.http import request
 from openerp.http import to_jsonable
+from openerp.http import JsonRequest, HttpRequest
+
 from openerp.tools import config
 from openerp.tools.translate import _
 from openerp.tools import ustr
@@ -15,6 +17,12 @@ from openerp.tools import ustr
 from raven import Client
 from raven.conf import setup_logging
 from raven.handlers.logging import SentryHandler
+from raven.utils.compat import _urlparse
+from raven.utils.wsgi import get_headers, get_environ
+
+
+from werkzeug.exceptions import ClientDisconnected
+
 
 logger = logging.getLogger(__name__)
 
@@ -50,11 +58,92 @@ class ContextSentryHandler(SentryHandler):
         self.db_name = db_name
         super(ContextSentryHandler, self).__init__(**kwargs)
 
+    def get_user_info(self):
+        """
+        Requires Flask-Login (https://pypi.python.org/pypi/Flask-Login/) to be installed
+        and setup
+        """
+        from openerp.http import request
+
+        cxt = {}
+        if not request:
+            return cxt
+
+        user = request.env.user
+        if user:
+            user_info = {}
+            user_info['is_authenticated'] = True
+            user_info['id'] = user.id
+            user_info['login']= user.login
+
+            for group in user.groups_id:
+                title = "Группа доступа ИД %s" % (group.id)
+                user_info[title] = group.name
+            """
+            if 'SENTRY_USER_ATTRS' in current_app.config:
+                for attr in current_app.config['SENTRY_USER_ATTRS']:
+                    if hasattr(current_user, attr):
+                        user_info[attr] = getattr(current_user, attr)
+            """
+        else:
+            user_info = {
+                'is_authenticated': False,
+            }
+
+        return user_info
+
+    def get_http_info(self):
+        """
+        Determine how to retrieve actual data by using request.mimetype.
+        """
+        from openerp.http import request
+
+        cxt = {}
+        if not request:
+            return cxt
+
+        if isinstance(request, JsonRequest):
+            retriever = self.get_json_data
+        else:
+            retriever = self.get_form_data
+        request = request.httprequest
+        return self.get_http_info_with_retriever(request, retriever)
+
+    def get_form_data(self, request):
+        return request.form
+
+    def get_json_data(self, request):
+        return request.data
+
+    def get_http_info_with_retriever(self, request, retriever=None):
+        """
+        Exact method for getting http_info but with form data work around.
+        """
+        if retriever is None:
+            retriever = self.get_form_data
+
+        urlparts = _urlparse.urlsplit(request.url)
+
+        try:
+            data = retriever(request)
+        except ClientDisconnected:
+            data = {}
+
+        return {
+            'url': '%s://%s%s' % (urlparts.scheme, urlparts.netloc, urlparts.path),
+            'query_string': urlparts.query,
+            'method': request.method,
+            'data': data,
+            'headers': dict(get_headers(request.environ)),
+            'env': dict(get_environ(request.environ)),
+        }
+
 
     def emit(self, rec):
         if self.db_name != rec.dbname:
             return
-        self._client.extra_context(get_user_context())
+        self._client.user_context(self.get_user_info())
+        self._client.http_context(self.get_http_info())
         self._client.captureException(rec.exc_info)
 
 
