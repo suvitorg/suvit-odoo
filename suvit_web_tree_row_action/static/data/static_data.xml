@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="0">
+
+    <template id="suvit_web_tree_row_action_assets_backend" name="suvit_web_tree_row_action_assets" inherit_id="web_diagram.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/suvit_web_tree_row_action/static/src/js/view_list.js"></script>
+        </xpath>
+    </template>
+
+  </data>
+</openerp>
