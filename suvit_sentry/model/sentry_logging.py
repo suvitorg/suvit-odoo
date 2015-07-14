@@ -55,8 +55,6 @@ class ContextSentryHandler(SentryHandler):
             user_info['is_authenticated'] = True
             user_info['id'] = user.id
             user_info['login']= user.login
-            user_info['access_groups'] = [(group.id, group.name) for group in user.groups_id]
-
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
                 for attr in current_app.config['SENTRY_USER_ATTRS']:
@@ -122,7 +120,7 @@ class ContextSentryHandler(SentryHandler):
 
         if request:
             session = getattr(request, 'session', {})
-            db = session.get('_db', None)
+            db = session.get('db', None)
         else:
             db = openerp.tools.config['db_name']
             # If the database name is not provided on the command-line,
@@ -147,6 +145,9 @@ class ContextSentryHandler(SentryHandler):
         if request:
             session = getattr(request, 'session', {})
             context['session_context'] = session.get('context', {})
+            user = request.env.user
+            if user:
+                context['access_groups'] = dict([(str(group.id), group.name) for group in user.groups_id])
 
         return context
 
@@ -168,24 +169,27 @@ class SentrySetup(models.AbstractModel):
     def __init__(self, pool, cr, *args, **kwargs):
 
         registries = openerp.modules.registry.RegistryManager.registries
-
         params = pool['ir.config_parameter']
         for db_name, _ in registries.iteritems():
             db = openerp.sql_db.db_connect(db_name)
             cr = db.cursor()
             res = []
+
             try:
                 select = "select key, value from ir_config_parameter where key = 'SENTRY_CLIENT_DSN'"
                 cr.execute(select)
                 res = cr.fetchall()
+
             except psycopg2.ProgrammingError, e:
+                cr.close()
                 if e.pgcode == '42P01':
                     # Class 42 — Syntax Error or Access Rule Violation; 42P01: undefined_table
                     # The table ir_config_parameter does not exist; this is probably not an OpenERP database.
                     _logger.warning('Tried to poll an undefined table on database %s.', db_name)
                     continue
-                else:
-                    raise
+
+            finally:
+                cr.close()
 
             if not res:
                 continue
@@ -239,4 +243,4 @@ def serialize_exception(e):
 
     return tmp
 
-openerp.http.serialize_exception = serialize_exception
+#openerp.http.serialize_exception = serialize_exception

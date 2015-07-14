@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding="utf-8"?>
+<templates>
+
+  <t t-extend="CrashManager.error">
+    <t t-jquery="div.oe_error_detail" t-operation="replace">
+
+      <!-- Hide traceback from users -->
+      <div class="oe_error_detail">
+        <h2>Произошла внутренняя ошибка сервера</h2>
+        <div class="oe_view_nocontent">
+Иноформация об ошибке направлена разработчиками.
+        </div>
+        <h3></h3>
+        <div class="show_details">
+          <span tabindex="0">+ показать подробности</span>
+        </div>
+        <div class="hide_details" >
+          <span tabindex="0">- спрятать подробности</span>
+        </div>
+        <div class="error_details alert">
+          <pre><t t-esc="error.message"/></pre>
+          <hr/>
+          <pre><t t-esc="error.data.debug"/></pre>
+        </div>
+      </div>
+    </t>
+  </t>
+
+</templates>
