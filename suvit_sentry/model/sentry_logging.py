@@ -4,6 +4,7 @@ import logging
 import openerp
 import psycopg2
 import sys
+import threading
 
 from openerp import models
 from openerp.http import request
@@ -27,25 +28,6 @@ from werkzeug.exceptions import ClientDisconnected
 logger = logging.getLogger(__name__)
 
 
-def get_user_context():
-    '''
-        get the current user context, if possible
-    '''
-    cxt = {}
-    if not request:
-        return cxt
-    session = getattr(request, 'session', {})
-    cxt.update({
-        'session': {
-            'context': session.get('context', {}),
-            'db': session.get('db', None),
-            'login': session.get('login', None),
-            'password': session.get('uid', None),
-        },
-    })
-    return cxt
-
-
 class ContextSentryHandler(SentryHandler):
 
     '''
@@ -59,10 +41,7 @@ class ContextSentryHandler(SentryHandler):
         super(ContextSentryHandler, self).__init__(**kwargs)
 
     def get_user_info(self):
-        """
-        Requires Flask-Login (https://pypi.python.org/pypi/Flask-Login/) to be installed
-        and setup
-        """
+
         from openerp.http import request
 
         cxt = {}
@@ -71,14 +50,13 @@ class ContextSentryHandler(SentryHandler):
 
         user = request.env.user
         if user:
+
             user_info = {}
             user_info['is_authenticated'] = True
             user_info['id'] = user.id
             user_info['login']= user.login
+            user_info['access_groups'] = [(group.id, group.name) for group in user.groups_id]
 
-            for group in user.groups_id:
-                title = "Группа доступа ИД %s" % (group.id)
-                user_info[title] = group.name
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
                 for attr in current_app.config['SENTRY_USER_ATTRS']:
@@ -138,12 +116,46 @@ class ContextSentryHandler(SentryHandler):
             'env': dict(get_environ(request.environ)),
         }
 
+    def get_db_name(self):
+
+        from openerp.http import request
+
+        if request:
+            session = getattr(request, 'session', {})
+            db = session.get('_db', None)
+        else:
+            db = openerp.tools.config['db_name']
+            # If the database name is not provided on the command-line,
+            # use the one on the thread (which means if it is provided on
+            # the command-line, this will break when installing another
+            # database from XML-RPC).
+            if not db and hasattr(threading.current_thread(), 'dbname'):
+                return threading.current_thread().dbname
+        return db
+
+    def get_extra_info(self):
+
+        from openerp.http import request
+
+        '''
+            get extra context, if possible
+        '''
+        context = {
+            "db": self.get_db_name()
+        }
+
+        if request:
+            session = getattr(request, 'session', {})
+            context['session_context'] = session.get('context', {})
+
+        return context
 
     def emit(self, rec):
         if self.db_name != rec.dbname:
             return
         self._client.user_context(self.get_user_info())
         self._client.http_context(self.get_http_info())
+        self._client.extra_context(self.get_extra_info())
         self._client.captureException(rec.exc_info)
 
 
