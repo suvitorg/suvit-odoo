@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Сувит. Обновление курса валют',
+    'name': 'Сувит. Валюта',
     'version': '0.0.1',
     'category': 'Suvit',
     'complexity': 'easy',
