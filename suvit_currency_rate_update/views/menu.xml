@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="0">
+
+    <menuitem name="Invoicing" id="account.menu_finance" parent="base.menu_administration" sequence="999" />
+    <menuitem name="Reporting" id="base.menu_reporting" parent="base.menu_administration" sequence="999" />
+
+  </data>
+</openerp>
