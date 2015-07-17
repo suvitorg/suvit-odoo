@@ -210,6 +210,7 @@ class SentrySetup(models.AbstractModel):
                 dsn=SENTRY_CLIENT_DSN,
                 processors=processors,
                 auto_log_stacks=True,
+                include_paths=['openerp',]
             )
             handler = ContextSentryHandler(
                 client,
