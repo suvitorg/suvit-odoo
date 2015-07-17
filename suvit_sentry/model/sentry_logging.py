@@ -26,7 +26,7 @@ from werkzeug.exceptions import ClientDisconnected
 
 
 logger = logging.getLogger(__name__)
-
+logger.warn("Test")
 
 class ContextSentryHandler(SentryHandler):
 
@@ -212,35 +212,3 @@ class SentrySetup(models.AbstractModel):
             setup_logging(handler)
 
         super(SentrySetup, self).__init__(pool, cr, *args, **kwargs)
-
-
-def serialize_exception(e):
-
-    tmp = {}
-
-    if isinstance(e, openerp.osv.osv.except_osv):
-        tmp["exception_type"] = "except_osv"
-    elif isinstance(e, openerp.exceptions.Warning):
-        tmp["exception_type"] = "warning"
-    elif isinstance(e, openerp.exceptions.AccessError):
-        tmp["exception_type"] = "access_error"
-    elif isinstance(e, openerp.exceptions.AccessDenied):
-        tmp["exception_type"] = "access_denied"
-
-    t = sys.exc_info()
-
-    if "exception_type" not in tmp:
-        debug = u"Ошибка отправлена разработчикам, они занимаются устранением проблемы"
-    else:
-        debug = t
-
-    tmp.update({
-        "name": type(e).__module__ + "." + type(e).__name__ if type(e).__module__ else type(e).__name__,
-        "debug": debug,
-        "message": ustr(e),
-        "arguments": to_jsonable(e.args),
-    })
-
-    return tmp
-
-#openerp.http.serialize_exception = serialize_exception
