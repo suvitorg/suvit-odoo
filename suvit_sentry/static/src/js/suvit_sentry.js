@@ -1,4 +1,4 @@
-openerp.Listee = function(instance, local) {
+openerp.suvit_sentry = function(instance, local) {
 
   $('.show_details').live('click', (function() {
     $('.hide_details').show();

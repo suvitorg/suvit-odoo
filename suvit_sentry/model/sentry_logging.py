@@ -26,7 +26,6 @@ from werkzeug.exceptions import ClientDisconnected
 
 
 logger = logging.getLogger(__name__)
-logger.warn("Test")
 
 class ContextSentryHandler(SentryHandler):
 
