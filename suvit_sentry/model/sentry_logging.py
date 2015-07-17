@@ -199,6 +199,9 @@ class SentrySetup(models.AbstractModel):
 
             SENTRY_CLIENT_DSN = res[0][1]
 
+            if not SENTRY_CLIENT_DSN:
+                continue
+
             processors = (
                 'raven.processors.SanitizePasswordsProcessor',
                 'raven_sanitize_openerp.OpenerpPasswordsProcessor'
