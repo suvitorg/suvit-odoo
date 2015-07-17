@@ -21,7 +21,8 @@ Provide a pluggable base to connect Odoo with Sentry.
     'auto_install': False,
     'application': True,
     "external_dependencies": {
-        'python': ['raven', "raven_sanitize_openerp", ]
+        'python': ['raven',
+                   "raven_sanitize_openerp", ]
     },
     'qweb': [
         'static/src/xml/base.xml',
