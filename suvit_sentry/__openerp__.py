@@ -14,7 +14,7 @@
     'description':
         """
 Provide a pluggable base to connect Odoo with Sentry.
-====================================================
+=======================================================
 
         """,
     'depends': ['base'],
