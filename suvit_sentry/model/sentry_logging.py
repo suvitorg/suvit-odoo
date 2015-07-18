@@ -21,7 +21,6 @@ from raven.handlers.logging import SentryHandler
 from raven.utils.compat import _urlparse
 from raven.utils.wsgi import get_headers, get_environ
 
-
 from werkzeug.exceptions import ClientDisconnected
 
 
@@ -48,9 +47,9 @@ class ContextSentryHandler(SentryHandler):
             return cxt
 
         user = request.env.user
-        if user:
+        user_info = {}
 
-            user_info = {}
+        if user:
             user_info['is_authenticated'] = True
             user_info['id'] = user.id
             user_info['login']= user.login
@@ -61,9 +60,7 @@ class ContextSentryHandler(SentryHandler):
                         user_info[attr] = getattr(current_user, attr)
             """
         else:
-            user_info = {
-                'is_authenticated': False,
-            }
+            user_info['is_authenticated'] = False
 
         return user_info
 
@@ -146,7 +143,7 @@ class ContextSentryHandler(SentryHandler):
             context['session_context'] = session.get('context', {})
             user = request.env.user
             if user:
-                context['access_groups'] = dict([(str(group.id), group.name) for group in user.groups_id])
+                context['access_groups'] = dict((str(group.id), group.name) for group in user.groups_id)
 
         return context
 

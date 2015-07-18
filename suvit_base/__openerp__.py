@@ -15,7 +15,7 @@
 TODO
 """,
     'author': 'Suvit LLC',
-    'depends': ['base', 'web'],
+    'depends': ['web'],
     'data': [
         'views/remove_registration.xml',
     ],

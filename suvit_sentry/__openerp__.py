@@ -17,7 +17,7 @@ Provide a pluggable base to connect Odoo with Sentry.
 =======================================================
 
         """,
-    'depends': ['base'],
+    'depends': ['web'],
     'auto_install': False,
     'application': True,
     "external_dependencies": {

@@ -2,4 +2,9 @@
 # This file is part of OpenERP. The COPYRIGHT file at the top level of
 # this module contains the full copyright notices and license terms.
 
-import sentry_logging
+try:
+    import raven
+except ImportError:
+    pass
+else:
+    import sentry_logging
