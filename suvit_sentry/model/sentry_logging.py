@@ -150,9 +150,12 @@ class ContextSentryHandler(SentryHandler):
     def emit(self, rec):
         if self.db_name != rec.dbname:
             return
-        self._client.user_context(self.get_user_info())
-        self._client.http_context(self.get_http_info())
-        self._client.extra_context(self.get_extra_info())
+        try:
+            self._client.user_context(self.get_user_info())
+            self._client.http_context(self.get_http_info())
+            self._client.extra_context(self.get_extra_info())
+        except:
+            pass
 
         super(ContextSentryHandler, self).emit(rec)
 
