@@ -153,11 +153,8 @@ class ContextSentryHandler(SentryHandler):
         self._client.user_context(self.get_user_info())
         self._client.http_context(self.get_http_info())
         self._client.extra_context(self.get_extra_info())
-        if rec.exc_info:
-            self._client.captureException(rec.exc_info)
-        else:
-            self._client.captureMessage(rec.getMessage())
 
+        super(ContextSentryHandler, self).emit(rec)
 
 
 class SentrySetup(models.AbstractModel):
