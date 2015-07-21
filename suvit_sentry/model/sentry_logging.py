@@ -149,7 +149,7 @@ class ContextSentryHandler(SentryHandler):
                 try:
                     groups = dict((str(group.id), group.name) for group in user.groups_id)
                 except:
-                    groups = user.groups_id._ids
+                    groups = [] #user.groups_id._ids
                 context['access_groups'] = groups
 
         return context
