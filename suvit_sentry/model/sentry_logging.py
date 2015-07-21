@@ -48,22 +48,25 @@ class ContextSentryHandler(SentryHandler):
         user = request.env.user
         user_info = {}
 
-        if user:
-            user_info['is_authenticated'] = True
-            try:
-                user_info['id'] = user.id
-                user_info['login']= user.login
-            except:
-                # TODO. bad cursor
-                pass
-            """
-            if 'SENTRY_USER_ATTRS' in current_app.config:
-                for attr in current_app.config['SENTRY_USER_ATTRS']:
-                    if hasattr(current_user, attr):
-                        user_info[attr] = getattr(current_user, attr)
-            """
-        else:
-            user_info['is_authenticated'] = False
+        try:
+            if user:
+                user_info['is_authenticated'] = True
+                user_info['id'] = request.env.uid
+                try:
+                    user_info['login']= user.login
+                except:
+                    # TODO. bad cursor
+                    pass
+                """
+                if 'SENTRY_USER_ATTRS' in current_app.config:
+                    for attr in current_app.config['SENTRY_USER_ATTRS']:
+                        if hasattr(current_user, attr):
+                            user_info[attr] = getattr(current_user, attr)
+                """
+            else:
+                user_info['is_authenticated'] = False
+        except:
+            pass # transaction aborted
 
         return user_info
 
@@ -144,13 +147,16 @@ class ContextSentryHandler(SentryHandler):
         if request:
             session = getattr(request, 'session', {})
             context['session_context'] = session.get('context', {})
-            user = request.env.user
-            if user:
-                try:
-                    groups = dict((str(group.id), group.name) for group in user.groups_id)
-                except:
-                    groups = [] #user.groups_id._ids
-                context['access_groups'] = groups
+            try:
+                user = request.env.user
+                if user:
+                    try:
+                        groups = dict((str(group.id), group.name) for group in user.groups_id)
+                    except:
+                        groups = [] #user.groups_id._ids
+                    context['access_groups'] = groups
+            except:
+                pass # transaction aborted
 
         return context
 
