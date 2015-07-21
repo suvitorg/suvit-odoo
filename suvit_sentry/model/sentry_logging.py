@@ -50,8 +50,8 @@ class ContextSentryHandler(SentryHandler):
 
         if user:
             user_info['is_authenticated'] = True
-            user_info['id'] = user.id
             try:
+                user_info['id'] = user.id
                 user_info['login']= user.login
             except:
                 # TODO. bad cursor
