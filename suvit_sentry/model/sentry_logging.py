@@ -146,7 +146,11 @@ class ContextSentryHandler(SentryHandler):
             context['session_context'] = session.get('context', {})
             user = request.env.user
             if user:
-                context['access_groups'] = dict((str(group.id), group.name) for group in user.groups_id)
+                try:
+                    groups = dict((str(group.id), group.name) for group in user.groups_id)
+                except:
+                    groups = user.groups_id.ids
+                context['access_groups'] = groups
 
         return context
 
