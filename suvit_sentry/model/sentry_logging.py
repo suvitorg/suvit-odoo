@@ -155,7 +155,6 @@ class ContextSentryHandler(SentryHandler):
         return context
 
     def can_record(self, record):
-        print record.name
         res = super(ContextSentryHandler, self).can_record(record)
         return res and not (
             self.db_name != record.dbname or
