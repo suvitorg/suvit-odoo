@@ -38,8 +38,7 @@ class ContextSentryHandler(SentryHandler):
         super(ContextSentryHandler, self).__init__(client, **kwargs)
 
     def get_user_info(self):
-
-        from openerp.http import request
+        global request
 
         cxt = {}
         if not request:
@@ -48,10 +47,11 @@ class ContextSentryHandler(SentryHandler):
         user_info = {}
 
         try:
+            user_info['id'] = request.env.uid
+
             user = request.env.user
             if user:
                 user_info['is_authenticated'] = True
-                user_info['id'] = request.env.uid
                 try:
                     user_info['login']= user.login
                 except:
@@ -74,7 +74,7 @@ class ContextSentryHandler(SentryHandler):
         """
         Determine how to retrieve actual data by using request.mimetype.
         """
-        from openerp.http import request
+        global request
 
         cxt = {}
         if not request:
@@ -117,8 +117,7 @@ class ContextSentryHandler(SentryHandler):
         }
 
     def get_db_name(self):
-
-        from openerp.http import request
+        global request
 
         if request:
             db = request.cr.dbname
@@ -133,12 +132,11 @@ class ContextSentryHandler(SentryHandler):
         return db
 
     def get_extra_info(self):
-
-        from openerp.http import request
-
         '''
             get extra context, if possible
         '''
+        global request
+
         context = {
             "db": self.get_db_name()
         }
