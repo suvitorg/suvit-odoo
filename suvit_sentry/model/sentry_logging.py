@@ -84,8 +84,7 @@ class ContextSentryHandler(SentryHandler):
             retriever = self.get_json_data
         else:
             retriever = self.get_form_data
-        request = request.httprequest
-        return self.get_http_info_with_retriever(request, retriever)
+        return self.get_http_info_with_retriever(request.httprequest, retriever)
 
     def get_form_data(self, request):
         return request.form
