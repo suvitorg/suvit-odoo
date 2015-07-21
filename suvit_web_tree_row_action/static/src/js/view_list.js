@@ -14,7 +14,11 @@ openerp.suvit_web_tree_row_action = function(instance, local) {
   instance.web.ListView.include({
 
     do_activate_record: function (index, id, dataset, view) {
-        var context = this.ViewManager.action.context;
+        var action = this.ViewManager.action;
+        if (!action)
+          return this._super(index, id, dataset, view);
+
+        var context = action.context;
         if (!context.open_formview)
           return this._super(index, id, dataset, view);
 
