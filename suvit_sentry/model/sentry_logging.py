@@ -48,6 +48,7 @@ class ContextSentryHandler(SentryHandler):
 
         try:
             user_info['id'] = request.env.uid
+            return user_info
 
             user = request.env.user
             if user:
@@ -142,6 +143,8 @@ class ContextSentryHandler(SentryHandler):
 
         if request:
             context['session_context'] = request.env.context
+            return context
+
             try:
                 user = request.env.user
                 if user:
