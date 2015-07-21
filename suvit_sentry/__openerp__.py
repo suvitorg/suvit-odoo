@@ -6,7 +6,7 @@
 ##############################################################################
 
 {
-    'name': 'Odoo Sentry connector',
+    'name': 'Suvit. Odoo Sentry connector',
     'version': '0.1',
     'author': 'Suvit, LLC',
     'sequence': 4,
@@ -22,7 +22,8 @@ Provide a pluggable base to connect Odoo with Sentry.
     'application': True,
     "external_dependencies": {
         'python': ['raven',
-                   "raven_sanitize_openerp", ]
+                   "raven_sanitize_openerp",
+                  ]
     },
     'qweb': [
         'static/src/xml/base.xml',

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import openerp
 import psycopg2
 import sys
 import threading
 
+from openerp import SUPERUSER_ID
 from openerp import models
 from openerp.http import request
 from openerp.http import to_jsonable
@@ -37,6 +37,18 @@ class ContextSentryHandler(SentryHandler):
         self.db_name = db_name
         super(ContextSentryHandler, self).__init__(client, **kwargs)
 
+    def get_user(self, request):
+        try:
+            user = request.env.user
+            user.login
+        except psycopg2.IntegrityError:
+            # transaction aborted
+            # rollbacked and try again
+            request.cr.rollback()
+            user = request.registry['res.users'].browse(request.cr, SUPERUSER_ID, request.uid)
+
+        return user
+
     def get_user_info(self):
         global request
 
@@ -45,29 +57,21 @@ class ContextSentryHandler(SentryHandler):
             return cxt
 
         user_info = {}
+        user_info['id'] = request.uid
 
-        try:
-            user_info['id'] = request.env.uid
-            return user_info
+        if request.uid:
+            user_info['is_authenticated'] = True
 
-            user = request.env.user
-            if user:
-                user_info['is_authenticated'] = True
-                try:
-                    user_info['login']= user.login
-                except:
-                    # TODO. bad cursor
-                    pass
-                """
-                if 'SENTRY_USER_ATTRS' in current_app.config:
-                    for attr in current_app.config['SENTRY_USER_ATTRS']:
-                        if hasattr(current_user, attr):
-                            user_info[attr] = getattr(current_user, attr)
-                """
-            else:
-                user_info['is_authenticated'] = False
-        except:
-            pass # transaction aborted
+            user = self.get_user(request)
+            user_info['login']= user.login
+            """
+            if 'SENTRY_USER_ATTRS' in current_app.config:
+                for attr in current_app.config['SENTRY_USER_ATTRS']:
+                    if hasattr(current_user, attr):
+                        user_info[attr] = getattr(current_user, attr)
+            """
+        else:
+            user_info['is_authenticated'] = False
 
         return user_info
 
@@ -120,7 +124,7 @@ class ContextSentryHandler(SentryHandler):
         global request
 
         if request:
-            db = request.cr.dbname
+            db = request.db
         else:
             db = openerp.tools.config['db_name']
             # If the database name is not provided on the command-line,
@@ -142,30 +146,28 @@ class ContextSentryHandler(SentryHandler):
         }
 
         if request:
-            context['session_context'] = request.env.context
-            return context
+            context['session_context'] = request.context
 
-            try:
-                user = request.env.user
-                if user:
-                    try:
-                        groups = dict((str(group.id), group.name) for group in user.groups_id)
-                    except:
-                        groups = [] #user.groups_id._ids
-                    context['access_groups'] = groups
-            except:
-                pass # transaction aborted
-
+            user = self.get_user(request)
+            if user:
+                groups = dict((str(group.id), group.name) for group in user.groups_id)
+                context['access_groups'] = groups
         return context
 
-    def emit(self, rec):
-        if self.db_name != rec.dbname:
-            return
+    def can_record(self, record):
+        print record.name
+        res = super(ContextSentryHandler, self).can_record(record)
+        return res and not (
+            self.db_name != record.dbname or
+            record.name.startswith(('openerp.sql_db',))
+        )
+
+    def _emit(self, rec, **kwargs):
+        # must be _emit, after can_record
         self.client.user_context(self.get_user_info())
         self.client.http_context(self.get_http_info())
         self.client.extra_context(self.get_extra_info())
-
-        super(ContextSentryHandler, self).emit(rec)
+        super(ContextSentryHandler, self)._emit(rec, **kwargs)
 
 
 class SentrySetup(models.AbstractModel):
