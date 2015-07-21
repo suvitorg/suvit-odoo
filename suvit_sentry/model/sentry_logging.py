@@ -45,10 +45,10 @@ class ContextSentryHandler(SentryHandler):
         if not request:
             return cxt
 
-        user = request.env.user
         user_info = {}
 
         try:
+            user = request.env.user
             if user:
                 user_info['is_authenticated'] = True
                 user_info['id'] = request.env.uid
@@ -121,8 +121,7 @@ class ContextSentryHandler(SentryHandler):
         from openerp.http import request
 
         if request:
-            session = getattr(request, 'session', {})
-            db = session.get('db', None)
+            db = request.cr.dbname
         else:
             db = openerp.tools.config['db_name']
             # If the database name is not provided on the command-line,
@@ -145,8 +144,7 @@ class ContextSentryHandler(SentryHandler):
         }
 
         if request:
-            session = getattr(request, 'session', {})
-            context['session_context'] = session.get('context', {})
+            context['session_context'] = request.env.context
             try:
                 user = request.env.user
                 if user:
