@@ -34,9 +34,8 @@ class ContextSentryHandler(SentryHandler):
     '''
 
     def __init__(self, client, db_name, **kwargs):
-        self._client = client
         self.db_name = db_name
-        super(ContextSentryHandler, self).__init__(**kwargs)
+        super(ContextSentryHandler, self).__init__(client, **kwargs)
 
     def get_user_info(self):
 
@@ -52,7 +51,11 @@ class ContextSentryHandler(SentryHandler):
         if user:
             user_info['is_authenticated'] = True
             user_info['id'] = user.id
-            user_info['login']= user.login
+            try:
+                user_info['login']= user.login
+            except:
+                # TODO. bad cursor
+                pass
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
                 for attr in current_app.config['SENTRY_USER_ATTRS']:
@@ -150,12 +153,9 @@ class ContextSentryHandler(SentryHandler):
     def emit(self, rec):
         if self.db_name != rec.dbname:
             return
-        try:
-            self._client.user_context(self.get_user_info())
-            self._client.http_context(self.get_http_info())
-            self._client.extra_context(self.get_extra_info())
-        except:
-            pass
+        self.client.user_context(self.get_user_info())
+        self.client.http_context(self.get_http_info())
+        self.client.extra_context(self.get_extra_info())
 
         super(ContextSentryHandler, self).emit(rec)
 
