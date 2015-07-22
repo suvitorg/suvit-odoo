@@ -221,7 +221,7 @@ class SentrySetup(models.AbstractModel):
             handler = ContextSentryHandler(
                 client,
                 db_name=db_name,
-                level=getattr(logging, config.get('sentry_level', 'WARN')),
+                level=getattr(logging, config.get('sentry_level', 'ERROR')),
             )
             setup_logging(handler)
 
