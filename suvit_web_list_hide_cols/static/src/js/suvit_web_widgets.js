@@ -42,10 +42,10 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         }
 
         this.$pager.find('.oe_view_hide_cols_menu li input').click(function(){
-            checkbox = $(this);
+            $checkbox = $(this);
             _.map(self.fields_view.arch.children, function(field){
-                if (field.attrs.name == checkbox.data('field')) {
-                    self.add_invisible(field, !checkbox.prop('checked'), true);
+                if (field.attrs.name == $checkbox.data('field')) {
+                    self.add_invisible(field, !$checkbox.prop('checked'), true);
                 }
             });
             self.load_list(self.fields_view);
