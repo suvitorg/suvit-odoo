@@ -5,15 +5,11 @@ import psycopg2
 import sys
 import threading
 
-from openerp import SUPERUSER_ID
-from openerp import models
-from openerp.http import request
-from openerp.http import to_jsonable
-from openerp.http import JsonRequest, HttpRequest
+from openerp import SUPERUSER_ID, models, exceptions
+from openerp.http import request, to_jsonable, JsonRequest, HttpRequest
 
-from openerp.tools import config
+from openerp.tools import config, ustr
 from openerp.tools.translate import _
-from openerp.tools import ustr
 
 from raven import Client
 from raven.conf import setup_logging
@@ -156,10 +152,16 @@ class ContextSentryHandler(SentryHandler):
 
     def can_record(self, record):
         res = super(ContextSentryHandler, self).can_record(record)
-        return res and not (
-            self.db_name != record.dbname or
-            record.name.startswith(('openerp.sql_db',))
-        )
+        bad_db = self.db_name != record.dbname
+        bad_logger = record.name.startswith(('openerp.sql_db',))
+        if record.exc_info and all(record.exc_info):
+            bad_exc = isinstance(record.exc_info[0], (exceptions.ValidationError,
+                                                      exceptions.Warning,
+                                                      exceptions.RedirectWarning)
+                                )
+        else:
+            bad_exc = False
+        return res and not (bad_db or bad_logger or bad_exc)
 
     def _emit(self, rec, **kwargs):
         # must be _emit, after can_record
