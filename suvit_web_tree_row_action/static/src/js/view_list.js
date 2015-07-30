@@ -5,7 +5,7 @@ openerp.suvit_web_tree_row_action = function(instance, local) {
 
   var do_action = function(view, id, context){
     var model_obj = new instance.web.Model(view.dataset.model);
-    model_obj.call('get_formview_action', [id]).then(function(action){
+    model_obj.call('get_formview_action', [id], {'context':context}).then(function(action){
       action['target'] = context.open_formview;
       view.do_action(action);
     });
