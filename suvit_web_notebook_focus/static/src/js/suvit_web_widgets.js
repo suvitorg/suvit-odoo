@@ -6,23 +6,15 @@ openerp.suvit_web_notebook_focus = function(instance, local) {
 
       var selected;
       var pages = $notebook.find('> page');
-      var autofocus_page_name = this.view.ViewManager.action.context.autofocus;
+      var action = this.view.ViewManager.action;
+      var af_name = action && action.context.autofocus;
 
-      if (autofocus_page_name){
-        pages.each(function(i) {
+      pages.each(function(i) {
           var $page = $(this);
           var page_attrs = $page.getAttributes();
-          if (page_attrs.name == autofocus_page_name)
+          if (page_attrs.autofocus || (af_name && page_attrs.name == af_name))
             selected = i;
-        });
-      } else {
-        pages.each(function(i) {
-          var $page = $(this);
-          var page_attrs = $page.getAttributes();
-          if (page_attrs.autofocus)
-            selected = i;
-        });
-      }
+      });
 
       var note = this._super($notebook);
 
