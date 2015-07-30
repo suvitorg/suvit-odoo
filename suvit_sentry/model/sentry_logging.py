@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
-
 import logging
 import openerp
 import psycopg2
 import sys
 import threading
 
-from openerp import models
-from openerp.http import request
-from openerp.http import to_jsonable
-from openerp.http import JsonRequest, HttpRequest
+from openerp import SUPERUSER_ID, models, exceptions
+from openerp.http import request, to_jsonable, JsonRequest, HttpRequest
 
-from openerp.tools import config
+from openerp.tools import config, ustr
 from openerp.tools.translate import _
-from openerp.tools import ustr
 
 from raven import Client
 from raven.conf import setup_logging
@@ -21,12 +17,10 @@ from raven.handlers.logging import SentryHandler
 from raven.utils.compat import _urlparse
 from raven.utils.wsgi import get_headers, get_environ
 
-
 from werkzeug.exceptions import ClientDisconnected
 
 
 logger = logging.getLogger(__name__)
-
 
 class ContextSentryHandler(SentryHandler):
 
@@ -36,24 +30,35 @@ class ContextSentryHandler(SentryHandler):
     '''
 
     def __init__(self, client, db_name, **kwargs):
-        self._client = client
         self.db_name = db_name
-        super(ContextSentryHandler, self).__init__(**kwargs)
+        super(ContextSentryHandler, self).__init__(client, **kwargs)
+
+    def get_user(self, request):
+        try:
+            user = request.env.user
+            user.login
+        except psycopg2.IntegrityError:
+            # transaction aborted
+            # rollbacked and try again
+            request.cr.rollback()
+            user = request.registry['res.users'].browse(request.cr, SUPERUSER_ID, request.uid)
+
+        return user
 
     def get_user_info(self):
-
-        from openerp.http import request
+        global request
 
         cxt = {}
         if not request:
             return cxt
 
-        user = request.env.user
-        if user:
+        user_info = {}
+        user_info['id'] = request.uid
 
-            user_info = {}
+        if request.uid:
             user_info['is_authenticated'] = True
-            user_info['id'] = user.id
+
+            user = self.get_user(request)
             user_info['login']= user.login
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
@@ -62,9 +67,7 @@ class ContextSentryHandler(SentryHandler):
                         user_info[attr] = getattr(current_user, attr)
             """
         else:
-            user_info = {
-                'is_authenticated': False,
-            }
+            user_info['is_authenticated'] = False
 
         return user_info
 
@@ -72,7 +75,7 @@ class ContextSentryHandler(SentryHandler):
         """
         Determine how to retrieve actual data by using request.mimetype.
         """
-        from openerp.http import request
+        global request
 
         cxt = {}
         if not request:
@@ -82,8 +85,7 @@ class ContextSentryHandler(SentryHandler):
             retriever = self.get_json_data
         else:
             retriever = self.get_form_data
-        request = request.httprequest
-        return self.get_http_info_with_retriever(request, retriever)
+        return self.get_http_info_with_retriever(request.httprequest, retriever)
 
     def get_form_data(self, request):
         return request.form
@@ -115,12 +117,10 @@ class ContextSentryHandler(SentryHandler):
         }
 
     def get_db_name(self):
-
-        from openerp.http import request
+        global request
 
         if request:
-            session = getattr(request, 'session', {})
-            db = session.get('db', None)
+            db = request.db
         else:
             db = openerp.tools.config['db_name']
             # If the database name is not provided on the command-line,
@@ -132,32 +132,43 @@ class ContextSentryHandler(SentryHandler):
         return db
 
     def get_extra_info(self):
-
-        from openerp.http import request
-
         '''
             get extra context, if possible
         '''
+        global request
+
         context = {
             "db": self.get_db_name()
         }
 
         if request:
-            session = getattr(request, 'session', {})
-            context['session_context'] = session.get('context', {})
-            user = request.env.user
-            if user:
-                context['access_groups'] = dict([(str(group.id), group.name) for group in user.groups_id])
+            context['session_context'] = request.context
 
+            user = self.get_user(request)
+            if user:
+                groups = dict((str(group.id), group.name) for group in user.groups_id)
+                context['access_groups'] = groups
         return context
 
-    def emit(self, rec):
-        if self.db_name != rec.dbname:
-            return
-        self._client.user_context(self.get_user_info())
-        self._client.http_context(self.get_http_info())
-        self._client.extra_context(self.get_extra_info())
-        self._client.captureException(rec.exc_info)
+    def can_record(self, record):
+        res = super(ContextSentryHandler, self).can_record(record)
+        bad_db = self.db_name != record.dbname
+        bad_logger = record.name.startswith(('openerp.sql_db',))
+        if record.exc_info and all(record.exc_info):
+            bad_exc = isinstance(record.exc_info[0], (exceptions.ValidationError,
+                                                      exceptions.Warning,
+                                                      exceptions.RedirectWarning)
+                                )
+        else:
+            bad_exc = False
+        return res and not (bad_db or bad_logger or bad_exc)
+
+    def _emit(self, rec, **kwargs):
+        # must be _emit, after can_record
+        self.client.user_context(self.get_user_info())
+        self.client.http_context(self.get_http_info())
+        self.client.extra_context(self.get_extra_info())
+        super(ContextSentryHandler, self)._emit(rec, **kwargs)
 
 
 class SentrySetup(models.AbstractModel):
@@ -196,6 +207,9 @@ class SentrySetup(models.AbstractModel):
 
             SENTRY_CLIENT_DSN = res[0][1]
 
+            if not SENTRY_CLIENT_DSN:
+                continue
+
             processors = (
                 'raven.processors.SanitizePasswordsProcessor',
                 'raven_sanitize_openerp.OpenerpPasswordsProcessor'
@@ -203,44 +217,14 @@ class SentrySetup(models.AbstractModel):
             client = Client(
                 dsn=SENTRY_CLIENT_DSN,
                 processors=processors,
+                auto_log_stacks=True,
+                include_paths=['openerp',]
             )
             handler = ContextSentryHandler(
                 client,
                 db_name=db_name,
-                level=getattr(logging, config.get('sentry_level', 'WARN')),
+                level=getattr(logging, config.get('sentry_level', 'ERROR')),
             )
             setup_logging(handler)
 
         super(SentrySetup, self).__init__(pool, cr, *args, **kwargs)
-
-
-def serialize_exception(e):
-
-    tmp = {}
-
-    if isinstance(e, openerp.osv.osv.except_osv):
-        tmp["exception_type"] = "except_osv"
-    elif isinstance(e, openerp.exceptions.Warning):
-        tmp["exception_type"] = "warning"
-    elif isinstance(e, openerp.exceptions.AccessError):
-        tmp["exception_type"] = "access_error"
-    elif isinstance(e, openerp.exceptions.AccessDenied):
-        tmp["exception_type"] = "access_denied"
-
-    t = sys.exc_info()
-
-    if "exception_type" not in tmp:
-        debug = u"Ошибка отправлена разработчикам, они занимаются устранением проблемы"
-    else:
-        debug = t
-
-    tmp.update({
-        "name": type(e).__module__ + "." + type(e).__name__ if type(e).__module__ else type(e).__name__,
-        "debug": debug,
-        "message": ustr(e),
-        "arguments": to_jsonable(e.args),
-    })
-
-    return tmp
-
-#openerp.http.serialize_exception = serialize_exception
