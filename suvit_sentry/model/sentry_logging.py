@@ -155,7 +155,7 @@ class ContextSentryHandler(SentryHandler):
         bad_db = self.db_name != record.dbname
         bad_logger = record.name.startswith(('openerp.sql_db',))
         if record.exc_info and all(record.exc_info):
-            bad_exc = isinstance(record.exc_info[0], (exceptions.ValidationError,
+            bad_exc = issubclass(record.exc_info[0], (exceptions.ValidationError,
                                                       exceptions.Warning,
                                                       exceptions.RedirectWarning)
                                 )
