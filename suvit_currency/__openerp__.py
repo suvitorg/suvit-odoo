@@ -15,6 +15,9 @@ TODO
     ],
     'data': [
         'views/menu.xml',
+
+        'views/currency.xml',
+
         'migrations/data/0001_currency_rate_update.xml',
     ],
     'demo': [

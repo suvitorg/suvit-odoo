@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="format_currency_form">
+            <field name="name">format.currency.form</field>
+            <field name="model">res.currency</field>
+            <field name="inherit_id" ref="base.view_currency_form"/>
+            <field name="arch" type="xml">
+              <field name="rate_silent" position="replace">
+                <field name="rub_currency_rate"/>
+                <field name="rate_month" readonly="0"
+                       attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+                <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+              </field>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="format_currency_tree">
+            <field name="name">format.currency.tree</field>
+            <field name="model">res.currency</field>
+            <field name="inherit_id" ref="base.view_currency_tree"/>
+            <field name="arch" type="xml">
+              <field name="rate_silent" position="replace">
+                <field name="rub_currency_rate"/>
+                <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+              </field>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_format_currency">
+            <field name="name">Валюта</field>
+            <field name="res_model">res.currency</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain">[('name', 'in', ['RUB', 'EUR', 'USD'])]</field>
+        </record>
+
+    </data>
+</openerp>
