@@ -2,7 +2,6 @@
 from openerp import models, api, fields
 
 
-
 class CurrencyMigration(models.Model):
     _inherit = 'res.currency'
 
