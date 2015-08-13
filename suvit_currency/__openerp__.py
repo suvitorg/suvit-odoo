@@ -9,14 +9,14 @@ TODO
     """,
     'author': 'Suvit LLC',
     'depends': [
-        'currency_rate_update',
+        'currency_rate_update',  # from barachka with RusCB support
     ],
     'init': [
     ],
     'data': [
-        'views/menu.xml',
-
         'views/currency.xml',
+
+        'views/fix_account_menu.xml',
 
         'migrations/data/0001_currency_rate_update.xml',
     ],
