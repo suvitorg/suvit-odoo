@@ -7,6 +7,7 @@
 * suvit_sentry - Интеграция odoo и sentry
 * suvit_web_diagram - Сохранение позиций вершин в диаграмме
 * suvit_web_list_hide_cols - Cкрытие/Показ колонок в списке
+* suvit_web_list_open_groups - Быстрое открытие/закрытие всех групп
 * suvit_web_notebook_focus - Активация нужного таба во время открытия карточки
 * suvit_web_tree_row_action - Выполнение произвольного действия при клике на строку списка
 
