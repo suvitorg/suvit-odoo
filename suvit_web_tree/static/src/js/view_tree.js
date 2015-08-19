@@ -35,6 +35,6 @@ openerp.suvit_web_tree = function(instance, local) {
     },
   });
 
-  instance.web.form.widgets.add('many2many_tree', 'instance.format_core.Many2ManyTreeField');
+  instance.web.form.widgets.add('many2many_tree', 'instance.suvit_web_tree.Many2ManyTreeField');
 
 };
