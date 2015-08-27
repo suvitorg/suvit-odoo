@@ -1,4 +1,4 @@
-openerp.suvit_web_tree_row_action = function(instance, local) {
+openerp.suvit_web_list_row_action = function(instance, local) {
 
   var QWeb = instance.web.qweb;
 
