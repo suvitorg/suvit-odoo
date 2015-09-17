@@ -1,7 +1,6 @@
 $.alt_shift = function(key, callback, args) {
     $(document).keydown(function(e) {
         if(!args) args=[]; // IE barks when args is null
-        console.log(e.keyCode, key.charCodeAt(0), key);
         if((e.keyCode == key.charCodeAt(0) || e.keyCode == key) && e.altKey && e.shiftKey) {
             callback.apply(this, args);
             return false;
