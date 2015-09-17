@@ -19,8 +19,14 @@ class Migration(models.Model):
                                 compute='compute_model_data',
                                 )
     ext_id = fields.Char(string=u"Метод",
-                         compute='compute_model_data',
+                         required=True,
                          )
+
+    @api.one
+    @api.constrains('ext_id')
+    def check_ext_id(self):
+        if not hasattr(self, self.ext_id):
+            exceptions.ValidationError(u"Миграция %s не найдена" % self.ext_id)
 
     @api.multi
     def compute_model_data(self):
@@ -31,7 +37,6 @@ class Migration(models.Model):
                                     ('res_id', '=', rec.id)],
                                    limit=1)
             if data:
-                rec.ext_id = data.name
                 rec.module_id = module_obj.search([('name', '=', data.module)],
                                                   limit=1)
 
@@ -41,9 +46,7 @@ class Migration(models.Model):
 
     @api.multi
     def run(self):
-        for rec in self.filtered(lambda r: r.ext_id):
-            if not hasattr(rec, rec.ext_id):
-                exceptions.Warning(u"Миграция %s не работает" % rec.name)
+        for rec in self.filtered(lambda r: not r.implemented):
             getattr(rec, rec.ext_id)()
             rec.implemented = True
 

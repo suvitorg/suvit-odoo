@@ -6,7 +6,7 @@
             <field name="name">suvit.migration.tree</field>
             <field name="model">suvit.migration</field>
             <field name="arch" type="xml">
-                <tree editable="bottom">
+                <tree editable="bottom" create="false">
                     <field name="name"/>
                     <field name="description" />
                     <field name="module_id"/>

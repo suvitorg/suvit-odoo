@@ -4,6 +4,7 @@
     <record model="suvit.migration" id="_0000_test">
         <field name="name">Тест</field>
         <field name="description">Тест</field>
+        <field name="ext_id">_0000_test</field>
     </record>
   </data>
 </openerp>
