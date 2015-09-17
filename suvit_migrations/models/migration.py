@@ -11,9 +11,18 @@ class Migration(models.Model):
                        )
     description = fields.Text(string=u"Описание",
                               )
+
+    state = fields.Selection(string=u'Состояниe',
+                             selection=[('new', u'Получена'),
+                                        ('run', u'Выполняется'),
+                                        ('done', u'Выполнена'),
+                                        ('error', u'Ошибка'),
+                                        ('cancel', u'Отменена')],
+                             default='new')
     implemented = fields.Boolean(string=u"Выполнена",
-                                 default=False,
+                                 compute='compute_implemented',
                                  )
+
     module_id = fields.Many2one(string=u"Модуль",
                                 comodel_name='ir.module.module',
                                 compute='compute_model_data',
@@ -21,6 +30,11 @@ class Migration(models.Model):
     ext_id = fields.Char(string=u"Метод",
                          required=True,
                          )
+
+    @api.multi
+    def compute_implemented(self):
+        for rec in self:
+            rec.implemented = rec.state == 'done'
 
     @api.one
     @api.constrains('ext_id')
@@ -42,19 +56,22 @@ class Migration(models.Model):
 
     @api.model
     def run_all(self):
-        self.search([('implemented', '=', False)]).run()
+        self.search([('state', '=', 'new')]).run()
 
     @api.multi
     def run(self):
         for rec in self.filtered(lambda r: not r.implemented):
-            getattr(rec, rec.ext_id)()
-            rec.implemented = True
+            try:
+                getattr(rec, rec.ext_id)()
+            except:
+                rec.state = 'error'
+            else:
+                rec.state = 'done'
 
     @api.model
     def create(self, values):
         rec = super(Migration, self).create(values)
-        if not rec.implemented:
-            rec.run()
+        rec.run()
 
         return rec
 
@@ -62,7 +79,6 @@ class Migration(models.Model):
     def write(self, values):
         res = super(Migration, self).write(values)
         for rec in self:
-            if not rec.implemented:
-                rec.run()
+            rec.run()
 
         return res
