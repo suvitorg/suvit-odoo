@@ -157,8 +157,15 @@ class ContextSentryHandler(SentryHandler):
         if record.exc_info and all(record.exc_info):
             bad_exc = issubclass(record.exc_info[0], (exceptions.ValidationError,
                                                       exceptions.Warning,
-                                                      exceptions.RedirectWarning)
+                                                      exceptions.RedirectWarning,
+                                                      exceptions.except_orm)
                                 )
+
+            if issubclass(record.exc_info[0], (exceptions.AccessDenied,
+                                               exceptions.AccessError)):
+                # we need to watch access errors
+                bad_exc = False
+
         else:
             bad_exc = False
         return res and not (bad_db or bad_logger or bad_exc)
