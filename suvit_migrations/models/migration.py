@@ -78,6 +78,8 @@ class Migration(models.Model):
     @api.multi
     def write(self, values):
         res = super(Migration, self).write(values)
+        if values.keys() == ['state']:
+            return res
         for rec in self:
             rec.run()
 
