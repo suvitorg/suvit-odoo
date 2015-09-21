@@ -27,7 +27,7 @@ class Migration(models.Model):
                                 comodel_name='ir.module.module',
                                 compute='compute_model_data',
                                 )
-    ext_id = fields.Char(string=u"Метод",
+    method = fields.Char(string=u"Метод",
                          required=True,
                          )
 
@@ -37,10 +37,10 @@ class Migration(models.Model):
             rec.implemented = rec.state == 'done'
 
     @api.one
-    @api.constrains('ext_id')
-    def check_ext_id(self):
-        if not hasattr(self, self.ext_id):
-            exceptions.ValidationError(u"Миграция %s не найдена" % self.ext_id)
+    @api.constrains('method')
+    def check_method(self):
+        if not hasattr(self, self.method):
+            exceptions.ValidationError(u"Миграция %s не найдена" % self.method)
 
     @api.multi
     def compute_model_data(self):
@@ -62,7 +62,7 @@ class Migration(models.Model):
     def run(self):
         for rec in self.filtered(lambda r: not r.implemented):
             try:
-                getattr(rec, rec.ext_id)()
+                getattr(rec, rec.method)()
             except:
                 rec.state = 'error'
             else:
