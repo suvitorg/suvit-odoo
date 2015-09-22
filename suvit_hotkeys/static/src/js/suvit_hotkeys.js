@@ -45,5 +45,3 @@ $.alt_shift('68', function() {
     }
   });
 });
-
-
