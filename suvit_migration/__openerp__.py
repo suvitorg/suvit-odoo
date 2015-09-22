@@ -13,6 +13,8 @@
         'base',
     ],
     'data': [
+        'security/ir.model.access.csv',
+
         'views/migrations.xml',
     ],
     'installable': True,

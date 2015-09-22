@@ -11,7 +11,10 @@
                     <field name="description" />
                     <field name="module_id"/>
                     <field name="method"/>
+                    <field name="state"/>
                     <field name="implemented"/>
+                    <button name="run" type="object" string="Запуск"
+                            attrs="{'invisible': [('implemented', '=', True)]}"/>
                 </tree>
             </field>
         </record>
@@ -31,13 +34,16 @@
         </record>
 
         <menuitem id="menu_suvit_migration" name="Миграции"
-                  parent="base.next_id_9"/>
+                  parent="base.menu_custom"
+                  sequence="100"/>
           <menuitem id="menu_suvit_migration_tree" name="Список Миграций"
                     parent="menu_suvit_migration"
-                    action="action_suvit_migration"/>
+                    action="action_suvit_migration"
+                    sequence="10"/>
           <menuitem id="menu_suvit_migration_run" name="Мигрировать"
                     parent="menu_suvit_migration"
-                    action="suvit_migration_run_action"/>
+                    action="suvit_migration_run_action"
+                    sequence="20"/>
 
     </data>
 </openerp>
