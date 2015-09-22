@@ -13,7 +13,7 @@
         'base',
     ],
     'data': [
-        'views/migration.xml',
+        'views/migrations.xml',
     ],
     'installable': True,
     'auto_install': False,
