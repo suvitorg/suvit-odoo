@@ -10,7 +10,7 @@
                     <field name="name"/>
                     <field name="description" />
                     <field name="module_id"/>
-                    <field name="ext_id"/>
+                    <field name="method"/>
                     <field name="implemented"/>
                 </tree>
             </field>

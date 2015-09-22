@@ -14,8 +14,6 @@
     ],
     'data': [
         'views/migration.xml',
-
-        'migrations/data/0000_test.xml',
     ],
     'installable': True,
     'auto_install': False,
