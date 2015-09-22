@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from openerp import models, fields, api, exceptions
+
+logger = logging.getLogger(__name__)
 
 
 class Migration(models.Model):
@@ -64,6 +68,7 @@ class Migration(models.Model):
             try:
                 getattr(rec, rec.method)()
             except:
+                logger.exception('Exception in migration %s', rec.name)
                 rec.state = 'error'
             else:
                 rec.state = 'done'
