@@ -23,7 +23,6 @@
             <field name="name">Список Миграций</field>
             <field name="res_model">suvit.migration</field>
             <field name="view_mode">tree</field>
-            <field name="view_type">form</field>
         </record>
 
         <record id="suvit_migration_run_action" model="ir.actions.server">
