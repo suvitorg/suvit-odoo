@@ -2,7 +2,7 @@
 from openerp import models, fields, api
 
 
-class MaterialTree(models.AbstractModel):
+class MultiTree(models.AbstractModel):
     _name = 'suvit.multi.model.tree'
     _rec_name = 'tree_name'
 
