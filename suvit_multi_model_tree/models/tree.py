@@ -74,21 +74,22 @@ class MultiTree(models.AbstractModel):
         if type(value) == bool and self._tree_root_model:
             tree_field = self.get_tree_field()
             roots = self.env[self._tree_root_model].search_read([], [tree_field])
-            value = [root[tree_field][0] for root in roots]
+            value = [root[tree_field][0] for root in roots if root[tree_field]]
 
         return [('id', operator, value)]
 
     @api.multi
     def compute_child_ids(self):
+        tree_field = self.get_tree_field()
         tree_childs_field = self.get_tree_childs_field()
         for rec in self:
             rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field)
             if rec_tree_childs_field:
-                rec.tree_child_ids = [child.tree_id.id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
+                rec.tree_child_ids = [getattr(child, tree_field).id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
 
     @api.multi
     def read(self, fields=None, load='_classic_read'):
-        res = super(MaterialTree, self).read(fields, load)
+        res = super(MultiTree, self).read(fields, load)
 
         tree_childs_field = self.get_tree_childs_field()
         if fields and tree_childs_field in fields:
