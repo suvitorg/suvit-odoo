@@ -54,7 +54,7 @@ class MaterialTree(models.AbstractModel):
     def compute_name(self):
         for rec in self:
             if rec.tree_obj_id:
-                rec.name = getattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, False)
+                rec.tree_name = getattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, False)
 
     @api.multi
     def compute_parent_id(self):
