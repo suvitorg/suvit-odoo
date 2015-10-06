@@ -83,7 +83,7 @@ class MultiTree(models.AbstractModel):
         tree_field = self.get_tree_field()
         tree_childs_field = self.get_tree_childs_field()
         for rec in self:
-            rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field)
+            rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field, None)
             if rec_tree_childs_field:
                 rec.tree_child_ids = [getattr(child, tree_field).id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
 
