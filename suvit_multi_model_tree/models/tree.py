@@ -103,8 +103,10 @@ class MultiTree(models.AbstractModel):
         self.ensure_one()
 
         tree_obj = self.tree_obj_id
-        if tree_obj:
+        if tree_obj and getattr(tree_obj, '%stree_form_action' % self._tree_prefix, True):
             act = tree_obj.get_formview_action()
             return act[0] if type(act) == list else act
+        elif tree_obj:
+            return False
 
         return super(MultiTree, self).get_formview_action()
