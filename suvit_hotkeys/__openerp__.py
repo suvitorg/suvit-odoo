@@ -2,7 +2,7 @@
     'name': 'Сувит. Горячие клавиши',
     'category': 'Web',
     'summary': 'Горячие клавиши',
-    'website': 'https://suvit.ru',
+    'website': 'http://suvit.ru',
     'version': '1.0',
     'description': """
 Горячие клавиши
