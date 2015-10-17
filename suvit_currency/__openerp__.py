@@ -5,9 +5,14 @@
     'category': 'Suvit',
     'complexity': 'easy',
     'description': """
-TODO
+
+* Установка рубля валютой по умолчанию
+* Автообновление курсов валют с сайта ЦБ РФ
+* Показ обратных курсов к рублю, например 76руб - 1 евро
+
     """,
     'author': 'Suvit LLC',
+    'website': 'http://suvit.ru',
     'depends': [
         'currency_rate_update',  # from barachka with RusCB support
     ],

@@ -2,14 +2,16 @@
     'name': 'Сувит. Горячие клавиши',
     'category': 'Web',
     'summary': 'Горячие клавиши',
-    'website': 'http://suvit.ru',
     'version': '1.0',
     'description': """
 Горячие клавиши
 ================================================
 
+* Добавление горячих клавиш на русской клавиатуре
+
         """,
     'author': 'Suvit LLC',
+    'website': 'http://suvit.ru',
     'depends': ['web'],
     'installable': True,
     'auto_install': True,

@@ -2,7 +2,7 @@
     'name': 'Сувит. Сайт',
     'category': 'Website',
     'summary': 'Перевод модуля сайт',
-    'website': 'https://www.odoo.com/page/website-builder',
+    'website': 'http://suvit.ru',
     'version': '1.0',
     'description': """
 Перевод Odoo модуля "Сайт"

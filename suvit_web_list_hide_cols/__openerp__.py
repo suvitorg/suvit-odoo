@@ -2,7 +2,7 @@
     'name': 'Сувит. Скрываемые колонки',
     'category': 'Web',
     'summary': 'Расширение ListView позволяющие скрыть колонки',
-    'website': 'https://suvit.ru',
+    'website': 'http://suvit.ru',
     'version': '1.0',
     'description': """
 Расширение ListView позволяющие скрыть колонки

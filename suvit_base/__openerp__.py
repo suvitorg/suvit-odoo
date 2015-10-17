@@ -17,13 +17,14 @@
 TODO
 """,
     'author': 'Suvit LLC',
+    'website': 'http://suvit.ru',
     'depends': ['web',  # odoo/core
                 'disable_openerp_online',  # github/oca/server_tools
                 # 1. support_branding - С предустановленными полями
                 # 2. web_debranding -C предустановленными полями
                 # 3. support_debranding
                 # 4. hide_db_manager_link oca/server_tools
-                # 'suvit_sentry'
+                'suvit_sentry'
                 ],
     'data': [
     ],
