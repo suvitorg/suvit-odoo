@@ -83,7 +83,7 @@ class MultiTree(models.AbstractModel):
         tree_field = self.get_tree_field()
         tree_childs_field = self.get_tree_childs_field()
         for rec in self:
-            rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field)
+            rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field, None)
             if rec_tree_childs_field:
                 rec.tree_child_ids = [getattr(child, tree_field).id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
 
@@ -97,3 +97,16 @@ class MultiTree(models.AbstractModel):
                 vals[tree_childs_field] = self.browse(vals['id']).tree_child_ids.ids
 
         return res
+
+    @api.multi
+    def get_formview_action(self):
+        self.ensure_one()
+
+        tree_obj = self.tree_obj_id
+        if tree_obj and getattr(tree_obj, '%stree_form_action' % self._tree_prefix, True):
+            act = tree_obj.get_formview_action()
+            return act[0] if type(act) == list else act
+        elif tree_obj:
+            return False
+
+        return super(MultiTree, self).get_formview_action()
