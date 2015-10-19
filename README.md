@@ -1,4 +1,4 @@
-Базовые модули SUVIT
+odoo-модули SUVIT
 --------------------------
 
 ## Backend
@@ -19,7 +19,7 @@
 * suvit_web_notebook_focus - Активация нужного таба во время открытия карточки
 * suvit_web_tree - Показ дерева в карточке. Показ вместе Дерева и Списка
 * suvit_web_tree_row_action - Удалить. см. suvit_web_list_row_action
-* suvit_web_widgets - Виджеры. Показ картинки в списке
+* suvit_web_widgets - Виджеты. Показ картинки в списке
 
 Планы
 ---------------
