@@ -8,6 +8,7 @@ odoo-модули SUVIT
 * suvit_currency - Модуль для скачивания курса валют с сайта ЦБ + обратные курсы
 * suvit_sentry - Интеграция odoo и sentry
 * suvit_migration - базовая модель Миграции данных.
+* suvit_multimodel_tree - Составления дерева из нескольких разных моделей, соединенных M2O-ключем
 
 ## Frontend
 
