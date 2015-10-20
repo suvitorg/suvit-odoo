@@ -4,6 +4,9 @@
     'summary': 'Перевод модуля сайт',
     'website': 'http://suvit.ru',
     'version': '1.0',
+    'depends': [
+        'website',
+    ],
     'description': """
 Перевод Odoo модуля "Сайт"
 ===========================
