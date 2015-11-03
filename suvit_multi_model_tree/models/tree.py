@@ -62,7 +62,8 @@ class MultiTree(models.AbstractModel):
         for rec in self:
             rec_tree_parent_field = getattr(rec.tree_obj_id, tree_parent_field)
             if rec_tree_parent_field:
-                rec.tree_parent_id = getattr(rec.tree_obj_id, rec_tree_parent_field).tree_id
+                tree_field = self.get_tree_field()
+                rec.tree_parent_id = getattr(getattr(rec.tree_obj_id, rec_tree_parent_field), tree_field)
 
     @api.model
     def search_parent_id(self, operator, value):
