@@ -70,3 +70,18 @@ class Currency(models.Model):
                 self.avg_rate = 1. / avg_rate
             else:
                 self.avg_rate = 0
+
+
+class Rate(models.Model):
+    _inherit = "res.currency.rate"
+
+    rub_currency_rate = fields.Float(string=u"Курс",
+                                     compute='compute_rub_currency',
+                                     digits=(12, 4),
+                                     )
+
+    @api.multi
+    def compute_rub_currency(self):
+        for rec in self:
+            if rec.rate:
+                rec.rub_currency_rate = 1. / rec.rate

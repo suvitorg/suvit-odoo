@@ -13,6 +13,9 @@
                        attrs="{'invisible': [('name', '=', 'RUB')]}"/>
                 <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
               </field>
+              <field name="rate" position="replace">
+                <field name="rub_currency_rate"/>
+              </field>
             </field>
         </record>
         <record model="ir.ui.view" id="format_currency_tree">
