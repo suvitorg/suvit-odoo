@@ -41,8 +41,18 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
           this.$pager.prepend(QWeb.render("ListView.hide_cols", this));
         }
 
-        this.$pager.find('.oe_view_hide_cols_menu li input').click(function(){
+        if ( $('.oe_view_hide_cols_menu li input:checked').length <= 1 ) {
+            $('.oe_view_hide_cols_menu li input:checked').prop('disabled', true);
+        } else {
+            $('.oe_view_hide_cols_menu li input').prop('disabled', false);
+        }
+        $('.oe_view_hide_cols_menu li input[data-swichable = "0"]').prop('disabled', true);
+        this.$pager.find('.oe_view_hide_cols_menu li input').off('click').on('click',function(event){
             $checkbox = $(this);
+            if ($checkbox.data('swichable') === 0) {
+                event.preventDefault()
+                return false;
+            }
             _.map(self.fields_view.arch.children, function(field){
                 if (field.attrs.name == $checkbox.data('field')) {
                     self.add_invisible(field, !$checkbox.prop('checked'), true);

@@ -29,8 +29,5 @@ Provide a pluggable base to connect Odoo with Sentry.
     'qweb': [
         'static/src/xml/base.xml',
     ],
-    'data': ['views/suvit_sentry.xml'],
-    'css': [
-        'static/src/css/sentry.css',
-    ],
+    'data': ['views/suvit_sentry.xml']
 }

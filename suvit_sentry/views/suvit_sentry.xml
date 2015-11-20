@@ -4,6 +4,7 @@
         <template id="assets_backend" name="suvit_sentry assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <link rel="stylesheet" href="/suvit_sentry/static/src/css/suvit_sentry.css"/>
+                <script type="text/javascript" src="/suvit_sentry/static/src/js/raven.min.js"></script>
                 <script type="text/javascript" src="/suvit_sentry/static/src/js/suvit_sentry.js"></script>
             </xpath>
         </template>
