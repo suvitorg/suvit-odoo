@@ -8,7 +8,7 @@
           <t t-foreach="columns" t-as="col">
             <t t-set="checked" t-value="col.invisible !== '1' ? 'checked' : null"/>
             <li><label><input type="checkbox" t-attf-data-field="{{ col.name }}"
-                              value="1" t-attf-checked="{{checked}}" t-att-data-swichable="col.swichable || (coll &amp;&amp; col.options['swichable'])"/> <t t-esc="col.string"/></label></li>
+                              value="1" t-attf-checked="{{checked}}" t-att-data-swichable="col.swichable || (col.options &amp;&amp; col.options['swichable'])"/> <t t-esc="col.string"/></label></li>
           </t>
         </ul>
       </div>
