@@ -19,7 +19,6 @@ openerp.suvit_web_diagram = function(instance, local) {
         var res_edges  = result['conn'];
         this.parent_field = result.parent_field;
         this.$el.find('h3.oe_diagram_title').text(result.name);
-
         var id_to_node = {};
 
         var style = {
