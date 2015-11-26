@@ -8,8 +8,8 @@ openerp.suvit_web_diagram = function(instance, local) {
     save_coords: function(node_obj){
         var NodeModel = new instance.web.Model(this.node);
         var coords = node_obj.get_pos();
-        coords['x'] = coords['x'] - 50;
-        coords['y'] = coords['y'] - 50;
+        coords['x'] -= 50;
+        coords['y'] -= 50;
         NodeModel.call('write', [node_obj.id, coords]);
     },
 
