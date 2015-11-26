@@ -1,5 +1,4 @@
 openerp.suvit_web_diagram = function(instance, local) {
-  var QWeb = instance.web.qweb;
   instance.web.DiagramView.include({
     init: function(parent, dataset, view_id, options) {
         var self = this;
@@ -17,8 +16,8 @@ openerp.suvit_web_diagram = function(instance, local) {
         var coords = node_obj.get_pos();
         coords['x'] = coords['x'] - 50;
         coords['y'] = coords['y'] - 50;
-        // NodeModel.call('write', [node_obj.id, coords]);
-        console.log(coords);
+        //console.log(coords);
+        NodeModel.call('write', [node_obj.id, coords]);
     },
 
     draw_diagram: function(result) {
