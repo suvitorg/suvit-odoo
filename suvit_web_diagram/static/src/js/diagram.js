@@ -31,15 +31,8 @@ openerp.suvit_web_diagram = function(instance, local) {
     draw_diagram: function(result) {
         var self = this;
         this._super(result);
-        CuteNodeOrig.double_click_callback = function(cutenode){
-            self.edit_node(cutenode.id);
-        };
-        CuteNodeOrig.destruction_callback = function(cutenode){
-            if(!confirm(_t("Deleting this node cannot be undone.\nIt will also delete all connected transitions.\n\nAre you sure ?"))){
-                return $.Deferred().reject().promise();
-            }
-            return new instance.web.DataSet(self,self.node).unlink([cutenode.id]);
-        };
+        CuteNodeOrig.double_click_callback = CuteNode.double_click_callback;
+        CuteNodeOrig.destruction_callback = CuteNode.destruction_callback;
     }
   });
 };
