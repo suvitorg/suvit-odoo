@@ -41,8 +41,8 @@ class Currency(models.Model):
                 next_month = datetime.date(sel_month.year + 1, 1, 1)
             else:
                 next_month = datetime.date(sel_month.year, sel_month.month + 1, 1)
-                sel_val = '%s,%s' % (fields.Date.to_string(sel_month),
-                                     fields.Date.to_string(next_month))
+            sel_val = '%s,%s' % (fields.Date.to_string(sel_month),
+                                 fields.Date.to_string(next_month))
             months_sel.append((sel_val, sel_month.strftime('%Y.%m')))
             sel_month = next_month
 
