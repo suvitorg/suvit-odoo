@@ -2,12 +2,20 @@ openerp.suvit_web_diagram = function(instance, local) {
   instance.web.DiagramView.include({
     init: function(parent, dataset, view_id, options) {
         var self = this;
-        window.CuteGraphOrig = window.CuteGraph;
-        window.CuteGraph = function (r,style,parentNode) {
-            self.graph = new CuteGraphOrig(r,style,parentNode);
-            return self.graph;
+        window.CuteNodeOrig = window.CuteNode;
+        window.CuteNode = function (graph,pos_x, pos_y,label,type,color) {
+            node = new CuteNodeOrig(graph,pos_x, pos_y,label,type,color);
+            var fig = node.get_fig();
+            fig.drag(null, null, function(){
+                self.save_coords(node);
+            });
+            node_label = graph.r.getById(fig.id).next;
+            node_label.drag(null, null, function(){
+              self.save_coords(node);
+            });
+            return node;
         }
-        window.CuteGraph.wordwrap = window.CuteGraphOrig.wordwrap;
+
         this._super(parent, dataset, view_id, options);
     },
 
@@ -23,16 +31,8 @@ openerp.suvit_web_diagram = function(instance, local) {
     draw_diagram: function(result) {
         var self = this;
         this._super(result);
-        _.each(self.graph.get_node_list(), function(n) {
-            var fig = n.get_fig();
-            fig.drag(null, null, function(){
-                self.save_coords(n);
-            });
-            node_label = self.graph.r.getById(fig.id).next;
-            node_label.drag(null, null, function(){
-              self.save_coords(n);
-            });
-        });
+        CuteNodeOrig.double_click_callback = CuteNode.double_click_callback;
+        CuteNodeOrig.destruction_callback = CuteNode.destruction_callback;
     }
   });
 };
