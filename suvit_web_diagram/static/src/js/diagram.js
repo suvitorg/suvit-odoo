@@ -15,7 +15,6 @@ openerp.suvit_web_diagram = function(instance, local) {
             });
             return node;
         }
-
         this._super(parent, dataset, view_id, options);
     },
 
@@ -29,7 +28,6 @@ openerp.suvit_web_diagram = function(instance, local) {
     },
 
     draw_diagram: function(result) {
-        var self = this;
         this._super(result);
         CuteNodeOrig.double_click_callback = CuteNode.double_click_callback;
         CuteNodeOrig.destruction_callback = CuteNode.destruction_callback;
