@@ -20,7 +20,7 @@ openerp.suvit_web_tree = function(instance, local) {
 
     initialize_content: function() {
 
-        if (this.field.type != 'many2many')
+        if (!(this.field.type == 'many2many' || this.field.type == 'one2many'))
             return this._super();
 
         this.list_view = new instance.web.TreeView(this, this.dataset, false, {
