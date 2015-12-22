@@ -58,6 +58,10 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
                     self.add_invisible(field, !$checkbox.prop('checked'), true);
                 }
             });
+            if ($checkbox.data('field') == '_row_no') {
+                self.hide_cols['_row_no'] = !$checkbox.prop('checked');
+                self.save_hide_cols();
+            };
             self.load_list(self.fields_view);
             self.reload();
         });
