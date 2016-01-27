@@ -74,10 +74,11 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self = this;
         classes = self.view.fields_addition_class;
         r = this._super(record);
+        d = $(r);
         for (field in classes) {
-            $(r).find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
+            d.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
         }
-        return $(r);
+        return d;
     },
     render: function () {
         self = this;
