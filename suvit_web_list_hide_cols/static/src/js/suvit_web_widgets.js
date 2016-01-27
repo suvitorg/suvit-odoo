@@ -14,13 +14,15 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
     setup_columns: function (fields, grouped) {
         var self = this;
         this.load_hide_cols();
-
+        self.fields_addition_class = {};
         _.map(self.fields_view.arch.children, function(field){
             if (self.hide_cols[field.attrs.name] !== undefined ) {
                 self.add_invisible(field, self.hide_cols[field.attrs.name]);
             }
+            if (field.attrs.class) {
+                self.fields_addition_class[field.attrs.name] = field.attrs.class;
+            }
         });
-
         this._super(fields, grouped);
     },
     add_invisible: function(field, is_invisible, save) {
@@ -66,5 +68,25 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             self.reload();
         });
     }
+  });
+  instance.web.ListView.List.include({
+    render_record: function (record) {
+        self = this;
+        classes = self.view.fields_addition_class;
+        r = this._super(record);
+        for (field in classes) {
+            $(r).find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
+        }
+        return $(r);
+    },
+    render: function () {
+        self = this;
+        classes = self.view.fields_addition_class;
+        self._super();
+        for (field in classes) {
+            self.$current.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
+            self.view.$el.find('th[data-id="'+field+'"]').addClass(classes[field]);
+        }
+    },
   });
 };
