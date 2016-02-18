@@ -5,13 +5,15 @@ openerp.suvit_web_tree = function(instance, local) {
       on_button_save: function(e) {
           var self = this;
           return self._super(e).then(function(){
-              self.ViewManager.views.tree.controller.switch_mode()
+              if (self.ViewManager.views.tree)
+                self.ViewManager.views.tree.controller.switch_mode()
           });
       },
       on_button_create: function() {
           var self = this;
           self._super();
-          self.ViewManager.views.tree.controller.switch_mode()
+          if (self.ViewManager.views.tree)
+            self.ViewManager.views.tree.controller.switch_mode()
       }
   });
 
