@@ -1,19 +1,27 @@
 openerp.suvit_web_tree = function(instance, local) {
 
   /********* Custom domain for List & Tree Views in same Action ********/
-  instance.web.TreeView.include({
+  instance.web.FormView.include({
+      on_button_save: function(e) {
+          var self = this;
+          return self._super(e).then(function(){
+              self.ViewManager.views.tree.controller.switch_mode()
+          });
+      },
+      on_button_create: function() {
+          var self = this;
+          self._super();
+          self.ViewManager.views.tree.controller.switch_mode()
+      }
+  });
 
+  instance.web.TreeView.include({
     init: function (parent, dataset, view_id, options) {
         if (parent.action && parent.action.context.tree_domain){
           var domain = new instance.web.CompoundDomain(dataset.domain, parent.action.context.tree_domain);
           dataset = new instance.web.DataSetSearch(this, parent.action.res_model, dataset.context, domain);
         }
         this._super(parent, dataset, view_id, options);
-
-        self = this;
-        this.ViewManager.on("switch_mode", self, function(mode) {
-          if (mode == 'tree') this.switch_mode();
-        });
     },
     switch_mode: function () {
       this.$el.find(".oe-treeview-table > tbody").empty();

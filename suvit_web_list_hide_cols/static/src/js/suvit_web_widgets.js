@@ -39,7 +39,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         this._super(data);
 
         var $menu = this.$pager.find('.oe_view_hide_cols_menu');
-        if (!$menu.size()) {
+        if (!$menu.size() && !this.o2m) {
           this.$pager.prepend(QWeb.render("ListView.hide_cols", this));
         }
 
