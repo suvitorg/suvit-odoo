@@ -76,7 +76,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         r = this._super(record);
         d = $(r);
         for (field in classes) {
-            d.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
+            d.find('.oe_list_field_cell[data-field="'+field+'"], .oe_list_footer[data-field="'+field+'"]').addClass(classes[field]);
         }
         return d;
     },
@@ -86,7 +86,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self._super();
         for (field in classes) {
             self.$current.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
-            self.view.$el.find('th[data-id="'+field+'"]').addClass(classes[field]);
+            self.view.$el.find('th[data-id="'+field+'"], .oe_list_footer[data-field="'+field+'"]').addClass(classes[field]);
         }
     },
   });
