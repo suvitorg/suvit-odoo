@@ -3,6 +3,8 @@ from openerp import api, models, fields
 
 import datetime
 
+CURRENCY_DOMAIN = [('name', 'in', ['RUB', 'USD', 'EUR'])]
+
 
 class Currency(models.Model):
     _inherit = 'res.currency'
