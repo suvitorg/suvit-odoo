@@ -48,6 +48,7 @@ openerp.suvit_web_tree = function(instance, local) {
       return parent_ids;
     },
     getdata: function (id, children_ids) {
+      var self = this;
       if (!self.real_context)
         self.real_context = self.dataset._model._context;
       self.dataset._model._context = new instance.web.CompoundContext(self.real_context,
