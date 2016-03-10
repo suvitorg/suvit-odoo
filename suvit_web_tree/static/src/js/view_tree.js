@@ -37,7 +37,24 @@ openerp.suvit_web_tree = function(instance, local) {
     hook_row_click: function () {
       this.$el.undelegate('.treeview-tr', 'click');
       this._super();
-    }
+    },
+    getparents: function(id) {
+      var parent_ids = [],
+          $parent_row = this.$el.find('[data-id='+ id +']');
+      while ($parent_row.length) {
+        parent_ids.unshift($parent_row.data('id'));
+        $parent_row = this.$el.find('[data-id='+ $parent_row.data('row-parent-id') +']');
+      }
+      return parent_ids;
+    },
+    getdata: function (id, children_ids) {
+      if (!self.real_context)
+        self.real_context = self.dataset._model._context;
+      self.dataset._model._context = new instance.web.CompoundContext(self.real_context,
+                                                                      {tree_parent_ids: self.getparents(id)});
+
+      return this._super(id, children_ids);
+    },
   });
 
   /********* Many2Many Tree Field ********/
