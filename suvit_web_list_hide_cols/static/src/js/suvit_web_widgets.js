@@ -86,7 +86,8 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self._super();
         for (field in classes) {
             self.$current.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
-            self.view.$el.find('th[data-id="'+field+'"]').addClass(classes[field]);
+            var ind = self.$current.find('.oe_list_field_cell').index(self.$current.find('.oe_list_field_cell[data-field="'+field+'"]'));
+            self.view.$el.find('th[data-id="'+field+'"], .oe_list_footer:eq('+ind+')').addClass(classes[field]);
         }
     },
   });
