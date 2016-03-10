@@ -19,7 +19,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
           return this._super(index, id, dataset, view);
 
         var context = action.context;
-        if (!context.open_formview)
+        if (!context || !context.open_formview)
           return this._super(index, id, dataset, view);
 
         do_action(this, id, context);
@@ -31,7 +31,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
 
     do_activate_record: function (index, id) {
         var context = this.ViewManager.field.context;
-        if (!context.open_formview)
+        if (!context || !context.open_formview)
           return this._super(index, id);
 
         do_action(this, id, context);
