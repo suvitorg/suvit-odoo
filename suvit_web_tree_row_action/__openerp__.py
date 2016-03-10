@@ -12,6 +12,7 @@
     'website': 'http://suvit.ru',
     'depends': [
         'web',
+        'suvit_web_list_row_action',
     ],
     'data': [
         'static/data/static_data.xml',
