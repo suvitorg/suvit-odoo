@@ -66,6 +66,10 @@ openerp.suvit_web_tree = function(instance, local) {
 
       return this._super(id, children_ids);
     },
+    activate: function(id){
+      id = parseInt(id.toString().split('-').pop());
+      return this._super(id);
+    },
   });
 
   /********* Many2Many Tree Field ********/
