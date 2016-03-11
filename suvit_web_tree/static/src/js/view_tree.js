@@ -38,6 +38,11 @@ openerp.suvit_web_tree = function(instance, local) {
       this.$el.undelegate('.treeview-tr', 'click');
       this._super();
     },
+    getdata: function (id, children_ids) {
+      // do not getdata twice, this class stop loading
+      this.$el.find('#treerow_' + id).addClass('oe_open');
+      return this._super(id, children_ids);
+    },
   });
 
   /* Ability

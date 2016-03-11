@@ -42,9 +42,12 @@ class MultiTree(models.AbstractModel):
 
     @api.multi
     def compute_obj_id(self):
+        tree_field = self.get_tree_field()
+        tree_models = self.get_tree_ref_models()
+
         for rec in self:
-            for model in self.get_tree_ref_models():
-                obj = self.env[model].search([(self.get_tree_field(), '=', rec.id)],
+            for model in tree_models:
+                obj = self.env[model].search([(tree_field, '=', rec.id)],
                                              limit=1)
                 if obj:
                     rec.tree_obj_id = obj
@@ -59,10 +62,10 @@ class MultiTree(models.AbstractModel):
     @api.multi
     def compute_parent_id(self):
         tree_parent_field = self.get_tree_parent_field()
+        tree_field = self.get_tree_field()
         for rec in self:
             rec_tree_parent_field = getattr(rec.tree_obj_id, tree_parent_field)
             if rec_tree_parent_field:
-                tree_field = self.get_tree_field()
                 rec.tree_parent_id = getattr(getattr(rec.tree_obj_id, rec_tree_parent_field), tree_field)
 
     @api.model
