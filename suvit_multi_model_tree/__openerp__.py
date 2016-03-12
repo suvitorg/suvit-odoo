@@ -15,7 +15,7 @@
     'author': 'Suvit LLC',
     'website': 'http://suvit.ru',
     'depends': [
-        'base',
+        'web',
     ],
     'data': [
         'views/assets.xml',
