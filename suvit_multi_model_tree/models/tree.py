@@ -91,16 +91,16 @@ class MultiTree(models.AbstractModel):
             if rec_tree_childs_field:
                 rec.tree_child_ids = [getattr(child, tree_field).id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
 
-    @api.multi
-    def read(self, fields=None, load='_classic_read'):
-        res = super(MultiTree, self).read(fields, load)
-
-        tree_childs_field = self.get_tree_childs_field()
-        if fields and tree_childs_field in fields:
-            for vals in res:
-                vals[tree_childs_field] = self.browse(vals['id']).tree_child_ids.ids
-
-        return res
+    #@api.multi
+    #def read(self, fields=None, load='_classic_read'):
+    #    res = super(MultiTree, self).read(fields, load)
+    #
+    #    tree_childs_field = self.get_tree_childs_field()
+    #    if fields and tree_childs_field in fields:
+    #        for vals in res:
+    #            vals[tree_childs_field] = self.browse(vals['id']).tree_child_ids.ids
+    #
+    #    return res
 
     @api.multi
     def get_formview_action(self):
