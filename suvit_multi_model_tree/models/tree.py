@@ -8,6 +8,7 @@ class MultiTree(models.AbstractModel):
 
     _tree_root_model = None
     _tree_prefix = ''
+    _use_full_ids = False
 
     tree_name = fields.Char(string=u"Наим",
                             compute='compute_name',
@@ -23,6 +24,45 @@ class MultiTree(models.AbstractModel):
     tree_child_ids = fields.Many2many(comodel_name='suvit.multi.model.tree',
                                       compute='compute_child_ids',
                                       )
+
+    @api.multi
+    def evaluate_ids(self):
+        if not any(isinstance(id, basestring) for id in self.ids):
+            return
+
+        new_ids = []
+        for id in self.ids:
+            new_ids.append(int(str(id).split('-')[-1]))
+
+        # XXX This is needed to clear cache string ids
+        self.invalidate_cache()
+        self._ids = new_ids
+
+    @api.multi
+    def read(self, fields=None, *args, **kwargs):
+        if not self._use_full_ids:
+            return super(MultiTree, self).read(fields, *args, **kwargs)
+
+        self.evaluate_ids()
+
+        res = super(MultiTree, self).read(fields, *args, **kwargs)
+
+        parents = self.env.context.get('tree_parent_ids')
+        if parents:
+            parent_prefix = '-'.join(str(x) for x in parents)
+        else:
+            parent_prefix = None
+
+        for row in res:
+            if parent_prefix:
+                row['real_id'] = row['id']
+                row['id'] = '%s-%s' % (parent_prefix, row['id'])
+
+            new_children = []
+            for child in row['tree_child_ids']:
+                new_children.append('%s-%s' % (row['id'], child))
+            row['tree_child_ids'] = new_children
+        return res
 
     @api.model
     def get_tree_parent_field(self):

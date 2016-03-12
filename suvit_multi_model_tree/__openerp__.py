@@ -18,6 +18,7 @@
         'base',
     ],
     'data': [
+        'views/assets.xml',
     ],
     'js': [
     ],
