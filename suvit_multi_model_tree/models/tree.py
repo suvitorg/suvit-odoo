@@ -126,10 +126,18 @@ class MultiTree(models.AbstractModel):
     def compute_child_ids(self):
         tree_field = self.get_tree_field()
         tree_childs_field = self.get_tree_childs_field()
+
+        def get_tree_id(obj):
+            if obj._name == self._name:
+                return obj.id
+            else:
+                return getattr(obj, tree_field).id
         for rec in self:
             rec_tree_childs_field = getattr(rec.tree_obj_id, tree_childs_field, None)
             if rec_tree_childs_field:
-                rec.tree_child_ids = [getattr(child, tree_field).id for child in getattr(rec.tree_obj_id, rec_tree_childs_field)]
+                rec.tree_child_ids = [get_tree_id(child)
+                                      for child in getattr(rec.tree_obj_id,
+                                                           rec_tree_childs_field)]
 
     #@api.multi
     #def read(self, fields=None, load='_classic_read'):
