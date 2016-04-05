@@ -7,15 +7,15 @@
         <ul class="dropdown-menu" role="menu">
           <t t-foreach="columns" t-as="col">
             <t t-set="checked" t-value="col.invisible !== '1' ? 'checked' : null"/>
-            <li t-if="col.id != '_empty_col'"><label><input type="checkbox" t-attf-data-field="{{ col.name }}"
-                              value="1" t-attf-checked="{{checked}}" t-att-data-swichable="col.swichable || (col.options &amp;&amp; col.options['swichable'])"/> <t t-esc="col.string"/></label></li>
+            <li t-if="col.id != '_empty_col'">
+              <label><input type="checkbox"
+                            t-attf-data-field="{{ col.name }}"
+                            t-attf-checked="{{checked}}"
+                            t-att-data-swichable="col.swichable || (col.options &amp;&amp; col.options['swichable'])"
+                            value="1" />
+                      <t t-esc="col.string"/></label></li>
           </t>
         </ul>
       </div>
     </t>
-    <!--t t-extend="ListView">
-        <t t-jquery="tr.oe_list_header_columns" t-operation="before">
-            <t t-call="ListView.hide_cols" />
-        </t>
-    </t-->
 </templates>

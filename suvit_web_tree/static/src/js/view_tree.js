@@ -37,7 +37,12 @@ openerp.suvit_web_tree = function(instance, local) {
     hook_row_click: function () {
       this.$el.undelegate('.treeview-tr', 'click');
       this._super();
-    }
+    },
+    getdata: function (id, children_ids) {
+      // do not getdata twice, this class stop loading
+      this.$el.find('#treerow_' + id).addClass('oe_open');
+      return this._super(id, children_ids);
+    },
   });
   instance.web.ActionManager.include({
     select_breadcrumb: function(index, subindex) {
