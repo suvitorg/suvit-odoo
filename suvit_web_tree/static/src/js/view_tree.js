@@ -39,6 +39,16 @@ openerp.suvit_web_tree = function(instance, local) {
       this._super();
     }
   });
+  instance.web.ActionManager.include({
+    select_breadcrumb: function(index, subindex) {
+      var self = this;
+      var item = this.breadcrumbs[index];
+      if (item.widget.views.tree) {
+        item.widget.views.tree.controller.switch_mode();
+      }
+      return this._super(index, subindex);
+    },
+  });
 
   /********* Many2Many Tree Field ********/
   local.Many2ManyTreeField = instance.web.form.FieldMany2Many.extend({
