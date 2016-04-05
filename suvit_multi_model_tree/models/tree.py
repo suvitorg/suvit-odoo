@@ -60,7 +60,7 @@ class MultiTree(models.AbstractModel):
 
             new_children = []
             for child in row['tree_child_ids']:
-                new_children.append('%s-%s' % (row['id'], child))
+                new_children.append('%s-%s' % (row['id'], child if isinstance(child, int) else child.id))
             row['tree_child_ids'] = new_children
         return res
 
