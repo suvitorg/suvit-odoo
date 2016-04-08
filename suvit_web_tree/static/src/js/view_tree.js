@@ -1,9 +1,16 @@
 openerp.suvit_web_tree = function(instance, local) {
+  var QWeb = instance.web.qweb;
+  var _t = instance.web._t;
+  var _lt = instance.web._lt;
 
   /********* Custom domain for List & Tree Views in same Action ********/
   instance.web.FormView.include({
       on_button_save: function(e) {
           var self = this;
+          _.each(this.ViewManager.ActionManager.breadcrumbs, function(br){
+            br.need_update = true;
+          });
+
           return self._super(e).then(function(){
               if (self.ViewManager.views.tree)
                 self.ViewManager.views.tree.controller.switch_mode()
@@ -38,17 +45,70 @@ openerp.suvit_web_tree = function(instance, local) {
       this.$el.undelegate('.treeview-tr', 'click');
       this._super();
     },
+
+
     getdata: function (id, children_ids) {
-      // do not getdata twice, this class stop loading
-      this.$el.find('#treerow_' + id).addClass('oe_open');
-      return this._super(id, children_ids);
+        // do not getdata twice, this class stop loading
+        this.$el.find('#treerow_' + id).addClass('oe_open');
+
+        var self = this;
+
+        self.dataset.read_ids(children_ids, this.fields_list()).done(function(records) {
+            _(records).each(function (record) {
+                self.records[record.id] = record;
+            });
+            var $curr_node = self.$el.find('#treerow_' + id);
+            var children_rows = QWeb.render('TreeView.rows', {
+                'records': records,
+                'children_field': self.children_field,
+                'fields_view': self.fields_view.arch.children,
+                'fields': self.fields,
+                'level': $curr_node.data('level') || 0,
+                'render': instance.web.format_value,
+                'color_for': self.color_for,
+                'row_parent_id': id
+            });
+            if ($curr_node.length) {
+                $curr_node.addClass('oe_open');
+                $curr_node.after(children_rows);
+            } else {
+                self.$el.find('tbody').html(children_rows);
+            }
+        }).then(function(){
+          if (self.ViewManager.action && self.ViewManager.action.id) {
+            view_id = self.ViewManager.action.id;
+            var open_trees = JSON.parse(localStorage.getItem('open_trees') || '{}');
+                if (!open_trees[view_id]) {open_trees[view_id] = {};}
+            open_trees[view_id][id] = true;
+            localStorage["open_trees"] = JSON.stringify(open_trees);
+            for(k in open_trees[view_id]){
+              if (open_trees[view_id][k]) {
+                $('#treerow_'+k+':not(.oe_open) .treeview-tr').click();
+              }
+            }
+          }
+        });
+    },
+
+
+
+    showcontent: function (curnode,record_id, show) {
+      this._super(curnode,record_id, show);
+      if (this.ViewManager && this.ViewManager.action) {
+        view_id = this.ViewManager.action.id;
+        var open_trees = JSON.parse(localStorage.getItem('open_trees') || '{}');
+        if (!open_trees[view_id]) {open_trees[view_id] = {};}
+        open_trees[view_id][record_id] = show;
+        localStorage["open_trees"] = JSON.stringify(open_trees);
+      }
     },
   });
   instance.web.ActionManager.include({
     select_breadcrumb: function(index, subindex) {
       var self = this;
       var item = this.breadcrumbs[index];
-      if (item.widget.views.tree) {
+      if (item.widget.views.tree && item.need_update) {
+        item.need_update=false;
         item.widget.views.tree.controller.switch_mode();
       }
       return this._super(index, subindex);
