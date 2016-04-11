@@ -5,6 +5,14 @@ openerp.suvit_web_tree = function(instance, local) {
 
   /********* Custom domain for List & Tree Views in same Action ********/
   instance.web.FormView.include({
+      init: function(parent, dataset, view_id, options) {
+        var self = this;
+        this._super(parent, dataset, view_id, options);
+        if (self.dataset.context && self.dataset.context.ids && self.dataset.context.ids.length) {
+            self.dataset.ids = self.dataset.context.ids;
+            self.dataset.index = self.dataset.ids.indexOf(self.dataset.context.active_id);
+        }
+      },
       on_button_save: function(e) {
           var self = this;
           _.each(this.ViewManager.ActionManager.breadcrumbs, function(br){
