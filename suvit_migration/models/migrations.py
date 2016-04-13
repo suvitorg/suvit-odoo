@@ -65,10 +65,11 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         for rec in self.filtered(lambda r: not r.implemented):
+            migration_name = rec.name
             try:
                 getattr(rec, rec.method)()
             except:
-                logger.exception('Exception in migration %s', rec.name)
+                logger.exception('Exception in migration %s', migration_name)
                 rec.state = 'error'
             else:
                 rec.state = 'done'
