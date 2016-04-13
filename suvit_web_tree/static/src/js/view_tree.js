@@ -8,8 +8,8 @@ openerp.suvit_web_tree = function(instance, local) {
       init: function(parent, dataset, view_id, options) {
         var self = this;
         this._super(parent, dataset, view_id, options);
-        if (self.dataset.context && self.dataset.context.ids && self.dataset.context.ids.length) {
-            self.dataset.ids = self.dataset.context.ids;
+        if (self.dataset.context && self.dataset.context.tree_ids && self.dataset.context.tree_ids.length) {
+            self.dataset.ids = self.dataset.context.tree_ids;
             self.dataset.index = self.dataset.ids.indexOf(self.dataset.context.active_id);
         }
       },
@@ -97,7 +97,26 @@ openerp.suvit_web_tree = function(instance, local) {
           }
         });
     },
-
+    activate: function(id) {
+      if (this.ViewManager.ActionManager) {
+        parent = false;
+        for (i in this.records) {
+          if (_.indexOf(this.records[i].child_ids, id)+1) {
+            parent = i;
+            break;
+          }
+        }
+        if (parent) {
+          our_ids = this.records[parent].child_ids
+        } else {
+          our_ids = this.dataset.ids
+        }
+        this.ViewManager.ActionManager.tree_context = {
+          tree_ids: our_ids
+        };
+      }
+      this._super(id);
+    },
 
 
     showcontent: function (curnode,record_id, show) {
@@ -121,6 +140,12 @@ openerp.suvit_web_tree = function(instance, local) {
       }
       return this._super(index, subindex);
     },
+    do_action: function(action, options) {
+      if (this.tree_context) {
+        action.context.tree_ids = this.tree_context.tree_ids;
+      }
+      this._super(action, options);
+    }
   });
 
   /********* Many2Many Tree Field ********/
