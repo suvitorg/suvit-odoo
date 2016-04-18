@@ -8,10 +8,10 @@ openerp.suvit_web_tree = function(instance, local) {
       init: function(parent, dataset, view_id, options) {
         var self = this;
         this._super(parent, dataset, view_id, options);
-        if (self.dataset.context && self.dataset.context.tree_ids && self.dataset.context.tree_ids.length) {
-            self.dataset.ids = self.dataset.context.tree_ids;
-            self.dataset.index = self.dataset.ids.indexOf(self.dataset.context.active_id);
-        }
+        //if (self.dataset.context && self.dataset.context.tree_ids && self.dataset.context.tree_ids.length) {
+        //    self.dataset.ids = self.dataset.context.tree_ids;
+        //    self.dataset.index = self.dataset.ids.indexOf(self.dataset.context.active_id);
+        //}
       },
       on_button_save: function(e) {
           var self = this;
@@ -53,8 +53,6 @@ openerp.suvit_web_tree = function(instance, local) {
       this.$el.undelegate('.treeview-tr', 'click');
       this._super();
     },
-
-
     getdata: function (id, children_ids) {
         // do not getdata twice, this class stop loading
         this.$el.find('#treerow_' + id).addClass('oe_open');
