@@ -23,6 +23,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
                 self.fields_addition_class[field.attrs.name] = field.attrs.class;
             }
         });
+
         this._super(fields, grouped);
     },
     add_invisible: function(field, is_invisible, save) {
