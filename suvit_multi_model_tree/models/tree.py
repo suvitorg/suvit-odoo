@@ -19,7 +19,8 @@ class MultiTree(models.AbstractModel):
                                    compute='compute_obj_id',
                                    )
     tree_type = fields.Char(string=u'Тип',
-                            compute='compute_type')
+                            compute='compute_type',
+                            help=u'Название модели')
 
     tree_parent_id = fields.Many2one(comodel_name='suvit.multi.model.tree',
                                      compute='compute_parent_id',
