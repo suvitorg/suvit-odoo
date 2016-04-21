@@ -18,6 +18,9 @@ class MultiTree(models.AbstractModel):
                                    selection=[],
                                    compute='compute_obj_id',
                                    )
+    tree_type = fields.Char(string=u'Тип',
+                            compute='compute_type')
+
     tree_parent_id = fields.Many2one(comodel_name='suvit.multi.model.tree',
                                      compute='compute_parent_id',
                                      search='search_parent_id',
@@ -111,6 +114,12 @@ class MultiTree(models.AbstractModel):
         for rec in self:
             if rec.tree_obj_id:
                 setattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, rec.tree_name)
+
+    @api.multi
+    def compute_type(self):
+        for rec in self:
+            if rec.tree_obj_id:
+                rec.tree_type = rec.tree_obj_id._name
 
     @api.multi
     def compute_parent_id(self):
