@@ -2,7 +2,7 @@
 <openerp>
   <data noupdate="0">
 
-    <template id="suvit_web_list_hide_cols_backend" inherit_id="web_tree_dynamic_colored_field.assets_backend">
+    <template id="suvit_web_list_hide_cols_backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/suvit_web_list_hide_cols/static/src/js/suvit_web_widgets.js"></script>
         </xpath>

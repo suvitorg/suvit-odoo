@@ -10,8 +10,7 @@
 
         """,
     'author': 'Suvit LLC',
-    'depends': ['web',
-                'web_tree_dynamic_colored_field'],
+    'depends': ['web'],
     'installable': True,
     'auto_install': False,
     'data': [
