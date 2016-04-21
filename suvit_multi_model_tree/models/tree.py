@@ -12,6 +12,7 @@ class MultiTree(models.AbstractModel):
 
     tree_name = fields.Char(string=u"Наим",
                             compute='compute_name',
+                            inverse='inverse_name',
                             )
     tree_obj_id = fields.Reference(string=u"Объект",
                                    selection=[],
@@ -64,6 +65,12 @@ class MultiTree(models.AbstractModel):
             row['tree_child_ids'] = new_children
         return res
 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.tree_obj_id:
+                rec.tree_obj_id.unlink()
+
     @api.model
     def get_tree_parent_field(self):
         return self._tree_prefix + 'tree_parent_field'
@@ -98,6 +105,12 @@ class MultiTree(models.AbstractModel):
         for rec in self:
             if rec.tree_obj_id:
                 rec.tree_name = getattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, False)
+
+    @api.multi
+    def inverse_name(self):
+        for rec in self:
+            if rec.tree_obj_id:
+                setattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, rec.tree_name)
 
     @api.multi
     def compute_parent_id(self):
