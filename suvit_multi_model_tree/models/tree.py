@@ -63,10 +63,11 @@ class MultiTree(models.AbstractModel):
                 row['real_id'] = row['id']
                 row['id'] = '%s-%s' % (parent_prefix, row['id'])
 
-            new_children = []
-            for child in row['tree_child_ids']:
-                new_children.append('%s-%s' % (row['id'], child if isinstance(child, int) else child.id))
-            row['tree_child_ids'] = new_children
+            if 'tree_child_ids' in row:
+                new_children = []
+                for child in row['tree_child_ids']:
+                    new_children.append('%s-%s' % (row['id'], child if isinstance(child, int) else child.id))
+                row['tree_child_ids'] = new_children
         return res
 
     @api.multi
@@ -172,6 +173,11 @@ class MultiTree(models.AbstractModel):
     #            vals[tree_childs_field] = self.browse(vals['id']).tree_child_ids.ids
     #
     #    return res
+
+    @api.multi
+    def change_parent(new_parent, tree_id):
+        # TODO
+        pass
 
     @api.multi
     def get_formview_action(self):
