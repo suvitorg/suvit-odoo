@@ -18,6 +18,8 @@ class MultiTree(models.AbstractModel):
                                    selection=[],
                                    compute='compute_obj_id',
                                    )
+    tree_obj_real_id = fields.Integer(string=u"Ид объекта",
+                                      compute='compute_obj_id')
     tree_type = fields.Char(string=u'Тип',
                             compute='compute_type',
                             help=u'Название модели')
@@ -103,6 +105,7 @@ class MultiTree(models.AbstractModel):
                                              limit=1)
                 if obj:
                     rec.tree_obj_id = obj
+                    rec.tree_obj_real_id = obj.id
                     break
 
     @api.multi
