@@ -10,9 +10,11 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
           var open_groups = JSON.parse(localStorage.getItem('open_groups') || '{}');
           delete open_groups[this.view_id];
           localStorage["open_groups"] = JSON.stringify(open_groups);
-          group.$row.trigger('click', [false, true]);
+          if (group.$row.data('open'))
+            group.$row.trigger('click', [false, true]);
         } else {
-          group.$row.trigger('click', [true, false]);
+          if (!group.$row.data('open'))
+            group.$row.trigger('click', [true, false]);
         }
       }
     },
@@ -33,7 +35,7 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
     },
 
     reload_content: function() {
-        this._super();
+        var tmp = this._super();
         var self = this;
 
         var $menu = self.$pager.find('.oe_view_open_groups_menu');
@@ -49,7 +51,7 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
         } else if ($menu.size() && !self.grouped) {
           $menu.remove();
         }
-
+        return tmp;
     }
   });
 
