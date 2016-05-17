@@ -178,9 +178,9 @@ class MultiTree(models.AbstractModel):
     #    return res
 
     @api.multi
-    def change_parent(new_parent, tree_id):
-        # TODO
-        pass
+    def change_parent(self, new_parent_id):
+        new_parent = self.browse(new_parent_id)
+        print 'CHANGE PARENT', self, new_parent
 
     @api.multi
     def get_formview_action(self):
