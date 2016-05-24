@@ -35,6 +35,9 @@ openerp.suvit_web_list_cols_visibility = function(instance, local) {
         self._super();
         for (field in classes) {
             var ind = self.$current.find('.oe_list_field_cell').index(self.$current.find('.oe_list_field_cell[data-field="'+field+'"]'));
+            if (ind == -1)
+              continue;
+
             self.$current.find('tr').each(function(){
               $(this).children('td:eq('+ind+')').addClass(classes[field]);
             });
