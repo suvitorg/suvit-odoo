@@ -18,6 +18,8 @@ class MultiTree(models.AbstractModel):
                                    selection=[],
                                    compute='compute_obj_id',
                                    )
+    tree_obj_real_id = fields.Integer(string=u"Ид объекта",
+                                      compute='compute_obj_id')
     tree_type = fields.Char(string=u'Тип',
                             compute='compute_type',
                             help=u'Название модели')
@@ -103,6 +105,7 @@ class MultiTree(models.AbstractModel):
                                              limit=1)
                 if obj:
                     rec.tree_obj_id = obj
+                    rec.tree_obj_real_id = obj.id
                     break
 
     @api.multi
@@ -175,9 +178,9 @@ class MultiTree(models.AbstractModel):
     #    return res
 
     @api.multi
-    def change_parent(new_parent, tree_id):
-        # TODO
-        pass
+    def change_parent(self, new_parent_id):
+        new_parent = self.browse(new_parent_id)
+        print 'CHANGE PARENT', self, new_parent
 
     @api.multi
     def get_formview_action(self):
