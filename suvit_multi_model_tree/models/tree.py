@@ -191,6 +191,9 @@ class MultiTree(models.AbstractModel):
             act = tree_obj.get_formview_action()
             return act[0] if type(act) == list else act
         elif tree_obj:
+            act = super(models.Model, tree_obj).get_formview_action()
+            return act[0] if type(act) == list else act
+        else:
             return False
 
-        return super(MultiTree, self).get_formview_action()
+        # return super(MultiTree, self).get_formview_action()
