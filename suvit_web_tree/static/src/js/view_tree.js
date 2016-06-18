@@ -140,7 +140,9 @@ openerp.suvit_web_tree = function(instance, local) {
     },
     do_action: function(action, options) {
       if (this.tree_context) {
-        options = options || {};
+        options = _.defaults(options || {}, {
+            additional_context: {},
+        });
         options.additional_context.tree_ids = this.tree_context.tree_ids;
       }
       this._super(action, options);
