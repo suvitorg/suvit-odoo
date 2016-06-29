@@ -15,6 +15,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         var modifiers = JSON.parse(field.attrs.modifiers);
         modifiers['tree_invisible'] = is_invisible ? '1' : null;
         field.attrs.modifiers = JSON.stringify(modifiers);
+        if (!this.hide_cols) this.hide_cols = [];
         this.hide_cols[field.attrs.name] = is_invisible;
         if (save)
           this.save_hide_cols();

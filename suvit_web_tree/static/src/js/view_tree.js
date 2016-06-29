@@ -145,7 +145,7 @@ openerp.suvit_web_tree = function(instance, local) {
         });
         options.additional_context.tree_ids = this.tree_context.tree_ids;
       }
-      this._super(action, options);
+      return this._super(action, options);
     }
   });
 
