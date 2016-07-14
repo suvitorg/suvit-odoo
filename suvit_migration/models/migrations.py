@@ -2,6 +2,7 @@
 import logging
 
 from openerp import models, fields, api, exceptions
+import openerp.tools as tools
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,8 @@ class Migration(models.Model):
     @api.model
     def create(self, values):
         rec = super(Migration, self).create(values)
-        rec.run()
+        if not tools.config.options['test_enable']:
+            rec.run()
 
         return rec
 
