@@ -9,7 +9,6 @@ class CleanupPurgeWizardModule(models.TransientModel):
         'cleanup.purge.wizard.model',
         'cleanup.purge.wizard.table',
         'cleanup.purge.wizard.column',
-        'cleanup.purge.wizard.data',
     ]
 
     @api.model
