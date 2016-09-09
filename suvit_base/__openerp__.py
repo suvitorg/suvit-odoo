@@ -24,9 +24,11 @@ TODO
                 # 2. web_debranding -C предустановленными полями
                 # 3. support_debranding
                 # 4. hide_db_manager_link oca/server_tools
-                'suvit_sentry'
+                'suvit_sentry',
+                'database_cleanup',
                 ],
     'data': [
+        'wizards/data/cron.xml'
     ],
     'js': [
     ],
