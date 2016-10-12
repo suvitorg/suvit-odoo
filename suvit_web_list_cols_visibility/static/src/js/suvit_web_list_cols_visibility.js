@@ -34,12 +34,15 @@ openerp.suvit_web_list_cols_visibility = function(instance, local) {
         classes = self.view.fields_addition_class;
         self._super();
         for (field in classes) {
-            var ind = self.$current.find('.oe_list_field_cell').index(self.$current.find('.oe_list_field_cell[data-field="'+field+'"]'));
-            if (ind == -1)
+            var ind = self.columns.findIndex(function(col, i){
+                if (col.name == field)
+                  return i;
+            });
+            if (!ind)
               continue;
 
             self.$current.find('tr').each(function(){
-              $(this).children('td:eq('+ind+')').addClass(classes[field]);
+              $(this).children('td:eq('+(ind-1)+')').addClass(classes[field]);
             });
             self.view.$el.find('th[data-id="'+field+'"], .oe_list_footer:eq('+ind+')').addClass(classes[field]);
         }
