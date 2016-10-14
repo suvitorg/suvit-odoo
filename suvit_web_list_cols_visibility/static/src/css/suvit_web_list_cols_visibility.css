@@ -1,7 +1,8 @@
-.openerp .oe_view.oe_list_editable.oe_editing .oe_list_read_only {
+.openerp .oe_view.oe_list_editable.oe_editing .oe_list_read_only,
+.openerp .oe_view.oe_list_editable .oe_edition .oe_list_read_only {
   display: none !important;
 }
 
-.openerp .oe_view.oe_list_editable:not(.oe_editing) .oe_list_edit_only {
+.openerp .oe_view.oe_list_editable:not(.oe_editing) tr:not(.oe_edition) .oe_list_edit_only {
   display: none !important;
 }
