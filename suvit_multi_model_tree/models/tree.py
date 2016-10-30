@@ -187,7 +187,10 @@ class MultiTree(models.AbstractModel):
         self.ensure_one()
 
         tree_obj = self.tree_obj_id
-        if tree_obj and getattr(tree_obj, '%stree_form_action' % self._tree_prefix, True):
+        form_action = getattr(tree_obj, '%stree_form_action' % self._tree_prefix, True)
+        if not form_action:
+            return False
+        if tree_obj and form_action:
             act = tree_obj.get_formview_action()
             return act[0] if type(act) == list else act
         elif tree_obj:
