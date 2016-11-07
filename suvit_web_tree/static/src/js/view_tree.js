@@ -59,6 +59,13 @@ openerp.suvit_web_tree = function(instance, local) {
 
         var self = this;
 
+        // copied from multi_model_tree module because here not called _super
+        if (!self.real_context)
+          self.real_context = self.dataset._model._context;
+        self.dataset._model._context = new instance.web.CompoundContext(self.real_context,
+                                                                        {tree_parent_ids: self.getparents(id)});
+        //
+
         self.dataset.read_ids(children_ids, this.fields_list()).done(function(records) {
             _(records).each(function (record) {
                 self.records[record.id] = record;
