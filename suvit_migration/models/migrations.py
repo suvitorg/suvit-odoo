@@ -66,14 +66,16 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         for rec in self.filtered(lambda r: not r.implemented):
-            migration_name = rec.name
+            migration_name = rec.method
+            logger.info('start migration "%s"', migration_name)
             try:
                 getattr(rec, rec.method)()
             except:
-                logger.exception('Exception in migration %s', migration_name)
+                logger.exception('Exception in migration "%s"', migration_name)
                 rec.state = 'error'
             else:
                 rec.state = 'done'
+                logger.info('finish migration "%s"', migration_name)
 
     @api.model
     def create(self, values):
