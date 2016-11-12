@@ -1,0 +1,4 @@
+﻿<?xml version="1.0"?>
+<odoo>
+  <function model="ir.module.module" name="update_list"/>
+</odoo>
