@@ -12,6 +12,6 @@
     ],
     'qweb': [
     ],
-    #'auto_install': True,
+    'auto_install': True,
     'bootstrap': True,  # load translations for login screen
 }
