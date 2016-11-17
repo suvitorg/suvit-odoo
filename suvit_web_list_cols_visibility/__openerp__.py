@@ -2,7 +2,7 @@
     'name': 'СУВИТ. Добавление классов к cell в o2m, m2m fields',
     'category': 'Web',
     'summary': 'Расширение ListView позволяющие добавить class из view к ячейкам списка',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'version': '1.0',
     'description': """
 Добавление классов к cell в o2m, m2m fields (используется для oe_read_only, oe_edit_only)

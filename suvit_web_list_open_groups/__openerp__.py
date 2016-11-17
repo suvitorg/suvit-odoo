@@ -2,7 +2,7 @@
     'name': 'Сувит. Открываемые группы',
     'category': 'Web',
     'summary': 'Расширение ListView позволяющее открывать/закрывать все группы',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'version': '1.0',
     'description': """
 Расширение ListView позволяющее открывать/закрывать все группы
