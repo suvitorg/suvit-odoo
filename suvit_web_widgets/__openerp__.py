@@ -2,7 +2,7 @@
     'name': 'Сувит. Виджеты',
     'category': 'Website',
     'summary': 'Виджеты для Odoo',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'version': '1.0',
     'description': """
 Виджеты для Odoo

@@ -17,7 +17,7 @@
 TODO
 """,
     'author': 'Suvit LLC',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'depends': ['web',  # odoo/core
                 'disable_openerp_online',  # github/oca/server_tools
                 # 1. support_branding - С предустановленными полями

@@ -12,7 +12,7 @@
 
     """,
     'author': 'Suvit LLC',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'depends': [
         'currency_rate_update',  # from barachka with RusCB support
     ],

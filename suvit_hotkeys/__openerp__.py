@@ -11,7 +11,7 @@
 
         """,
     'author': 'Suvit LLC',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'depends': ['web'],
     'installable': True,
     'auto_install': True,

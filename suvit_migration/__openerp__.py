@@ -11,6 +11,7 @@
 
         """,
     'author': 'Suvit LLC',
+    'website': 'https://suvit.ru',
     'depends': [
         'base',
     ],
