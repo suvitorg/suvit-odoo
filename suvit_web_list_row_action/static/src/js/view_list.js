@@ -30,7 +30,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
   instance.web.form.Many2ManyListView.include({
 
     do_activate_record: function (index, id) {
-        var context = this.ViewManager.field.context;
+        var context = this.m2m_field.build_context().eval();
         if (!context || !context.open_formview)
           return this._super(index, id);
 
@@ -42,8 +42,8 @@ openerp.suvit_web_list_row_action = function(instance, local) {
   instance.web.form.One2ManyListView.include({
 
     do_activate_record: function(index, id) {
-        var context = this.ViewManager.o2m.field.context;
-        if (!context.open_formview)
+        var context = this.o2m.build_context().eval();
+        if (!context || !context.open_formview)
           return this._super(index, id);
 
         do_action(this, id, context);
