@@ -21,16 +21,22 @@ class TreeNode(models.AbstractModel):
                                  selection=[],
                                  )
 
+    # Link
+    shortcut_id = fields.Many2one(string="Ярлык",
+                                  comodel_name=_name)
+
     name = fields.Char(string=u'Наименование',
                        compute='compute_name',
                        store=True,
                        readonly=False)
 
     @api.multi
-    @api.onchange('object_id')
+    @api.onchange('shortcut_id', 'object_id')
     def compute_name(self):
         for rec in self:
-            if rec.object_id:
+            if rec.shortcut_id:
+                rec.name = u'[Я] %s' % rec.shortcut_id.name
+            elif rec.object_id:
                 rec.name = getattr(rec.object_id, rec.object_id._rec_name)
 
     @api.model
