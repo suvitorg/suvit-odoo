@@ -37,7 +37,7 @@ class TreeNode(models.AbstractModel):
             if rec.shortcut_id:
                 rec.name = u'[Я] %s' % rec.shortcut_id.name
             elif rec.object_id:
-                rec.name = getattr(rec.object_id, rec.object_id._rec_name)
+                rec.name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
 
     @api.model
     def change_parent(self):
