@@ -32,6 +32,7 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id')
+    @api.depends('shortcut_id', 'object_id')
     def compute_name(self):
         for rec in self:
             if rec.shortcut_id:
