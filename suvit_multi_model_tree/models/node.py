@@ -31,6 +31,17 @@ class TreeNode(models.AbstractModel):
                        store=True,
                        readonly=False)
 
+    @api.model
+    def create(self, vals):
+        #print 'TreeNode.create', vals
+        new_obj = super(TreeNode, self).create(vals)
+
+        # XXX ugly hack to fixed depends override 
+        if not new_obj.name and 'name' in vals:
+            new_obj.name = vals['name']
+
+        return new_obj
+
     @api.multi
     @api.onchange('shortcut_id', 'object_id')
     @api.depends('shortcut_id', 'object_id')
