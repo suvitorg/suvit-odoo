@@ -7,6 +7,7 @@ class TreeNode(models.AbstractModel):
     _description = u'Узел дерева'
     _order = 'parent_id,sequence,id'
     _use_full_ids = False
+    _root_domain = [('parent_id', '=', False)]
 
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name)
@@ -25,6 +26,9 @@ class TreeNode(models.AbstractModel):
     # Link
     shortcut_id = fields.Many2one(string="Ярлык",
                                   comodel_name=_name)
+    self_id = fields.Many2one(string="",
+                              comodel_name=_name,
+                              compute='compute_self')
 
     name = fields.Char(string=u'Наименование',
                        compute='compute_name',
@@ -53,12 +57,69 @@ class TreeNode(models.AbstractModel):
                 rec.name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
 
     @api.multi
+    def compute_self(self):
+        for rec in self:
+            self_id = rec
+            if rec.shortcut_id:
+                while self_id.shortcut_id:
+                    self_id = self_id.shortcut_id
+
+            rec.self_id = self_id
+
+    @api.multi
     def action_remove(self):
         self.write({'parent_id': False})
 
-    @api.model
-    def change_parent(self):
-        pass
+    @api.multi
+    def action_change_parent(self, new_parent_id):
+
+        if new_parent_id:
+            new_parent = self.browse(new_parent_id).self_id
+            #new_parent_obj = new_parent.tree_obj_id
+        else:
+            new_parent = new_parent_obj = self
+
+        old_parent_id = self.env.context.get('old_parent_id')
+        if old_parent_id:
+            old_parent = self.browse(old_parent_id).self_id
+            #old_parent_obj = old_parent.tree_obj_id
+        else:
+            old_parent = old_parent_obj = self
+
+        sequence = self.env.context.get('new_position')
+
+        # print 'TreeNode.change_parent', old_parent, new_parent, sequence
+        if old_parent != new_parent:
+            self.write({'parent_id': new_parent.id})
+
+        self.action_change_sequence(new_parent, sequence)
+
+    @api.multi
+    def action_change_sequence(self, new_parent, sequence):
+        if sequence is None:
+            return
+
+        if new_parent:
+            child_ids = new_parent.child_ids
+        else:
+            # Tree root objects
+            child_ids = self.search(self._root_domain)
+
+        # print 'change_sequence', [(c.id, c.sequence) for c in child_ids], sequence
+        i = 0
+        for child in child_ids:
+            if child == self:
+                continue
+
+            # print 'change', obj, child, i, sequence
+            if i < sequence:
+                child.sequence = i
+            else:
+                child.sequence = i + 1
+            i += 1
+
+        self.sequence = sequence
+        # print 'change_sequence_after', [(c.id, c.sequence) for c in child_ids]
 
     # API for full ids
     @api.multi
