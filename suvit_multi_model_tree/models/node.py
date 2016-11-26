@@ -35,6 +35,9 @@ class TreeNode(models.AbstractModel):
                        store=True,
                        readonly=False)
 
+    title = fields.Char(string=u'Подсказка',
+                        compute='compute_title')
+
     @api.model
     def create(self, vals):
         #print 'TreeNode.create', vals
@@ -55,6 +58,11 @@ class TreeNode(models.AbstractModel):
                 rec.name = u'[Я] %s' % rec.shortcut_id.name
             elif rec.object_id:
                 rec.name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
+
+    @api.multi
+    def compute_title(self):
+        for rec in self:
+            rec.title = getattr(rec.object_id, 'title', rec.name)
 
     @api.multi
     def compute_self(self):
