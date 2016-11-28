@@ -26,6 +26,9 @@ class TreeNode(models.AbstractModel):
     # Link
     shortcut_id = fields.Many2one(string="Дубль к",
                                   comodel_name=_name)
+    duplicate_ids = fields.One2many(string=u'Дубли',
+                                    comodel_name=_name,
+                                    inverse_name='shortcut_id')
     self_id = fields.Many2one(string="Связь",
                               comodel_name=_name,
                               compute='compute_self')
@@ -40,7 +43,7 @@ class TreeNode(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        #print 'TreeNode.create', vals
+        print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
         # XXX ugly hack to fixed depends override 
@@ -48,6 +51,12 @@ class TreeNode(models.AbstractModel):
             new_obj.name = vals['name']
 
         return new_obj
+
+    @api.multi
+    def write(self, vals):
+        print 'TreeNode.write', vals
+
+        return super(TreeNode, self).write(vals)
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id')
