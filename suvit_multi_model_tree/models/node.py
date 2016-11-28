@@ -24,9 +24,9 @@ class TreeNode(models.AbstractModel):
                                  )
 
     # Link
-    shortcut_id = fields.Many2one(string="Ярлык",
+    shortcut_id = fields.Many2one(string="Дубль к",
                                   comodel_name=_name)
-    self_id = fields.Many2one(string="",
+    self_id = fields.Many2one(string="Связь",
                               comodel_name=_name,
                               compute='compute_self')
 
@@ -169,3 +169,17 @@ class TreeNode(models.AbstractModel):
                     new_children.append('%s-%s' % (row['id'], child if isinstance(child, int) else child.id))
                 row['tree_child_ids'] = new_children
         return res
+
+    @api.multi
+    def get_formview_action(self):
+        self.ensure_one()
+
+        obj = self.self_id
+        if 'node_settings_form' not in self.env.context:
+            obj = obj.object_id or obj
+
+        if isinstance(obj, TreeNode):
+            obj = super(TreeNode, obj)
+
+        act = obj.get_formview_action()
+        return act[0] if type(act) == list else act
