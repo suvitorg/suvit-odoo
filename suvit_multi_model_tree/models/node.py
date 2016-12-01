@@ -48,7 +48,7 @@ class TreeNode(models.AbstractModel):
         print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
-        # XXX ugly hack to fixed depends override 
+        # XXX ugly hack to fixed depends override
         if not new_obj.name and 'name' in vals:
             new_obj.name = vals['name']
 
@@ -57,8 +57,9 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def write(self, vals):
         print 'TreeNode.write', vals
+        res = super(TreeNode, self).write(vals)
 
-        return super(TreeNode, self).write(vals)
+        return res
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id', 'duplicate_ids')
@@ -80,7 +81,10 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_title(self):
         for rec in self:
-            rec.title = getattr(rec.object_id, 'title', rec.name)
+            tooltip = getattr(rec.object_id, 'tooltip', None)
+            if not tooltip:
+                tooltip = getattr(rec.object_id, 'title', rec.name)
+            rec.title = tooltip
 
     @api.multi
     def compute_self(self):
