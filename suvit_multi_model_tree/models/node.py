@@ -10,7 +10,8 @@ class TreeNode(models.AbstractModel):
     _root_domain = [('parent_id', '=', False)]
 
     parent_id = fields.Many2one(string=u'Принадлежность',
-                                comodel_name=_name)
+                                comodel_name=_name,
+                                ondelete='cascade')
 
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
@@ -25,7 +26,8 @@ class TreeNode(models.AbstractModel):
 
     # Link
     shortcut_id = fields.Many2one(string="Дубль к",
-                                  comodel_name=_name)
+                                  comodel_name=_name,
+                                  ondelete='cascade')
     duplicate_ids = fields.One2many(string=u'Дубли',
                                     comodel_name=_name,
                                     inverse_name='shortcut_id')
@@ -59,14 +61,21 @@ class TreeNode(models.AbstractModel):
         return super(TreeNode, self).write(vals)
 
     @api.multi
-    @api.onchange('shortcut_id', 'object_id')
-    @api.depends('shortcut_id', 'object_id')
+    @api.onchange('shortcut_id', 'object_id', 'duplicate_ids')
+    @api.depends('shortcut_id', 'object_id', 'duplicate_ids')
     def compute_name(self):
         for rec in self:
-            if rec.shortcut_id:
-                rec.name = u'[Я] %s' % rec.shortcut_id.name
-            elif rec.object_id:
-                rec.name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
+            if not rec.object_id and not rec.shortcut_id:
+                continue
+            elif rec.shortcut_id:
+                name = rec.shortcut_id.name
+                prefix = 'D_'
+            else:
+                name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
+                prefix = 'D_' if rec.duplicate_ids else ''
+            if name and prefix and name.startswith(prefix):
+                prefix = ''
+            rec.name = '%s%s' % (prefix, name)
 
     @api.multi
     def compute_title(self):
@@ -82,10 +91,6 @@ class TreeNode(models.AbstractModel):
                     self_id = self_id.shortcut_id
 
             rec.self_id = self_id
-
-    @api.multi
-    def action_remove(self):
-        self.write({'parent_id': False})
 
     @api.multi
     def action_change_parent(self, new_parent_id):
@@ -192,3 +197,56 @@ class TreeNode(models.AbstractModel):
 
         act = obj.get_formview_action()
         return act[0] if type(act) == list else act
+
+    @api.multi
+    def get_origin_duplicate_ids(self):
+        orig_ids = self.filtered(lambda r: not r.shortcut_id)
+        return orig_ids, self - orig_ids
+
+    @api.multi
+    def get_copy_name(self):
+        self.ensure_one()
+        return u"%s Копия" % self.name
+
+    @api.multi
+    def fix_copy_name(self):
+        for rec in self:
+            if rec.name and not rec.name.endswith(u"Копия"):
+                rec.name = rec.get_copy_name()
+
+    @api.multi
+    def unlink(self):
+        orig_ids, dupl_ids = self.get_origin_duplicate_ids()
+        self = orig_ids + dupl_ids.mapped('shortcut_id')
+        return super(TreeNode, self).unlink()
+
+    @api.multi
+    def action_remove(self):
+        orig_ids, dupl_ids = self.get_origin_duplicate_ids()
+        orig_ids.write({'parent_id': False})
+        dupl_ids.write({'shortcut_id': False})
+        dupl_ids.unlink()
+
+    @api.multi
+    def action_exclude(self):
+        orig_ids, dupl_ids = self.get_origin_duplicate_ids()
+        if dupl_ids:
+            raise api.Warning(u"Нельзя исключать Дубликаты")
+        for rec in self:
+            rec.self_id.child_ids.write({'parent_id': rec.parent_id.id})
+            rec.unlink()
+
+    @api.multi
+    def action_copy(self):
+        for rec in self:
+            copy = rec.copy()
+            copy.fix_copy_name()
+            for child in rec.child_ids:
+                child_copy = child.copy(default={'parent_id': copy.id})
+                child_copy.fix_copy_name()
+
+    @api.multi
+    def action_duplicate(self):
+        for rec in self:
+            rec.copy(default={'shortcut_id': rec.id,
+                              'object_id': False})
