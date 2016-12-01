@@ -43,10 +43,10 @@ class TreeNode(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        # print 'TreeNode.create', vals
+        print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
-        # XXX ugly hack to fixed depends override 
+        # XXX ugly hack to fixed depends override
         if not new_obj.name and 'name' in vals:
             new_obj.name = vals['name']
 
@@ -54,16 +54,19 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def write(self, vals):
-        # print 'TreeNode.write', vals
-        return super(TreeNode, self).write(vals)
+        print 'TreeNode.write', vals
+        res = super(TreeNode, self).write(vals)
+
+        return res
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id')
     @api.depends('shortcut_id', 'object_id')
     def compute_name(self):
+        print 'compute_name', self
         for rec in self:
             if rec.shortcut_id:
-                rec.name = u'[Я] %s' % rec.shortcut_id.name
+                rec.name = u'D_%s' % rec.shortcut_id.name
             elif rec.object_id:
                 rec.name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
 
