@@ -43,7 +43,7 @@ class TreeNode(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        print 'TreeNode.create', vals
+        # print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
         # XXX ugly hack to fixed depends override 
@@ -54,8 +54,7 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def write(self, vals):
-        print 'TreeNode.write', vals
-
+        # print 'TreeNode.write', vals
         return super(TreeNode, self).write(vals)
 
     @api.multi
