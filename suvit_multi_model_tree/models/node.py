@@ -71,7 +71,10 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_title(self):
         for rec in self:
-            rec.title = getattr(rec.object_id, 'title', rec.name)
+            tooltip = getattr(rec.object_id, 'tooltip', None)
+            if not tooltip:
+                tooltip = getattr(rec.object_id, 'title', rec.name)
+            rec.title = tooltip
 
     @api.multi
     def compute_self(self):
