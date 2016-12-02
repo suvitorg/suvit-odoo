@@ -102,24 +102,23 @@ class TreeNode(models.AbstractModel):
             rec.self_id = self_id
 
     @api.multi
-    def action_change_parent(self, new_parent_id):
+    def action_change_parent(self):
 
+        new_parent_id = self.env.context.get('new_parent_id')
         if new_parent_id:
             new_parent = self.browse(new_parent_id).self_id
-            #new_parent_obj = new_parent.tree_obj_id
         else:
-            new_parent = new_parent_obj = self
+            new_parent = new_parent_obj = None
 
         old_parent_id = self.env.context.get('old_parent_id')
         if old_parent_id:
             old_parent = self.browse(old_parent_id).self_id
-            #old_parent_obj = old_parent.tree_obj_id
         else:
-            old_parent = old_parent_obj = self
+            old_parent = old_parent_obj = None
 
         sequence = self.env.context.get('new_position')
 
-        # print 'TreeNode.change_parent', old_parent, new_parent, sequence
+        # print 'TreeNode.change_parent', old_parent, new_parent, sequence, self.env.context
         if old_parent != new_parent:
             self.write({'parent_id': new_parent.id})
 
@@ -130,13 +129,14 @@ class TreeNode(models.AbstractModel):
         if sequence is None:
             return
 
+        # print 'change_sequence for', new_parent, self._root_domain
         if new_parent:
             child_ids = new_parent.child_ids
         else:
             # Tree root objects
             child_ids = self.search(self._root_domain)
 
-        # print 'change_sequence', [(c.id, c.sequence) for c in child_ids], sequence
+        # print 'change_sequence', self, [(c.id, c.sequence) for c in child_ids], sequence
         i = 0
         for child in child_ids:
             if child == self:
@@ -150,7 +150,7 @@ class TreeNode(models.AbstractModel):
             i += 1
 
         self.sequence = sequence
-        # print 'change_sequence_after', [(c.id, c.sequence) for c in child_ids]
+        # print 'change_sequence_after', self, [(c.id, c.sequence) for c in child_ids]
 
     # API for full ids
     @api.multi
