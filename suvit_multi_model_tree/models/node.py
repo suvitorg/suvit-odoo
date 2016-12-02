@@ -38,45 +38,50 @@ class TreeNode(models.AbstractModel):
     name = fields.Char(string=u'Наименование',
                        compute='compute_name',
                        store=True,
+                       copy=True,
                        readonly=False)
 
     title = fields.Char(string=u'Подсказка',
                         compute='compute_title')
+
+    @api.one
+    @api.constrains('parent_id')
+    def check_recursion(self):
+        super(TreeNode, self)._check_recursion()
 
     @api.model
     def create(self, vals):
         print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
-        # XXX ugly hack to fixed depends override
-        if not new_obj.name and 'name' in vals:
-            new_obj.name = vals['name']
-
         return new_obj
 
     @api.multi
     def write(self, vals):
-        print 'TreeNode.write', vals
+        print 'TreeNode.write', self, vals
         res = super(TreeNode, self).write(vals)
+        if 'name' not in vals and \
+           ('shortcut_id' in vals or 'object_id' in vals):
+            self.compute_name()
+            self.mapped('shortcut_id').compute_name()
 
         return res
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id', 'duplicate_ids')
-    @api.depends('shortcut_id', 'object_id', 'duplicate_ids')
     def compute_name(self):
         for rec in self:
             if not rec.object_id and not rec.shortcut_id:
                 continue
             elif rec.shortcut_id:
                 name = rec.shortcut_id.name
-                prefix = 'D_'
+                prefix = u'D_'
             else:
-                name = getattr(rec.object_id, rec.object_id._rec_name or 'title', '-')
-                prefix = 'D_' if rec.duplicate_ids else ''
+                name = getattr(rec.object_id, rec.object_id._rec_name or u'title', u'-')
+                prefix = u'D_' if rec.duplicate_ids else u''
             if name and prefix and name.startswith(prefix):
-                prefix = ''
-            rec.name = '%s%s' % (prefix, name)
+                prefix = u''
+            rec.name = u'%s%s' % (prefix, name)
 
     @api.multi
     def compute_title(self):
@@ -241,16 +246,19 @@ class TreeNode(models.AbstractModel):
             rec.unlink()
 
     @api.multi
-    def action_copy(self):
+    def action_copy(self, default=None, duplicate=False):
+        self.ensure_one()
         for rec in self:
-            copy = rec.copy()
-            copy.fix_copy_name()
+            copy = rec.copy(default=default)
+            if not duplicate:
+                copy.fix_copy_name()
             for child in rec.child_ids:
-                child_copy = child.copy(default={'parent_id': copy.id})
-                child_copy.fix_copy_name()
+                default = {'parent_id': copy.id}
+                child_copy_id = child.action_copy(default, duplicate)
+            return copy.id
 
     @api.multi
     def action_duplicate(self):
         for rec in self:
-            rec.copy(default={'shortcut_id': rec.id,
-                              'object_id': False})
+            rec.action_copy(default={'shortcut_id': rec.id},
+                            duplicate=True)
