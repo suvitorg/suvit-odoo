@@ -11,23 +11,28 @@ class TreeNode(models.AbstractModel):
 
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name,
-                                ondelete='cascade')
+                                ondelete='cascade',
+                                track_visibility='onchange')
 
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
                                 inverse_name='parent_id')
+    tree_child_ids = fields.One2many(comodel_name=_name,
+                                     compute='compute_tree_child_ids')
 
     sequence = fields.Integer(string=u'Порядок',
                               default=99)
 
     object_id = fields.Reference(string=u'Связь',
                                  selection=[],
+                                 track_visibility='onchange'
                                  )
 
     # Link
     shortcut_id = fields.Many2one(string="Дубль к",
                                   comodel_name=_name,
-                                  ondelete='cascade')
+                                  ondelete='cascade',
+                                  track_visibility='onchange')
     duplicate_ids = fields.One2many(string=u'Дубли',
                                     comodel_name=_name,
                                     inverse_name='shortcut_id')
@@ -39,10 +44,22 @@ class TreeNode(models.AbstractModel):
                        compute='compute_name',
                        store=True,
                        copy=True,
-                       readonly=False)
+                       readonly=False,
+                       track_visibility='onchange')
 
     title = fields.Char(string=u'Подсказка',
                         compute='compute_title')
+
+    # low level
+    @classmethod
+    def _add_field(cls, name, field):
+        super(TreeNode, cls)._add_field(name, field)
+
+        if isinstance(field, fields._Relational):
+            if field.comodel_name == 'suvit.tree.node.mixin':
+                field.comodel_name = cls.__name__
+
+            # print 'TreeNode._add_field', cls.__name__, name, field.comodel_name
 
     @api.one
     @api.constrains('parent_id')
@@ -51,7 +68,7 @@ class TreeNode(models.AbstractModel):
 
     @api.model
     def create(self, vals):
-        print 'TreeNode.create', vals
+        # print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
         # when node create from python code without name, compute name
@@ -62,7 +79,7 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def write(self, vals):
-        print 'TreeNode.write', self, vals
+        # print 'TreeNode.write', self, vals
         res = super(TreeNode, self).write(vals)
         if 'name' not in vals and \
            ('shortcut_id' in vals or 'object_id' in vals):
@@ -87,6 +104,16 @@ class TreeNode(models.AbstractModel):
             if name and prefix and name.startswith(prefix):
                 prefix = u''
             rec.name = u'%s%s' % (prefix, name)
+
+    @api.multi
+    def compute_tree_child_ids(self):
+        for rec in self:
+            if rec.shortcut_id:
+                childs = rec.shortcut_id.child_ids
+            else:
+                childs = rec.child_ids
+
+            rec.tree_child_ids = childs
 
     @api.multi
     def compute_title(self):
