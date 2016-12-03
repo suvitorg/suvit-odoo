@@ -54,6 +54,10 @@ class TreeNode(models.AbstractModel):
         print 'TreeNode.create', vals
         new_obj = super(TreeNode, self).create(vals)
 
+        # when node create from python code without name, compute name
+        if 'name' not in vals:
+            new_obj.compute_name()
+
         return new_obj
 
     @api.multi
@@ -69,6 +73,7 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     @api.onchange('shortcut_id', 'object_id', 'duplicate_ids')
+    # api.depends('shortcut_id.name', 'object_id', 'duplicate_ids')
     def compute_name(self):
         for rec in self:
             if not rec.object_id and not rec.shortcut_id:
