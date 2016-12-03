@@ -105,6 +105,10 @@ class TreeNode(models.AbstractModel):
                 prefix = u''
             rec.name = u'%s%s' % (prefix, name)
 
+    @api.model
+    def root_child_ids(self):
+        return self.search(self._root_domain)
+
     @api.multi
     def compute_tree_child_ids(self):
         for rec in self:
@@ -165,8 +169,7 @@ class TreeNode(models.AbstractModel):
         if new_parent:
             child_ids = new_parent.child_ids
         else:
-            # Tree root objects
-            child_ids = self.search(self._root_domain)
+            child_ids = self.root_child_ids()
 
         # print 'change_sequence', self, [(c.id, c.sequence) for c in child_ids], sequence
         i = 0
