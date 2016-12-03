@@ -6,7 +6,7 @@ class TreeNode(models.AbstractModel):
     _name = 'suvit.tree.node.mixin'
     _description = u'Узел дерева'
     _order = 'parent_id,sequence,id'
-    _use_full_ids = False
+    _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
 
     parent_id = fields.Many2one(string=u'Принадлежность',
