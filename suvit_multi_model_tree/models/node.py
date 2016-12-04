@@ -12,6 +12,7 @@ class TreeNode(models.AbstractModel):
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name,
                                 ondelete='cascade',
+                                index=True,
                                 track_visibility='onchange')
 
     child_ids = fields.One2many(string=u'Состав',
@@ -25,6 +26,7 @@ class TreeNode(models.AbstractModel):
 
     object_id = fields.Reference(string=u'Связь',
                                  selection=[],
+                                 index=True,
                                  track_visibility='onchange'
                                  )
 
