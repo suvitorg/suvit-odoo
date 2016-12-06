@@ -8,6 +8,7 @@ class TreeNode(models.AbstractModel):
     _order = 'parent_id,sequence,id'
     _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
+    _copy_suffix = u'Копия'
 
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name,
@@ -252,12 +253,12 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def get_copy_name(self):
         self.ensure_one()
-        return u"%s Копия" % self.name
+        return u"%s %s" % (self.name, self._copy_suffix)
 
     @api.multi
     def fix_copy_name(self):
         for rec in self:
-            if rec.name and not rec.name.endswith(u"Копия"):
+            if rec.name and not rec.name.endswith(self._copy_suffix):
                 rec.name = rec.get_copy_name()
 
     @api.multi
