@@ -9,6 +9,9 @@ class TreeNode(models.AbstractModel):
     _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
     _copy_suffix = u'Копия'
+    _tree_icon_map = {
+        None: 'gtk-directory', # node without object_id
+    }
 
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name,
@@ -52,6 +55,28 @@ class TreeNode(models.AbstractModel):
 
     title = fields.Char(string=u'Подсказка',
                         compute='compute_title')
+    icon = fields.Char(string=u'Иконка',
+                       compute='compute_icon')
+    tree_type = fields.Char(string=u'Тип',
+                            compute='compute_tree_type')
+
+    @api.multi
+    @api.onchange('object_id', 'shortcut_id')
+    def compute_icon(self):
+        for rec in self:
+            if rec.shortcut_id:
+                rec.self_id.compute_icon()
+                icon = rec.self_id.icon
+            else:
+                icon = self._tree_icon_map.get(rec.object_id._name if rec.object_id else None)
+
+            rec.icon = icon
+
+    @api.multi
+    def compute_tree_type(self):
+        for rec in self:
+            main_obj = rec.self_id.object_id
+            rec.tree_type = main_obj._name if main_obj else self._name
 
     # low level
     @classmethod

@@ -19,6 +19,7 @@
     ],
     'data': [
         'views/assets.xml',
+        'views/node.xml',
     ],
     'js': [
     ],

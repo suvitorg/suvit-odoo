@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="format_tree_node_form_view">
+            <field name="name">Карточка узла дерева</field>
+            <field name="model">suvit.tree.node.mixin</field>
+            <field name="arch" type="xml">
+               <form>
+                 <sheet>
+                   <h1>Узел</h1>
+                   <group>
+                     <group>
+                       <field name="id" invisible="1" />
+                       <field name="name" />
+                       <field name="parent_id" />
+                       <field name="icon" />
+                     </group>
+                     <group>
+                       <field name="object_id" />
+                       <field name="shortcut_id" />
+                     </group>
+                   </group>
+                   <notebook>
+                     <page string="Состав" attrs="{'invisible': [('shortcut_id', '!=', False)]}">
+                       <field name="child_ids" context="{'default_parent_id': id}">
+                         <tree>
+                           <field name="sequence" widget="handle" />
+                           <field name="name" />
+                           <field name="object_id" />
+                         </tree>
+                       </field>
+                     </page>
+                     <page string="Служебное инфо">
+                       <group>
+                         <field name="sequence" />
+                       </group>
+                     </page>
+                   </notebook>
+                 </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="format_tree_node_list_view">
+            <field name="name">Ведомость узлов дерева</field>
+            <field name="model">suvit.tree.node.mixin</field>
+            <field name="arch" type="xml">
+               <tree>
+                  <field name="name" />
+                  <field name="parent_id" />
+                  <field name="object_id" />
+                  <field name="icon" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="format_tree_node_jstree_view">
+            <field name="name">Дерево узлов</field>
+            <field name="model">suvit.tree.node.mixin</field>
+            <field name="type">js_tree</field>
+            <field name="field_parent">tree_child_ids</field>
+            <field name="arch" type="xml">
+               <!--tree icon_field="icon" tree_type="tree_type" -->
+               <tree tree_title="Структура"
+                     icon_field="icon"
+                     tree_type="tree_type"
+                     tree_config="{}">
+                  <field name="name" invisible="1"/>
+                  <field name="icon" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>
