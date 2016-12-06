@@ -91,7 +91,7 @@ class ContextSentryHandler(SentryHandler):
         return request.form
 
     def get_json_data(self, request):
-        return request.data
+        return getattr(request, 'jsonrequest', None) or request.data
 
     def get_http_info_with_retriever(self, request, retriever=None):
         """
