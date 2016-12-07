@@ -6,7 +6,7 @@ import sys
 import threading
 
 from openerp import SUPERUSER_ID, models, exceptions
-from openerp.http import request, to_jsonable, JsonRequest, HttpRequest
+from openerp.http import request
 
 from openerp.tools import config, ustr
 from openerp.tools.translate import _
@@ -81,7 +81,7 @@ class ContextSentryHandler(SentryHandler):
         if not request:
             return cxt
 
-        if isinstance(request, JsonRequest):
+        if request._request_type == 'json':
             retriever = self.get_json_data
         else:
             retriever = self.get_form_data
