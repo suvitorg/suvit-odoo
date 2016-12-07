@@ -85,25 +85,26 @@ class ContextSentryHandler(SentryHandler):
             retriever = self.get_json_data
         else:
             retriever = self.get_form_data
-        return self.get_http_info_with_retriever(request.httprequest, retriever)
+        return self.get_http_info_with_retriever(request, retriever)
 
     def get_form_data(self, request):
-        return request.form
+        return request.httprequest.form
 
     def get_json_data(self, request):
         return getattr(request, 'jsonrequest', None) or request.data
 
-    def get_http_info_with_retriever(self, request, retriever=None):
+    def get_http_info_with_retriever(self, odoo_request, retriever=None):
         """
         Exact method for getting http_info but with form data work around.
         """
+        request = odoo_request.httprequest
         if retriever is None:
             retriever = self.get_form_data
 
         urlparts = _urlparse.urlsplit(request.url)
 
         try:
-            data = retriever(request)
+            data = retriever(odoo_request)
         except ClientDisconnected:
             data = {}
 
