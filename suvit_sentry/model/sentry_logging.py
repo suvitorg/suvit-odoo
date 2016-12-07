@@ -91,7 +91,7 @@ class ContextSentryHandler(SentryHandler):
         return request.httprequest.form
 
     def get_json_data(self, request):
-        return getattr(request, 'jsonrequest', None) or request.data
+        return getattr(request, 'jsonrequest', None) or request.httprequest.data
 
     def get_http_info_with_retriever(self, odoo_request, retriever=None):
         """
