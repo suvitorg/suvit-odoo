@@ -9,6 +9,7 @@ class TreeNode(models.AbstractModel):
     _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
     _copy_suffix = u'Копия'
+    _duplicate_prefix = u'D_'
     _tree_icon_map = {
         None: 'gtk-directory', # node without object_id
     }
@@ -276,15 +277,16 @@ class TreeNode(models.AbstractModel):
         return orig_ids, self - orig_ids
 
     @api.multi
-    def get_copy_name(self):
-        self.ensure_one()
-        return u"%s %s" % (self.name, self._copy_suffix)
-
-    @api.multi
     def fix_copy_name(self):
         for rec in self:
-            if rec.name and not rec.name.endswith(self._copy_suffix):
-                rec.name = rec.get_copy_name()
+            if rec.name and not rec.name.endswith(rec._copy_suffix):
+                rec.name = u"%s %s" % (rec.name, rec._copy_suffix)
+
+    @api.multi
+    def fix_duplicate_name(self):
+        for rec in self:
+            if rec.name and not rec.name.startswith(rec._duplicate_prefix):
+                rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
 
     @api.multi
     def unlink(self):
@@ -309,19 +311,16 @@ class TreeNode(models.AbstractModel):
             rec.unlink()
 
     @api.multi
-    def action_copy(self, default=None, duplicate=False):
-        self.ensure_one()
+    def action_copy(self, default=None):
         for rec in self:
             copy = rec.copy(default=default)
-            if not duplicate:
-                copy.fix_copy_name()
+            copy.fix_copy_name()
             for child in rec.child_ids:
                 default = {'parent_id': copy.id}
-                child_copy_id = child.action_copy(default, duplicate)
-            return copy.id
+                child.action_copy(default)
 
     @api.multi
     def action_duplicate(self):
         for rec in self:
-            rec.action_copy(default={'shortcut_id': rec.id},
-                            duplicate=True)
+            copy = rec.copy(default={'shortcut_id': rec.self_id.id})
+            (copy + rec).fix_duplicate_name()
