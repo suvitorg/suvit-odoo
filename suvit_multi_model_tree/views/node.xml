@@ -34,6 +34,7 @@
                      <page string="Служебное инфо">
                        <group>
                          <field name="sequence" />
+                         <field name="duplicate_ids" />
                        </group>
                      </page>
                    </notebook>
