@@ -1,0 +1,31 @@
+﻿.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_tree {}
+.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_tree:after {
+  font-family: 'Glyphicons Halflings';
+  font-size: 17px;
+  content: "\e199";
+}
+.jstree-default .jstree-wholerow-hovered,.jstree-default .jstree-hovered {
+    background: rgba(44, 67, 108, 0.3);
+}
+.dragging_option {
+  margin: 0 20px; float: left;
+}
+
+.jstree-grid-column {
+  vertical-align: top;
+  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAMAAAB/qqA+AAAABlBMVEUAAAAAAAClZ7nPAAAAAnRSTlMNAMM9s3UAAAAXSURBVHjajcEBAQAAAIKg/H/aCQZ70AUBjAATb6YPDgAAAABJRU5ErkJggg==) left top repeat;
+  background-size: auto 48px;
+  background-position-y: 21px;
+  color: #7C7BAD;
+}
+.jstree-grid-column > div {
+  padding-right:10px;
+}
+.jstree-grid-column:first-child{
+  padding-right:0;
+  background: none;
+}
+.jstree-grid-column:first-child > div {
+  padding-right:0;
+}
+.jstree-node .jstree-grid-width-auto {display:inline-block;}

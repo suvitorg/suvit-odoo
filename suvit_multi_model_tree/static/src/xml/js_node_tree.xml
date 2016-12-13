@@ -1,0 +1,5 @@
+<templates>
+<t t-name="JsNodeTreeView">
+    <div class="oe_jstreeview_view"></div>
+</t>
+</templates>

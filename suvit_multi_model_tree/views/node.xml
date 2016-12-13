@@ -56,7 +56,7 @@
         <record model="ir.ui.view" id="format_tree_node_jstree_view">
             <field name="name">Дерево узлов</field>
             <field name="model">suvit.tree.node.mixin</field>
-            <field name="type">js_tree</field>
+            <field name="type">js_node_tree</field>
             <field name="field_parent">tree_child_ids</field>
             <field name="arch" type="xml">
                <!--tree icon_field="icon" tree_type="tree_type" -->

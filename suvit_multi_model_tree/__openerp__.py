@@ -21,7 +21,8 @@
         'views/assets.xml',
         'views/node.xml',
     ],
-    'js': [
+    'qweb' : [
+        'static/src/xml/*.xml',
     ],
     'installable': True,
     'auto_install': False,
