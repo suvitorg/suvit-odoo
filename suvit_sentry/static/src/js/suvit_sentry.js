@@ -1,17 +1,14 @@
 openerp.suvit_sentry = function(instance, local) {
-  $('.show_details').live('click', (function() {
-    $('.hide_details').show();
-    $('.error_details').show();
+  $('.oe_error_detail .show_details').live('click', function() {
+    $('.oe_error_detail .hide_details').show();
+    $('.oe_error_detail .error_details').show();
     $(this).hide();
-  })
-  )
-
-  $('.hide_details').live('click', (function() {
-    $('.show_details').show();
-    $('.error_details').hide();
+  });
+  $('.oe_error_detail .hide_details').live('click', function() {
+    $('.oe_error_detail .show_details').show();
+    $('.oe_error_detail .error_details').hide();
     $(this).hide();
-  })
-  )
+  });
 
   var _t = instance.web._t;
   instance.web.Client.include({
@@ -34,9 +31,11 @@ openerp.suvit_sentry = function(instance, local) {
             id: instance.session.uid
           });
           Raven.captureException(error.message, {extra: error});
+          error.last_code = Raven.lastEventId();
         } catch (e) {}
       }
       if (error.message.indexOf('XmlHttpRequestError') === 0) {
+        error.lost_network = true;
         error.message = 'Связь с сервером потеряна, попробуйте зайти позже';
       }
       return this._super(error);
