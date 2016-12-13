@@ -6,10 +6,11 @@
 
       <!-- Hide traceback from users -->
       <div class="oe_error_detail">
-        <t t-if="error.message!='Связь с сервером потеряна, попробуйте зайти позже'">
-        <h2>Произошла внутренняя ошибка сервера</h2>
+      <t t-if="!error.lost_network">
+        <h2>Произошла внутренняя ошибка <t t-if="error.client">браузера</t><t t-if="!error.client">сервера</t></h2>
         <div class="oe_view_nocontent">
-Иноформация об ошибке направлена разработчиками.
+          Информация об ошибке направлена разработчиками.<br/>
+          <t t-if="error.last_code">Код ошибки: <t t-esc="error.last_code" /></t>
         </div>
         <h3></h3>
         <div class="show_details">
@@ -23,10 +24,10 @@
           <hr/>
           <pre><t t-esc="error.data.debug"/></pre>
         </div>
-        </t>
-        <t t-if="error.message=='Связь с сервером потеряна, попробуйте зайти позже'">
-          <t t-esc="error.message"/>
-        </t>
+      </t>
+      <t t-if="error.lost_network">
+        <t t-esc="error.message"/>
+      </t>
       </div>
     </t>
   </t>
