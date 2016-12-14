@@ -6,6 +6,8 @@ class TreeNode(models.AbstractModel):
     _name = 'suvit.tree.node.mixin'
     _description = u'Узел дерева'
     _order = 'parent_id,sequence,id'
+    _parent_store = True
+    _parent_order = 'sequence,id'
     _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
     _copy_suffix = u'Копия'
@@ -18,6 +20,10 @@ class TreeNode(models.AbstractModel):
                                 ondelete='cascade',
                                 index=True,
                                 track_visibility='onchange')
+    parent_left = fields.Integer(string=u'Left Parent',
+                                 index=True)
+    parent_right = fields.Integer(string=u'Right Parent',
+                                  index=True)
 
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
@@ -59,6 +65,25 @@ class TreeNode(models.AbstractModel):
                        compute='compute_icon')
     tree_type = fields.Char(string=u'Тип',
                             compute='compute_tree_type')
+
+    all_child_ids = fields.Many2many(string=u"Все Дети",
+                                     comodel_name=_name,
+                                     compute='compute_all_child_ids')
+    all_parent_ids = fields.Many2many(string=u"Все Родители",
+                                      comodel_name=_name,
+                                      compute='compute_all_parent_ids')
+
+    @api.multi
+    def compute_all_child_ids(self):
+        for rec in self:
+            rec.all_child_ids = self.search([('parent_left', '>', rec.parent_left),
+                                             ('parent_left', '<', rec.parent_right)])
+
+    @api.multi
+    def compute_all_parent_ids(self):
+        for rec in self:
+            rec.all_parent_ids = self.search([('parent_left', '<', rec.parent_left),
+                                              ('parent_right', '>', rec.parent_right)])
 
     @api.multi
     @api.onchange('object_id', 'shortcut_id')
