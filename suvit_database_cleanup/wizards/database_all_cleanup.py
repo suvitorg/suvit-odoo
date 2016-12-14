@@ -7,6 +7,7 @@ class CleanupPurgeWizardModule(models.TransientModel):
     _cleanup_wizard_list = [
         'cleanup.purge.wizard.module',
         'cleanup.purge.wizard.model',
+        'cleanup.purge.wizard.field',
         'cleanup.purge.wizard.table',
         'cleanup.purge.wizard.column',
     ]

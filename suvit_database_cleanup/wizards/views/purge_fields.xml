@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="purge_fields_view" model="ir.ui.view">
+            <field name="name">Form view for purge fields wizard</field>
+            <field name="model">cleanup.purge.wizard.field</field>
+            <field name="arch" type="xml">
+                <form string="Purge fields">
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <button type="object" name="purge_all" string="Удалить все Поля" />
+                    <button type="object" name="select_lines" string="Выбрать Поля" />
+                    <field name="purge_line_ids" colspan="4" nolabel="1">
+                        <tree string="Старые Поля">
+                            <field name="model" />
+                            <field name="name" />
+                            <field name="purged" invisible="0" />
+                            <button type="object" name="purge"
+                                    icon="gtk-cancel" string="Удалить Поле"
+                                    attrs="{'invisible': [('purged', '=', True)]}"/>
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_purge_fields" model="ir.actions.server">
+            <field name="name">Очистка Полей</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="suvit_database_cleanup.model_cleanup_purge_wizard_field" />
+            <field name="state">code</field>
+            <field name="code">action = self.get_wizard_action(cr, uid, context=context)</field>
+        </record>
+
+        <record id="purge_field_line_tree" model="ir.ui.view">
+            <field name="model">cleanup.purge.line.field</field>
+            <field name="arch" type="xml">
+                <tree string="Старые Поля">
+                            <field name="model" />
+                            <field name="name" />
+                            <field name="purged" invisible="0" />
+                            <button type="object" name="purge"
+                                    icon="gtk-cancel" string="Удалить Поле"
+                                    attrs="{'invisible': [('purged', '=', True)]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_purge_field_line" model="ir.actions.server">
+            <field name="name">Очистить</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="suvit_database_cleanup.model_cleanup_purge_line_field" />
+            <field name="code">self.purge(cr, uid, context.get('active_ids', []), context)</field>
+        </record>
+
+        <record id="action_purge_field_line_value" model="ir.values">
+            <field name="name">Очистить</field>
+            <field name="key">action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="model">cleanup.purge.line.field</field>
+            <field name="value" eval="'ir.actions.server,%d' % ref('suvit_database_cleanup.action_purge_field_line')" />
+        </record>
+
+    </data>
+</openerp>
