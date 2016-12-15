@@ -9,12 +9,13 @@
 =====================================
 
 * Добавляет Мастер очистки старых Полей.
+* Дабавляет удаление старых записей по крону
 
 """,
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        'database_cleanup',
+        'database_cleanup',  # oca/server-tools
     ],
     'data': [
         'wizards/views/purge_fields.xml',
