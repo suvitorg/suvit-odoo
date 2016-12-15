@@ -1,11 +1,11 @@
-﻿.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_tree {}
-.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_tree:after {
+﻿.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_node_tree {}
+.openerp .oe_view_manager .oe_view_manager_switch .oe_vm_switch_js_node_tree:after {
   font-family: 'Glyphicons Halflings';
   font-size: 17px;
   content: "\e199";
 }
 .jstree-default .jstree-wholerow-hovered,.jstree-default .jstree-hovered {
-    background: rgba(44, 67, 108, 0.3);
+  background: rgba(44, 67, 108, 0.3);
 }
 .dragging_option {
   margin: 0 20px; float: left;
@@ -28,4 +28,6 @@
 .jstree-grid-column:first-child > div {
   padding-right:0;
 }
-.jstree-node .jstree-grid-width-auto {display:inline-block;}
+.jstree-node .jstree-grid-width-auto {
+  display:inline-block;
+}

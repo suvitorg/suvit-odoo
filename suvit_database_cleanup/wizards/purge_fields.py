@@ -20,7 +20,7 @@ class CleanupPurgeLineField(models.TransientModel):
     _inherit = 'cleanup.purge.line'
     _name = 'cleanup.purge.line.field'
     _order = 'model,name'
-    
+
     wizard_id = fields.Many2one(string=u"Purge Wizard",
                                 comodel_name='cleanup.purge.wizard.field',
                                 readonly=True)

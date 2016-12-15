@@ -5,9 +5,10 @@ from openerp import models, fields, api
 class TreeNode(models.AbstractModel):
     _name = 'suvit.tree.node.mixin'
     _description = u'Узел дерева'
-    _order = 'parent_id,sequence,id'
+    #_order = 'parent_id,sequence,id'
     _parent_store = True
     _parent_order = 'sequence,id'
+    _order = 'parent_left'
     _use_full_ids = True
     _root_domain = [('parent_id', '=', False)]
     _copy_suffix = u'Копия'
