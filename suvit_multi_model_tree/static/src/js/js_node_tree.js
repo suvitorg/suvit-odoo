@@ -1,4 +1,5 @@
 openerp.suvit_multi_model_tree = function (instance, local) {
+  openerp.suvit_multi_model_tree_old(instance, local)
 
   var QWeb = instance.web.qweb;
   var _t = instance.web._t;
