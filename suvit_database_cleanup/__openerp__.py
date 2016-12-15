@@ -19,7 +19,8 @@
     'data': [
         'wizards/views/purge_fields.xml',
         'wizards/views/menu.xml',
-        'wizards/data/cron.xml'
+
+        'data/cron.xml'
     ],
     'installable': True,
     'auto_install': False,
