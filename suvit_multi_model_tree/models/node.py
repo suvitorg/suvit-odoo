@@ -60,6 +60,9 @@ class TreeNode(models.AbstractModel):
                        copy=True,
                        readonly=False,
                        track_visibility='onchange')
+    full_name = fields.Char(string=u'Полный путь',
+                            compute='compute_full_name',
+                            help=u'Имя узла вместе с родителями')
 
     title = fields.Char(string=u'Подсказка',
                         compute='compute_title')
@@ -159,6 +162,11 @@ class TreeNode(models.AbstractModel):
             if name and prefix and name.startswith(prefix):
                 prefix = u''
             rec.name = u'%s%s' % (prefix, name)
+
+    @api.multi
+    def compute_full_name(self):
+        for rec in self:
+            rec.full_name = u' / '.join((rec.all_parent_ids + rec).mapped('name'))
 
     @api.model
     def root_child_ids(self):
