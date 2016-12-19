@@ -207,13 +207,13 @@ class TreeNode(models.AbstractModel):
         if new_parent_id:
             new_parent = self.browse(new_parent_id).self_id
         else:
-            new_parent = new_parent_obj = None
+            new_parent = self.browse()
 
         old_parent_id = self.env.context.get('old_parent_id')
         if old_parent_id:
             old_parent = self.browse(old_parent_id).self_id
         else:
-            old_parent = old_parent_obj = None
+            old_parent = self.browse()
 
         sequence = self.env.context.get('new_position')
 
@@ -248,7 +248,16 @@ class TreeNode(models.AbstractModel):
             i += 1
 
         self.sequence = sequence
+
         # print 'change_sequence_after', self, [(c.id, c.sequence) for c in child_ids]
+
+        # XXX try to recalc parent_left, parent_right find more correct solution
+        if new_parent:
+            child_ids.write({'parent_id': False})
+            child_ids.write({'parent_id': new_parent})
+        else:
+            # XXX recalc whole tree
+            self._parent_store_compute()
 
     # API for full ids
     @api.multi
