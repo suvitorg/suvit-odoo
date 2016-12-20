@@ -2,14 +2,12 @@
 import logging
 import openerp
 import psycopg2
-import sys
 import threading
 
 from openerp import SUPERUSER_ID, models, exceptions
 from openerp.http import request
 
-from openerp.tools import config, ustr
-from openerp.tools.translate import _
+from openerp.tools import config
 
 from raven import Client
 from raven.conf import setup_logging
@@ -19,8 +17,8 @@ from raven.utils.wsgi import get_headers, get_environ
 
 from werkzeug.exceptions import ClientDisconnected
 
-
 logger = logging.getLogger(__name__)
+
 
 class ContextSentryHandler(SentryHandler):
 
@@ -59,7 +57,7 @@ class ContextSentryHandler(SentryHandler):
             user_info['is_authenticated'] = True
 
             user = self.get_user(request)
-            user_info['login']= user.login
+            user_info['login'] = user.login
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
                 for attr in current_app.config['SENTRY_USER_ATTRS']:

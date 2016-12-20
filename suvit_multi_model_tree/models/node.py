@@ -5,7 +5,7 @@ from openerp import models, fields, api
 class TreeNode(models.AbstractModel):
     _name = 'suvit.tree.node.mixin'
     _description = u'Узел дерева'
-    #_order = 'parent_id,sequence,id'
+    # _order = 'parent_id,sequence,id'
     _parent_store = True
     _parent_order = 'sequence,id'
     _order = 'parent_left'
@@ -14,7 +14,7 @@ class TreeNode(models.AbstractModel):
     _copy_suffix = u'Копия'
     _duplicate_prefix = u'D_'
     _tree_icon_map = {
-        None: 'gtk-directory', # node without object_id
+        None: 'gtk-directory',  # node without object_id
     }
 
     parent_id = fields.Many2one(string=u'Принадлежность',
@@ -81,14 +81,16 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_all_child_ids(self):
         for rec in self:
-            rec.all_child_ids = self.search([('parent_left', '>', rec.parent_left),
-                                             ('parent_left', '<', rec.parent_right)])
+            rec.all_child_ids = self.search(
+                [('parent_left', '>', rec.parent_left),
+                 ('parent_left', '<', rec.parent_right)])
 
     @api.multi
     def compute_all_parent_ids(self):
         for rec in self:
-            rec.all_parent_ids = self.search([('parent_left', '<', rec.parent_left),
-                                              ('parent_right', '>', rec.parent_right)])
+            rec.all_parent_ids = self.search(
+                [('parent_left', '<', rec.parent_left),
+                 ('parent_right', '>', rec.parent_right)])
 
     @api.multi
     @api.onchange('object_id', 'shortcut_id')
@@ -98,7 +100,8 @@ class TreeNode(models.AbstractModel):
                 rec.self_id.compute_icon()
                 icon = rec.self_id.icon
             else:
-                icon = self._tree_icon_map.get(rec.object_id._name if rec.object_id else None)
+                icon = self._tree_icon_map.get(rec.object_id._name
+                                               if rec.object_id else None)
 
             rec.icon = icon
 
@@ -157,7 +160,8 @@ class TreeNode(models.AbstractModel):
                 name = rec.shortcut_id.name
                 prefix = u'D_'
             else:
-                name = getattr(rec.object_id, rec.object_id._rec_name or u'title', u'-')
+                name = getattr(rec.object_id,
+                               rec.object_id._rec_name or u'title', u'-')
                 prefix = u'D_' if rec.duplicate_ids else u''
             if name and prefix and name.startswith(prefix):
                 prefix = u''
@@ -166,7 +170,8 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_full_name(self):
         for rec in self:
-            rec.full_name = u' / '.join((rec.all_parent_ids + rec).mapped('name'))
+            rec.full_name = u' / '.join((rec.all_parent_ids
+                                         + rec).mapped('name'))
 
     @api.model
     def root_child_ids(self):
@@ -217,7 +222,8 @@ class TreeNode(models.AbstractModel):
 
         sequence = self.env.context.get('new_position')
 
-        # print 'TreeNode.change_parent', old_parent, new_parent, sequence, self.env.context
+        # print 'TreeNode.change_parent', old_parent,
+        # print new_parent, sequence, self.env.context
         if old_parent != new_parent:
             self.write({'parent_id': new_parent.id})
 
@@ -234,7 +240,8 @@ class TreeNode(models.AbstractModel):
         else:
             child_ids = self.root_child_ids()
 
-        # print 'change_sequence', self, [(c.id, c.sequence) for c in child_ids], sequence
+        # print 'change_sequence', self,
+        # print [(c.id, c.sequence) for c in child_ids], sequence
         i = 0
         for child in child_ids:
             if child == self:
@@ -249,9 +256,10 @@ class TreeNode(models.AbstractModel):
 
         self.sequence = sequence
 
-        # print 'change_sequence_after', self, [(c.id, c.sequence) for c in child_ids]
+        # print 'change_sequence_after', self,
+        # print [(c.id, c.sequence) for c in child_ids]
 
-        # XXX try to recalc parent_left, parent_right find more correct solution
+        # XXX try to recalc parent_left, pright find more correct solution
         if new_parent:
             child_ids.write({'parent_id': False})
             child_ids.write({'parent_id': new_parent})
@@ -296,7 +304,10 @@ class TreeNode(models.AbstractModel):
             if 'tree_child_ids' in row:
                 new_children = []
                 for child in row['tree_child_ids']:
-                    new_children.append('%s-%s' % (row['id'], child if isinstance(child, int) else child.id))
+                    new_children.append('%s-%s' % (row['id'],
+                                                   child
+                                                   if isinstance(child, int)
+                                                   else child.id))
                 row['tree_child_ids'] = new_children
         return res
 

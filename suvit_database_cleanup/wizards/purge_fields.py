@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api
-from openerp.tools.translate import _
+# from openerp.tools.translate import _
 from openerp.addons.base.ir.ir_model import MODULE_UNINSTALL_FLAG
 
 

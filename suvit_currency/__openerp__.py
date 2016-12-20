@@ -32,7 +32,7 @@
     'installable': True,
     'auto_install': False,
     'application': True,
-    'external_dependencies' : {
-        'python' : ['xmltodict'],
+    'external_dependencies': {
+        'python': ['xmltodict'],
     }
 }

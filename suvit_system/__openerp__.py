@@ -15,11 +15,10 @@
     'website': 'https://suvit.ru',
     'depends': [
         'suvit_multi_model_tree',
-        #'web',
     ],
     'data': [
-        #'views/assets.xml',
-        #'views/node.xml',
+        # 'views/assets.xml',
+        # 'views/node.xml',
     ],
     'qweb' : [
         'static/src/xml/*.xml',

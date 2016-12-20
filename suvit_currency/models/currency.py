@@ -63,9 +63,10 @@ class Currency(models.Model):
             self.avg_rate = 1
         elif self.rate_month:
             start, end = self.rate_month.split(',')
-            month_rates = self.env['res.currency.rate'].search([('currency_id.name', '=', self.name),
-                                                                ('name', '>=', start),
-                                                                ('name', '<', end)])
+            month_rates = self.env['res.currency.rate'].search(
+                [('currency_id.name', '=', self.name),
+                 ('name', '>=', start),
+                 ('name', '<', end)])
             if month_rates:
                 rates = [rate.rate for rate in month_rates]
                 avg_rate = sum(rates) / float(len(rates))
