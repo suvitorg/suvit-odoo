@@ -14,6 +14,7 @@
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
+        'suvit_base',
         'suvit_multi_model_tree',
     ],
     'data': [
