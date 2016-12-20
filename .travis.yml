@@ -33,3 +33,12 @@ script:
   - travis_run_tests
 after_success:
   - travis_after_tests_success
+
+notifications:
+  #slack:
+  #  rooms:
+  #  on_success: change
+  #  on_failure: always
+  email:
+    on_success: change
+    on_failure: always
