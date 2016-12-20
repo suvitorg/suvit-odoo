@@ -1,1 +1,3 @@
-﻿-r suvit_sentry/requirements.txt
+﻿# XXX only for tests, when all modules installed together
+-r suvit_currency/requirements.txt
+-r suvit_sentry/requirements.txt
