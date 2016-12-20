@@ -63,7 +63,7 @@ class SystemNode(models.Model):
 
     @api.model
     def compute_selection_object_id(self):
-        result = []
+        result = super(SystemNode, self).compute_selection_object_id()
         for model in self.env['ir.model'].search([('system_tree', '=', True)]):
             result.append([model.model, model.name])
 
@@ -80,3 +80,11 @@ class SystemNode(models.Model):
                 icon = model.system_tree_odoo_icon
                 rec.icon = icon
 
+    @api.model
+    def get_tree_types(self):
+        result = {}
+        for tree_type in self.compute_selection_object_id():
+            type_dict = result[tree_type[0]] = dict(name=tree_type[1])
+            # TODO. set perms
+            # TODO. set valid_children
+        return types

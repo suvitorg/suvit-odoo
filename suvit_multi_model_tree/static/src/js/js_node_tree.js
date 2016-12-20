@@ -99,16 +99,21 @@ openerp.suvit_multi_model_tree = function (instance, local) {
 
       self.field_parent = this.fields_view.field_parent || this.options.field_parent;
 
-      self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
-      self.parents_config = {};
-      _.each(self.tree_config, function(element, name){
-        self.parents_config[name] = {};
-        self.parents_config[name]['valid_children'] = element.valid_children || [];
-        _.each(element.create, function(child){
-          if (child.model)
-            self.parents_config[name]['valid_children'].push(child.model);
+      if (this.fields_view.arch.attrs.tree_dynamic_config)
+        self.dataset._model
+          .call('get_tree_types', [], {'context': self.dataset.get_context()})
+          .then(function(result){
+             self.tree_config = result || {};
+          });
+      else {
+        self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
+
+        _.each(self.tree_config, function(element, name){
+          _.each(element.create, function(child){
+            if (child.model)
+              self.tree_config[name]['valid_children'].push(child.model);
+          });
         });
-      });
 
       this.fields_view.fields[self.tree_type_field] = {};
       this.fields_view.fields[self.tree_title_field] = {};
@@ -602,7 +607,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         "dnd": {
           "is_draggable" : function(node) {return !!self.$dragging.is(':checked');}
         },
-        "types": self.parents_config,
+        "types": self.tree_config,
         "plugins": [
             "contextmenu", "wholerow", "state", "dnd", "types", "core", "ui", "grid"
         ],

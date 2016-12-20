@@ -37,7 +37,7 @@ class TreeNode(models.AbstractModel):
                               default=99)
 
     object_id = fields.Reference(string=u'Связь',
-                                 selection=[],
+                                 selection='compute_selection_object_id',
                                  index=True,
                                  track_visibility='onchange'
                                  )
@@ -104,6 +104,11 @@ class TreeNode(models.AbstractModel):
                                                if rec.object_id else None)
 
             rec.icon = icon
+
+    @api.model
+    def compute_selection_object_id(self):
+        result = []
+        return result
 
     @api.multi
     def compute_tree_type(self):
