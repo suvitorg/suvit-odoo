@@ -1,5 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 import logging
+from collections import OrderedDict
 
 from openerp import api, fields, models
 
@@ -27,8 +28,23 @@ class OdooModel(models.Model):
     system_tree_icon_display = fields.Html(string=u'Иконка',
                                            compute='compute_tree_icon_display')
 
-    # ability to set root types
-    # ability to set child types
+    system_tree_can_create = fields.Boolean(string=u'Можно создавать')
+    system_tree_can_edit = fields.Boolean(string=u'Можно редактировать',
+                                          help=u'Редактировать, переименовывать')
+    system_tree_can_copy = fields.Boolean(string=u'Можно копировать',
+                                          help=u'Копировать, дубликаты')
+    system_tree_can_delete = fields.Boolean(string=u'Можно удалять',
+                                            help=u'Удалять, извлекать, отцеплять')
+    system_tree_can_settings = fields.Boolean(string=u'Можно настраивать',
+                                              default=True)
+
+    system_tree_children_ids = fields.Many2many(string=u'Возможный состав',
+                                                comodel_name='ir.model',
+                                                domain=[('system_tree', '=', True)],
+                                                relation="format_ir_model_system_children_rel",
+                                                column1='from_id',
+                                                column2='to_id',
+                                                )
 
     # todo open action field
     #activate_action = fields.M2O
@@ -82,9 +98,15 @@ class SystemNode(models.Model):
 
     @api.model
     def get_tree_types(self):
-        result = {}
+        result = OrderedDict()
         for tree_type in self.compute_selection_object_id():
             type_dict = result[tree_type[0]] = dict(name=tree_type[1])
-            # TODO. set perms
-            # TODO. set valid_children
-        return types
+
+            model = self.env['ir.model'].search([('model', '=', tree_type[0])])
+            type_dict['create'] = model.system_tree_can_create
+            type_dict['edit'] = model.system_tree_can_edit
+            type_dict['copy'] = model.system_tree_can_copy
+            type_dict['delete'] = model.system_tree_can_delete
+
+            type_dict['valid_children'] = model.system_tree_children_ids.mapped('model')
+        return result
