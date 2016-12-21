@@ -69,7 +69,8 @@ class TreeNode(models.AbstractModel):
     icon = fields.Char(string=u'Иконка',
                        compute='compute_icon')
     tree_type = fields.Char(string=u'Тип',
-                            compute='compute_tree_type')
+                            compute='compute_tree_type',
+                            store=True)
 
     all_child_ids = fields.Many2many(string=u"Все Дети",
                                      comodel_name=_name,
@@ -81,9 +82,11 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_all_child_ids(self):
         for rec in self:
-            rec.all_child_ids = self.search(
-                [('parent_left', '>', rec.parent_left),
-                 ('parent_left', '<', rec.parent_right)])
+            straight_child_ids = self.search(
+                [('parent_left', '>', rec.self_id.parent_left),
+                 ('parent_right', '<', rec.self_id.parent_right)])
+            # XXX need to get correct childs all_child_ids from child.self_id
+            rec.all_child_ids = straight_child_ids + straight_child_ids.mapped('all_child_ids')
 
     @api.multi
     def compute_all_parent_ids(self):
@@ -111,6 +114,7 @@ class TreeNode(models.AbstractModel):
         return result
 
     @api.multi
+    @api.depends('object_id', 'shortcut_id')
     def compute_tree_type(self):
         for rec in self:
             main_obj = rec.self_id.object_id
@@ -175,7 +179,8 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_full_name(self):
         for rec in self:
-            rec.full_name = u' / '.join((rec.all_parent_ids
+            # use TreeNode._order = 'parent_left' instead of .sorted()
+            rec.full_name = u' / '.join((rec.all_parent_ids.sorted(lambda r: r.parent_left)
                                          + rec).mapped('name'))
 
     @api.model
@@ -375,6 +380,7 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def action_copy(self, default=None):
         for rec in self:
+            rec = rec.self_id
             copy = rec.copy(default=default)
             copy.fix_copy_name()
             for child in rec.child_ids:
