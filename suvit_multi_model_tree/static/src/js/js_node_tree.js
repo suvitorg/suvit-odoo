@@ -400,20 +400,21 @@ openerp.suvit_multi_model_tree = function (instance, local) {
 
       var menu_items = {};
 
-      if (model_config.create.length) {
+      if (model_config.create) {
         var create_menu = {}
         _.each(['Уровень', 'Подуровень'], function(level){
-          submenu = {};
-
-          var create_type_list = (level == 'Уровень' ? parent_create_type : model_config).create
+          var submenu = {},
+              create_type_list = (level == 'Уровень' ? parent_create_type : model_config).valid_children;
           if (!create_type_list)
             return;
 
-          _.each(create_type_list, function(element, key){
+          _.each(create_type_list, function(key){
+            var config = self.tree_config[key];
+            config.model = key;
             submenu['create_'+key] = {
-              "label": element.name,
+              "label": config.name,
               "action": self.proxy(self.jstree_contextmenu_create),
-              "config": element,
+              "config": config,
               "level": level,
             };
           });
@@ -428,7 +429,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           "submenu": create_menu
         };
 
-        if (1 || model_config.copy !== false) {
+        if (1 || model_config.copy) {
           menu_items.clone = {
             "label": "Дублировать",
             "action": self.proxy(self.jstree_contextmenu_copy),
