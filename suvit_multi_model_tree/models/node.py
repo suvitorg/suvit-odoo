@@ -264,6 +264,9 @@ class TreeNode(models.AbstractModel):
         # print 'change_sequence_after', self,
         # print [(c.id, c.sequence) for c in child_ids]
 
+        # Temp comment update of parent_left, pright because of slow update
+        return
+
         # XXX try to recalc parent_left, pright find more correct solution
         if new_parent:
             child_ids.write({'parent_id': False})
