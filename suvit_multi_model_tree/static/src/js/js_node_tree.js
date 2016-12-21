@@ -77,7 +77,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       this.reload_tree();
     },
     do_search: function(domain, context, group_by) {
-      console.log('JSTree.do_search', arguments);
+      // console.log('JSTree.do_search', arguments);
       this.dataset.domain = new instance.web.CompoundDomain(this.domain,
                                                             domain);
       this.dataset._model._domain = this.dataset.domain;
