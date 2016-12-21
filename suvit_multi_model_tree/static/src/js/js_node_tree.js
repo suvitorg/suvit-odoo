@@ -163,11 +163,11 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       this.dataset.alter_ids(ids);
 
       this.dataset.read_slice(this.fields_view.fields).done(function(records) {
-        self.load_records(records, self.field_parent);
+        self.load_records(records);
         self.jstree_load();
       });
     },
-    load_records: function (records, field_parent) {
+    load_records: function (records) {
       var self = this;
           // TODO check
           self.new_records = [];
@@ -188,7 +188,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           record.type = record[self.tree_type_field] || self.model;
           record.tree_type = record.type;
           record.icon = icon_src;
-          record.children = !!(record[field_parent] && record[field_parent].length);
+          record.children = !!(record[self.field_parent] && record[self.field_parent].length);
       });
     },
     // get_process_child_field: function(tree_inst, process) {
@@ -588,7 +588,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                               Object.keys(self.fields_view.fields),
                               {context: {"tree_parent_ids": parents}}
         ).done(function(records) {
-          self.load_records(records, self.field_parent);
+          self.load_records(records);
           cb.call(this, self.new_records);
         });
       }
