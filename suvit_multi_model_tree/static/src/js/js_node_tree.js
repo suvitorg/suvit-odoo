@@ -155,6 +155,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         }
       });
 
+      // XXX remove
       ids = _.uniq(_.filter(this.dataset.ids, function(i){
         if (!isNaN(i) && typeof i != "string") {
           return true;
@@ -162,10 +163,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       }));
       this.dataset.alter_ids(ids);
 
-      this.dataset.read_slice(this.fields_view.fields).done(function(records) {
-        self.load_records(records);
-        self.jstree_load();
-      });
+      self.jstree_load();
     },
     load_records: function (records) {
       var self = this;
@@ -579,7 +577,10 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       // console.log('config_data', self, obj, self.records);
 
       if (obj.id == "#") {
-        cb.call(this, self.new_records);
+        this.dataset.read_slice(this.fields_view.fields).done(function(records) {
+          self.load_records(records);
+          cb.call(this, self.new_records);
+        });
       } else {
         var childs = self.records[obj.id][self.field_parent];
         var parents = obj.id.toString().split('-');
