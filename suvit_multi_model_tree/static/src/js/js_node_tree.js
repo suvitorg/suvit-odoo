@@ -101,7 +101,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
 
       if (this.fields_view.arch.attrs.tree_dynamic_config)
         self.dataset._model
-          .call('get_tree_types', [], {'context': self.dataset.get_context()})
+          .call('get_tree_config', [], {'context': self.dataset.get_context()})
           .then(function(result){
              self.tree_config = result || {};
           });

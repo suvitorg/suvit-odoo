@@ -97,7 +97,7 @@ class SystemNode(models.Model):
                 rec.icon = icon
 
     @api.model
-    def get_tree_types(self):
+    def get_tree_config(self):
         result = OrderedDict()
         for tree_type in self.compute_selection_object_id():
             type_dict = result[tree_type[0]] = dict(name=tree_type[1])
