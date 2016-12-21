@@ -58,9 +58,11 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       if (parent.action && parent.action.context.tree_domain){
         var domain = new instance.web.CompoundDomain(dataset.domain,
                                                      parent.action.context.tree_domain);
-        this.dataset = new instance.web.DataSetSearch(this, parent.action.res_model,
-                                                      dataset.context, domain);
+        this.dataset.domain = domain;
+        this.dataset._model._domain = domain;
       }
+      // save init domain
+      this.domain = this.dataset.domain;
 
       this.model = this.dataset.model;
       this.view_id = view_id;
@@ -72,6 +74,13 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       this.reload_tree(opt);
     },
     view_loading: function (r) {
+      this.reload_tree();
+    },
+    do_search: function(domain, context, group_by) {
+      console.log('JSTree.do_search', arguments);
+      this.dataset.domain = new instance.web.CompoundDomain(this.domain,
+                                                            domain);
+      this.dataset._model._domain = this.dataset.domain;
       this.reload_tree();
     },
     reload_tree: function(opt){
@@ -146,13 +155,11 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         }
       });
 
-
       ids = _.uniq(_.filter(this.dataset.ids, function(i){
         if (!isNaN(i) && typeof i != "string") {
           return true;
         }
       }));
-
       this.dataset.alter_ids(ids);
 
       this.dataset.read_slice(this.fields_view.fields).done(function(records) {
