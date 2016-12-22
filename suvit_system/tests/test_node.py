@@ -43,8 +43,9 @@ class TestNode(TransactionCase):
 
         root.action_duplicate()
 
-        duplicate = Node.search([('name', 'like', Node._duplicate_prefix)])
-        self.assertEqual(len(duplicate), 1)
+        duplicates = Node.search([('name', 'like', Node._duplicate_prefix)])
+        self.assertEqual(len(duplicates), 2) # original and duplicate
+        duplicate = duplicate[-1:]
         self.assertEqual(duplicate.name, 'D_Root1')
         self.assertEqual(duplicate.shortcut_id, root)
         self.assertEqual(duplicate.self_id, root)
