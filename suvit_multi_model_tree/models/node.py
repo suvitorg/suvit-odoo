@@ -180,8 +180,9 @@ class TreeNode(models.AbstractModel):
     def compute_full_name(self):
         for rec in self:
             # use TreeNode._order = 'parent_left' instead of .sorted()
-            rec.full_name = u' / '.join((rec.all_parent_ids.sorted(lambda r: r.parent_left)
-                                         + rec).mapped('name'))
+            rec.full_name = u' / '.join(part or '-'
+                                        for part in (rec.all_parent_ids.sorted(lambda r: r.parent_left)
+                                            + rec).mapped('name'))
 
     @api.model
     def root_child_ids(self):
