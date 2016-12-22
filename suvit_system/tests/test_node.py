@@ -29,7 +29,7 @@ class TestNode(TransactionCase):
         ch2_2 = Node.create({'name': 'Ch2-2', 'parent_id': ch2.id})
 
         # add children for ch2_1
-        ch2_1_1 = Node.create({'name': 'Ch2-1-1', 'parent_id': ch2_1.id})
+        # ch2_1_1 = Node.create({'name': 'Ch2-1-1', 'parent_id': ch2_1.id})
         ch2_1_2 = Node.create({'name': 'Ch2-2-2', 'parent_id': ch2_1.id})
 
         # ch2.invalidate_cache()
@@ -61,5 +61,5 @@ class TestNode(TransactionCase):
         copy = Node.search([('name', 'like', Node._copy_suffix)])
         self.assertEqual(len(copy), 1)
         self.assertEqual(copy.name, u'D_Root1 Копия')
-        self.assertEqual(copy.shortcut_id, False)
+        self.assertEqual(copy.shortcut_id, Node)
         self.assertEqual(copy.self_id, copy)
