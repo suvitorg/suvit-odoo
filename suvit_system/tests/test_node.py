@@ -28,6 +28,14 @@ class TestNode(TransactionCase):
         ch2_1 = Node.create({'name': 'Ch2-1', 'parent_id': ch2.id})
         ch2_2 = Node.create({'name': 'Ch2-2', 'parent_id': ch2.id})
 
+        # add children for ch2_1
+        ch2_1_1 = Node.create({'name': 'Ch2-1-1', 'parent_id': ch2_1.id})
+        ch2_1_2 = Node.create({'name': 'Ch2-2-2', 'parent_id': ch2_1.id})
+
+        ch2.invalidate_cache()
+        self.assertEqual(len(ch2.all_child_ids), 4)
+        self.assertEqual(ch2_1_1.all_parent_ids, [ch2, ch2_1])
+
     def test_copy_duplicate():
         Node = self.env['suvit.system.node']
 
