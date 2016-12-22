@@ -86,7 +86,7 @@ class TreeNode(models.AbstractModel):
                 [('parent_left', '>', rec.self_id.parent_left),
                  ('parent_right', '<', rec.self_id.parent_right)])
             # XXX need to get correct childs all_child_ids from child.self_id
-            rec.all_child_ids = straight_child_ids + straight_child_ids.mapped('all_child_ids')
+            rec.all_child_ids = straight_child_ids + straight_child_ids.mapped('shortcut_id.all_child_ids')
 
     @api.multi
     def compute_all_parent_ids(self):
