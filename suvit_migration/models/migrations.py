@@ -92,7 +92,6 @@ class Migration(models.Model):
         res = super(Migration, self).write(values)
         if values.keys() == ['state']:
             return res
-        for rec in self:
-            rec.run()
 
+        self.run()
         return res
