@@ -32,7 +32,7 @@ class TestNode(TransactionCase):
         ch2_1_1 = Node.create({'name': 'Ch2-1-1', 'parent_id': ch2_1.id})
         ch2_1_2 = Node.create({'name': 'Ch2-2-2', 'parent_id': ch2_1.id})
 
-        ch2.invalidate_cache()
+        # ch2.invalidate_cache()
         self.assertEqual(len(ch2.all_child_ids), 4)
         self.assertEqual(ch2_1_1.all_parent_ids, [ch2, ch2_1])
 
@@ -45,7 +45,7 @@ class TestNode(TransactionCase):
 
         duplicates = Node.search([('name', 'like', Node._duplicate_prefix)])
         self.assertEqual(len(duplicates), 2) # original and duplicate
-        duplicate = duplicates[-1:]
+        duplicate = duplicates.sorted(lambda n: n.id)[-1:]
         self.assertEqual(duplicate.name, 'D_Root1')
         self.assertEqual(duplicate.shortcut_id, root)
         self.assertEqual(duplicate.self_id, root)
