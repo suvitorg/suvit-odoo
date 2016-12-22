@@ -60,6 +60,6 @@ class TestNode(TransactionCase):
 
         copy = Node.search([('name', 'like', Node._copy_suffix)])
         self.assertEqual(len(copy), 1)
-        self.assertEqual(duplicate.name, u'D_Root1 Копия')
+        self.assertEqual(copy.name, u'D_Root1 Копия')
         self.assertEqual(copy.shortcut_id, False)
         self.assertEqual(copy.self_id, copy)
