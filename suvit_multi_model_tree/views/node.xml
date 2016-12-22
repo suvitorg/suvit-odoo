@@ -35,6 +35,7 @@
                        <group>
                          <field name="sequence" />
                          <field name="full_name" />
+                         <field name="tree_type" />
                          <field name="duplicate_ids" />
                        </group>
                      </page>
