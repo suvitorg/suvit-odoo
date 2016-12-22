@@ -36,7 +36,7 @@ class TestNode(TransactionCase):
         self.assertEqual(len(ch2.all_child_ids), 4)
         self.assertEqual(ch2_1_1.all_parent_ids, [ch2, ch2_1])
 
-    def test_copy_duplicate():
+    def test_copy_duplicate(self):
         Node = self.env['suvit.system.node']
 
         root = Node.create({'name': 'Root1'})
