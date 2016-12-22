@@ -599,28 +599,28 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           state_key = "jstree_" + (self.ViewManager.action ? self.ViewManager.action.id : 'field');
 
       return {
+        "plugins": [
+           "core", "ui", "contextmenu", "wholerow", "state", "dnd", "types", "grid"
+        ],
         "core": {
           "animation": 0,
           "check_callback": self.proxy(self.jstree_config_check),
           "themes": {"stripes": true},
           "data": self.proxy(self.jstree_config_data)
         },
-        "state":{
-          "key": state_key,
-          "filter" : function (k) { delete k.core.selected; return k; }
-        },
         "contextmenu":{
           "select_node": false,
           "show_at_node": false,
           "items": self.proxy(self.jstree_config_contextmenu),
         },
+        "state":{
+          "key": state_key,
+          "filter" : function (k) { delete k.core.selected; return k; }
+        },
         "dnd": {
           "is_draggable" : function(node) {return !!self.$dragging.is(':checked');}
         },
         "types": self.tree_config,
-        "plugins": [
-            "contextmenu", "wholerow", "state", "dnd", "types", "core", "ui", "grid"
-        ],
         'grid': {
           'columns': self.tree_fields_cols
         }
