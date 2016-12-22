@@ -93,7 +93,8 @@ class TreeNode(models.AbstractModel):
         for rec in self:
             rec.all_parent_ids = self.search(
                 [('parent_left', '<', rec.parent_left),
-                 ('parent_right', '>', rec.parent_right)])
+                 ('parent_right', '>', rec.parent_right)],
+                order='parent_left')
 
     @api.multi
     @api.onchange('object_id', 'shortcut_id')
@@ -181,7 +182,7 @@ class TreeNode(models.AbstractModel):
         for rec in self:
             # use TreeNode._order = 'parent_left' instead of .sorted()
             rec.full_name = u' / '.join(part or '-'
-                                        for part in (rec.all_parent_ids.sorted(lambda r: r.parent_left)
+                                        for part in (rec.all_parent_ids
                                             + rec).mapped('name'))
 
     @api.model
