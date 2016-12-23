@@ -108,22 +108,25 @@ openerp.suvit_multi_model_tree = function (instance, local) {
 
       self.field_parent = this.fields_view.field_parent || this.options.field_parent;
 
-      self.tree_config = {}
-      if (this.fields_view.arch.attrs.tree_dynamic_config)
-          self.dataset._model
-             .call('get_tree_config', [], {'context': self.dataset.get_context()})
-             .then(function(result){
-                  _.extend(self.tree_config, result || {});
+      self.tree_config = {};
+      var config_loaded;
+      if (this.fields_view.arch.attrs.tree_dynamic_config) {
+          config_loaded = self.dataset._model
+                              .call('get_tree_config', [],
+                                    {'context': self.dataset.get_context()});
+          config_loaded.then(function(result){
+              _.extend(self.tree_config, result || {});
           })
-      else {
-        self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
+      } else {
+          self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
 
-        _.each(self.tree_config, function(element, name){
-          _.each(element.create, function(child){
-            if (child.model)
-              self.tree_config[name]['valid_children'].push(child.model);
+          _.each(self.tree_config, function(element, name){
+              _.each(element.create, function(child){
+                  if (child.model)
+                     self.tree_config[name]['valid_children'].push(child.model);
+              });
           });
-        });
+          config_loaded = $.Deffered();
       }
 
       this.fields_view.fields[self.tree_type_field] = {};
@@ -164,7 +167,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       }));
       this.dataset.alter_ids(ids);
 
-      self.jstree_load();
+      return config_loaded.done(function() {
+        self.jstree_load();
+      });
     },
     load_records: function (records) {
       var self = this;
@@ -403,7 +408,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                                edit: false,
                                delete: false,
                                settings: true}, model_config);
-
+      // console.log('context config',
+      //             'parent', parent.type, parent_create_type,
+      //             'model', $node.type, model_config);
       var menu_items = {};
 
       if (model_config.create) {
