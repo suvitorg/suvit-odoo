@@ -24,7 +24,6 @@
                      <page string="Состав" attrs="{'invisible': [('shortcut_id', '!=', False)]}">
                        <field name="child_ids" context="{'default_parent_id': id}">
                          <tree>
-                           <field name="id" />
                            <field name="sequence" widget="handle" />
                            <field name="name" />
                            <field name="object_id" />
@@ -33,6 +32,7 @@
                      </page>
                      <page string="Служебное инфо">
                        <group>
+                         <field name="id" />
                          <field name="sequence" />
                          <field name="full_name" />
                          <field name="tree_type" />
