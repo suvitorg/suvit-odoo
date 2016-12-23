@@ -64,3 +64,17 @@ class TestNode(TransactionCase):
         self.assertEqual(copy.name, u'D_Root1 Копия')
         self.assertEqual(copy.shortcut_id, Node)
         self.assertEqual(copy.self_id, copy)
+
+    def test_node_name(self):
+        Node = self.env['suvit.system.node']
+
+        root = Node.create({'name': 'Root1'})
+        self.assertEqual(root.name, 'Root1')
+
+        model = self.env['ir.model'].search([('name', '=', 'ir.model')])
+        model.system_tree = True
+
+        ch1 = Node.create({'object_id': 'ir.model,%d' % model.id,
+                           'parent_id': root})
+
+        self.assertEqual(ch1.name, model.name)
