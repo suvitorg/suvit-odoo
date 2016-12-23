@@ -20,6 +20,7 @@ class TestNode(TransactionCase):
                          ['Ch1', 'Ch2', 'Ch3-last'])
 
         ch3.unlink()
+        self.assertEqual(len(root.child_ids), 2)
 
         # create duplicate to ch2
         ch2.action_duplicate()
@@ -71,7 +72,7 @@ class TestNode(TransactionCase):
         root = Node.create({'name': 'Root1'})
         self.assertEqual(root.name, 'Root1')
 
-        model = self.env['ir.model'].search([('name', '=', 'ir.model')])
+        model = self.env['ir.model'].search([('model', '=', 'ir.model')])
         model.system_tree = True
 
         ch1 = Node.create({'object_id': 'ir.model,%d' % model.id,
