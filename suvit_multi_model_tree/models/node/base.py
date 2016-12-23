@@ -168,11 +168,11 @@ class TreeNode(models.AbstractModel):
                 continue
             elif rec.shortcut_id:
                 name = rec.shortcut_id.name
-                prefix = u'D_'
+                prefix = self._duplicate_prefix
             else:
                 name = getattr(rec.object_id,
                                rec.object_id._rec_name or u'title', u'-')
-                prefix = u'D_' if rec.duplicate_ids else u''
+                prefix = self._duplicate_prefix if rec.duplicate_ids else u''
             if name and prefix and name.startswith(prefix):
                 prefix = u''
             rec.name = u'%s%s' % (prefix, name)
