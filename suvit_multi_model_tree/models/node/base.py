@@ -189,12 +189,7 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_tree_child_ids(self):
         for rec in self:
-            if rec.shortcut_id:
-                childs = rec.shortcut_id.child_ids
-            else:
-                childs = rec.child_ids
-
-            rec.tree_child_ids = childs
+            rec.tree_child_ids = rec.self_id.child_ids
 
     @api.multi
     def compute_title(self):

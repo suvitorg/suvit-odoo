@@ -16,7 +16,7 @@ class TreeNode(models.AbstractModel):
         if not any(isinstance(id, basestring) for id in self.ids):
             return
 
-        logger.info('Node.evaluate_ids before %s', self.ids)
+        # logger.info('Node.evaluate_ids before %s', self.ids)
         new_ids = []
         for id in self.ids:
             new_ids.append(int(str(id).split('-')[-1]))
@@ -24,7 +24,7 @@ class TreeNode(models.AbstractModel):
         # XXX This is needed to clear cache string ids
         self.invalidate_cache()
         self._ids = new_ids
-        logger.info('Node.evaluate_ids after %s', self.ids)
+        # logger.info('Node.evaluate_ids after %s', self.ids)
 
     @api.multi
     def read(self, fields=None, *args, **kwargs):
@@ -33,7 +33,7 @@ class TreeNode(models.AbstractModel):
 
         self.evaluate_ids()
 
-        logger.info('Node.read %s %s', self.ids, fields)
+        # logger.info('Node.read %s %s', self.ids, fields)
 
         res = super(TreeNode, self).read(fields, *args, **kwargs)
 
