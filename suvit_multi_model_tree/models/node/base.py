@@ -70,7 +70,8 @@ class TreeNode(models.AbstractModel):
                        compute='compute_icon')
     tree_type = fields.Char(string=u'Тип',
                             compute='compute_tree_type',
-                            store=True)
+                            store=True,
+                            index=True)
 
     all_child_ids = fields.Many2many(string=u"Все Дети",
                                      comodel_name=_name,
