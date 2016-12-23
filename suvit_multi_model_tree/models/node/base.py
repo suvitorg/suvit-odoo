@@ -143,7 +143,7 @@ class TreeNode(models.AbstractModel):
         new_obj = super(TreeNode, self).create(vals)
 
         # when node create from python code without name, compute name
-        if 'name' not in vals:
+        if not vals.get('name'):
             new_obj.compute_name()
 
         return new_obj
@@ -168,14 +168,10 @@ class TreeNode(models.AbstractModel):
                 continue
             elif rec.shortcut_id:
                 name = rec.shortcut_id.name
-                prefix = self._duplicate_prefix
             else:
                 name = getattr(rec.object_id,
                                rec.object_id._rec_name or u'title', u'-')
-                prefix = self._duplicate_prefix if rec.duplicate_ids else u''
-            if name and prefix and name.startswith(prefix):
-                prefix = u''
-            rec.name = u'%s%s' % (prefix, name)
+            rec.name = name
 
     @api.multi
     def compute_full_name(self):
