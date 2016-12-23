@@ -76,6 +76,6 @@ class TestNode(TransactionCase):
         model.system_tree = True
 
         ch1 = Node.create({'object_id': 'ir.model,%d' % model.id,
-                           'parent_id': root})
+                           'parent_id': root.id})
 
         self.assertEqual(ch1.name, model.name)
