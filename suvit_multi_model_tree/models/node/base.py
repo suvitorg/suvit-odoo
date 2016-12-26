@@ -1,5 +1,5 @@
 ﻿# -*- coding: utf-8 -*-
-from openerp import models, fields, api
+from openerp import models, fields, api, exceptions
 
 
 class TreeNode(models.AbstractModel):
@@ -263,15 +263,17 @@ class TreeNode(models.AbstractModel):
         # print [(c.id, c.sequence) for c in child_ids]
 
         # Temp comment update of parent_left, pright because of slow update
-        return
+        # return
 
         # XXX try to recalc parent_left, pright find more correct solution
         if new_parent:
-            child_ids.write({'parent_id': False})
-            child_ids.write({'parent_id': new_parent})
+            # child_ids.write({'parent_id': False})
+            # child_ids.write({'parent_id': new_parent})
+            child_ids.update_parent_left_right({'parent_id': new_parent.id})
         else:
             # XXX recalc whole tree
-            self._parent_store_compute()
+            # self._parent_store_compute()
+            self.search([]).update_parent_left_right({'parent_id': False})
 
     @api.multi
     def get_formview_action(self):
@@ -341,3 +343,59 @@ class TreeNode(models.AbstractModel):
         for rec in self:
             copy = rec.copy(default={'shortcut_id': rec.self_id.id})
             (copy + rec).fix_duplicate_name()
+
+    @api.multi
+    def update_parent_left_right(self, vals):
+        cr = self.env.cr
+        parents_changed = self.ids
+        parent_order = self._parent_order or self._order
+
+        if self.pool._init:
+            self.pool._init_parent[self._name] = True
+        else:
+            order = self._parent_order or self._order
+            parent_val = vals[self._parent_name]
+            if parent_val:
+                clause, params = '%s=%%s' % (self._parent_name,), (parent_val,)
+            else:
+                clause, params = '%s IS NULL' % (self._parent_name,), ()
+
+            for id in parents_changed:
+                cr.execute('SELECT parent_left, parent_right FROM %s WHERE id=%%s' % (self._table,), (id,))
+                pleft, pright = cr.fetchone()
+                distance = pright - pleft + 1
+
+                # Positions of current siblings, to locate proper insertion point;
+                # this can _not_ be fetched outside the loop, as it needs to be refreshed
+                # after each update, in case several nodes are sequentially inserted one
+                # next to the other (i.e computed incrementally)
+                cr.execute('SELECT parent_right, id FROM %s WHERE %s ORDER BY %s' % (self._table, clause, parent_order), params)
+                parents = cr.fetchall()
+
+                # Find Position of the element
+                position = None
+                for (parent_pright, parent_id) in parents:
+                    if parent_id == id:
+                        break
+                    position = parent_pright and parent_pright + 1 or 1
+
+                # It's the first node of the parent
+                if not position:
+                    if not parent_val:
+                        position = 1
+                    else:
+                        cr.execute('select parent_left from '+self._table+' where id=%s', (parent_val,))
+                        position = cr.fetchone()[0] + 1
+
+                if pleft < position <= pright:
+                    raise exceptions.except_orm(u"Ошибка", u"Обнаружена рекурсивная зависимость")
+
+                if pleft < position:
+                    cr.execute('update '+self._table+' set parent_left=parent_left+%s where parent_left>=%s', (distance, position))
+                    cr.execute('update '+self._table+' set parent_right=parent_right+%s where parent_right>=%s', (distance, position))
+                    cr.execute('update '+self._table+' set parent_left=parent_left+%s, parent_right=parent_right+%s where parent_left>=%s and parent_left<%s', (position-pleft, position-pleft, pleft, pright))
+                else:
+                    cr.execute('update '+self._table+' set parent_left=parent_left+%s where parent_left>=%s', (distance, position))
+                    cr.execute('update '+self._table+' set parent_right=parent_right+%s where parent_right>=%s', (distance, position))
+                    cr.execute('update '+self._table+' set parent_left=parent_left-%s, parent_right=parent_right-%s where parent_left>=%s and parent_left<%s', (pleft-position+distance, pleft-position+distance, pleft+distance, pright+distance))
+                self.invalidate_cache(['parent_left', 'parent_right'])
