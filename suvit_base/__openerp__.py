@@ -26,6 +26,9 @@ TODO
                 # 4. hide_db_manager_link oca/server_tools
                 'suvit_sentry',
 
+                # change admin right
+                'base_debug4all',  # oca/server_tools
+
                 # for patch
                 'mail',
                 ],

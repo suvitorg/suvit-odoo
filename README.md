@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/suvitorg/suvit-odoo.svg?branch=master)](https://travis-ci.org/suvitorg/suvit-odoo)
+
 odoo-модули SUVIT
 --------------------------
 
