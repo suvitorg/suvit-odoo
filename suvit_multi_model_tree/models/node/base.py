@@ -203,9 +203,8 @@ class TreeNode(models.AbstractModel):
     def compute_self(self):
         for rec in self:
             self_id = rec
-            if rec.shortcut_id:
-                while self_id.shortcut_id:
-                    self_id = self_id.shortcut_id
+            while self_id.shortcut_id:
+                self_id = self_id.shortcut_id
 
             rec.self_id = self_id
 
