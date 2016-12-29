@@ -99,6 +99,13 @@ class SystemNode(models.Model):
     @api.model
     def get_tree_config(self):
         result = OrderedDict()
+        result[self._name] = dict(name=u'Группа',
+                                  create=True,
+                                  edit=True,
+                                  copy=True,
+                                  delete=True,
+                                  settings=True)
+
         for tree_type in self.compute_selection_object_id():
             type_dict = result[tree_type[0]] = dict(name=tree_type[1])
 
@@ -109,4 +116,11 @@ class SystemNode(models.Model):
             type_dict['delete'] = model.system_tree_can_delete
 
             type_dict['valid_children'] = model.system_tree_children_ids.mapped('model')
+
+        # In group may create all children
+        result[self._name]['valid_children'] = result.keys()
+
+        # Special key for root
+        result['#'] = dict(valid_children=result.keys())
+
         return result

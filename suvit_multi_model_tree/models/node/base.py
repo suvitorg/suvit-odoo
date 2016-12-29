@@ -203,9 +203,8 @@ class TreeNode(models.AbstractModel):
     def compute_self(self):
         for rec in self:
             self_id = rec
-            if rec.shortcut_id:
-                while self_id.shortcut_id:
-                    self_id = self_id.shortcut_id
+            while self_id.shortcut_id:
+                self_id = self_id.shortcut_id
 
             rec.self_id = self_id
 
@@ -263,17 +262,10 @@ class TreeNode(models.AbstractModel):
         # print [(c.id, c.sequence) for c in child_ids]
 
         # Temp comment update of parent_left, pright because of slow update
-        # return
+        return
 
-        # XXX try to recalc parent_left, pright find more correct solution
-        if new_parent:
-            # child_ids.write({'parent_id': False})
-            # child_ids.write({'parent_id': new_parent})
-            child_ids.update_parent_left_right({'parent_id': new_parent.id})
-        else:
-            # XXX recalc whole tree
-            # self._parent_store_compute()
-            self.search([]).update_parent_left_right({'parent_id': False})
+        # update parent_left, parent_right
+        child_ids.update_parent_left_right({'parent_id': new_parent.id})
 
     @api.multi
     def get_formview_action(self):
