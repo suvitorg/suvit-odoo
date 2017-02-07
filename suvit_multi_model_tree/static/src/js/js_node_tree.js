@@ -153,7 +153,8 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             self.tree_fields_cols.push({
               'header': self.fields_view.fields[col.attrs.name]['string'],
               'value': function (node) {
-                return node.original[col.attrs.name];
+                return instance.web.format_value(node.original[col.attrs.name],
+                                                 self.fields_view.fields[col.attrs.name]);
               }
             });
         }
