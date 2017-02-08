@@ -338,6 +338,9 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def update_parent_left_right(self, vals):
+        if not self._parent_store:
+            return
+
         cr = self.env.cr
         parents_changed = self.ids
         parent_order = self._parent_order or self._order
