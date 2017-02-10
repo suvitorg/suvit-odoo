@@ -295,8 +295,12 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def fix_duplicate_name(self):
         for rec in self:
-            if rec.name and not rec.name.startswith(rec._duplicate_prefix):
-                rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
+            if rec.shortcut_id or rec.duplicate_ids:
+               if rec.name and not rec.name.startswith(rec._duplicate_prefix):
+                  rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
+            else:
+                if rec.name and rec.name.startswith(rec._duplicate_prefix):
+                  rec.name = rec.name[len(rec._duplicate_prefix):]
 
     @api.multi
     def unlink(self):
@@ -308,7 +312,9 @@ class TreeNode(models.AbstractModel):
     def action_remove(self):
         orig_ids, dupl_ids = self.get_origin_duplicate_ids()
         orig_ids.write({'parent_id': False})
+        shortcut_ids = dupl_ids.mapped('shortcut_id')
         dupl_ids.write({'shortcut_id': False})
+        shortcut_ids.fix_duplicate_name()
         dupl_ids.unlink()
 
     @api.multi
