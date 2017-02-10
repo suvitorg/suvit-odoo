@@ -310,11 +310,11 @@ class TreeNode(models.AbstractModel):
     def fix_duplicate_name(self):
         for rec in self:
             if rec.shortcut_id or rec.duplicate_ids:
-               if rec.name and not rec.name.startswith(rec._duplicate_prefix):
-                  rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
+                if rec.name and not rec.name.startswith(rec._duplicate_prefix):
+                    rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
             else:
                 if rec.name and rec.name.startswith(rec._duplicate_prefix):
-                  rec.name = rec.name[len(rec._duplicate_prefix):]
+                    rec.name = rec.name[len(rec._duplicate_prefix):]
 
     @api.multi
     def unlink(self):
