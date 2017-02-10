@@ -109,7 +109,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       self.field_parent = this.fields_view.field_parent || this.options.field_parent;
 
       self.tree_config = {};
-      var config_loaded;
+      var config_loaded = $.Deferred();
       if (this.fields_view.arch.attrs.tree_dynamic_config) {
           config_loaded = self.dataset._model
                               .call('get_tree_config', [],
@@ -126,7 +126,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                      self.tree_config[name]['valid_children'].push(child.model);
               });
           });
-          config_loaded = $.Deffered();
+          config_loaded.resolve();
       }
 
       this.fields_view.fields[self.tree_type_field] = {};
