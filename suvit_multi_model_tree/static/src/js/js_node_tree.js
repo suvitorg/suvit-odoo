@@ -126,7 +126,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                      self.tree_config[name]['valid_children'].push(child.model);
               });
           });
-          config_loaded = $.Deffered();
+          config_loaded = $.Deferred();
       }
 
       this.fields_view.fields[self.tree_type_field] = {};
