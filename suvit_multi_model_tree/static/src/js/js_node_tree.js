@@ -148,16 +148,36 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           }
         });
       });*/
-      _.each(this.fields_view.arch.children, function(col){
-        if (col.tag == 'field' && !col.attrs.invisible){
+      this.columns = [];
+      var registry = instance.web.list.columns;
+      _.each(this.fields_view.arch.children, function(field){
+        if (field.tag == 'field' && !field.attrs.invisible){
+            var id = field.attrs.name;
+            self.columns.push(registry.for_(id, self.fields_view.fields[id], field));
+        }
+      });
+
+      _.each(this.columns, function(col){
             self.tree_fields_cols.push({
-              'header': self.fields_view.fields[col.attrs.name]['string'],
+              'header': col['string'],
               'value': function (node) {
-                return instance.web.format_value(node.original[col.attrs.name],
-                                                 self.fields_view.fields[col.attrs.name]);
+                var name = col.name,
+                    row_data = {};
+                row_data[name] = {'value': node.original[name]};
+                if (col['filename']) {
+                   row_data[col['filename']] = {'value': node.original[col['filename']]};
+                }
+                console.log('JSTreeCell.format_value', node.original, row_data);
+
+                return col.format(row_data,
+                                  {model: self.dataset.model,
+                                   id: node.original.id
+                                  });
+                //                  self.fields_view.fields[col.name]);
+                //return instance.web.format_value(node.original[col.attrs.name],
+                //                                 self.fields_view.fields[col.attrs.name]);
               }
             });
-        }
       });
 
       // XXX remove
@@ -586,7 +606,8 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       // console.log('config_data', self, obj, self.records);
 
       if (obj.id == "#") {
-        this.dataset.read_slice(this.fields_view.fields).done(function(records) {
+        this.dataset.read_slice(this.fields_view.fields,
+                               {context: {bin_size: true}}).done(function(records) {
           self.load_records(records);
           cb.call(this, self.new_records);
         });
@@ -596,7 +617,8 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         // console.log('check parents', obj.id, parents);
         self.dataset.read_ids(childs,
                               Object.keys(self.fields_view.fields),
-                              {context: {"tree_parent_ids": parents}}
+                              {context: {"tree_parent_ids": parents,
+                                         "bin_size": true}}
         ).done(function(records) {
           self.load_records(records);
           cb.call(this, self.new_records);
