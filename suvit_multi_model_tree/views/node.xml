@@ -16,7 +16,7 @@
                        <field name="icon" />
                      </group>
                      <group>
-                       <field name="object_id" />
+                       <field name="object_id" attrs="{'invisible': [('shortcut_id', '!=', False)]}"/>
                        <field name="shortcut_id" />
                      </group>
                    </group>

@@ -49,7 +49,8 @@ class TreeNode(models.AbstractModel):
                                   track_visibility='onchange')
     duplicate_ids = fields.One2many(string=u'Дубли',
                                     comodel_name=_name,
-                                    inverse_name='shortcut_id')
+                                    inverse_name='shortcut_id',
+                                    readonly=True)
     self_id = fields.Many2one(string="Связь",
                               comodel_name=_name,
                               compute='compute_self')
@@ -158,6 +159,13 @@ class TreeNode(models.AbstractModel):
             self.compute_name()
             self.mapped('shortcut_id').compute_name()
 
+        if 'name' in vals:
+            new_name = vals['name']
+            node_ids = (self.mapped('shortcut_id') + self.mapped('duplicate_ids'))\
+                            .filtered(lambda r: r.name != new_name)
+            if node_ids:
+                node_ids.write({'name': new_name})
+
         return res
 
     @api.multi
@@ -177,10 +185,16 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def compute_full_name(self):
         for rec in self:
-            # use TreeNode._order = 'parent_left' instead of .sorted()
-            rec.full_name = u' / '.join(part or '-'
-                                        for part in (rec.all_parent_ids
-                                            + rec).mapped('name'))
+            if self._parent_store:
+                # use TreeNode._order = 'parent_left' instead of .sorted()
+                rec.full_name = u' / '.join(part or '-'
+                                            for part in (rec.all_parent_ids
+                                                + rec).mapped('name'))
+            else:
+                full_name = rec.name
+                if rec.parent_id:
+                    full_name = u"%s / %s" % (rec.parent_id.full_name, full_name)
+                rec.full_name = full_name
 
     @api.model
     def root_child_ids(self):
@@ -296,11 +310,11 @@ class TreeNode(models.AbstractModel):
     def fix_duplicate_name(self):
         for rec in self:
             if rec.shortcut_id or rec.duplicate_ids:
-               if rec.name and not rec.name.startswith(rec._duplicate_prefix):
-                  rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
+                if rec.name and not rec.name.startswith(rec._duplicate_prefix):
+                    rec.name = u"%s%s" % (rec._duplicate_prefix, rec.name)
             else:
                 if rec.name and rec.name.startswith(rec._duplicate_prefix):
-                  rec.name = rec.name[len(rec._duplicate_prefix):]
+                    rec.name = rec.name[len(rec._duplicate_prefix):]
 
     @api.multi
     def unlink(self):
