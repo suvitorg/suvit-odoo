@@ -167,7 +167,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                 if (col['filename']) {
                    row_data[col['filename']] = {'value': node.original[col['filename']]};
                 }
-                console.log('JSTreeCell.format_value', node.original, row_data);
+                // console.log('JSTreeCell.format_value', node.original, row_data);
 
                 return col.format(row_data,
                                   {model: self.dataset.model,
