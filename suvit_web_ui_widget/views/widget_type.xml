@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+        <record model="ir.ui.view" id="suvit_ir_ui_widget_type_form">
+        <field name="name">suvit_ir_ui_widget_type_form</field>
+        <field name="model">suvit.ir.ui.widget.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                  <h1><span class="oe_format_form_title_prefix">Виджет </span> <field name="name" /></h1>
+                  <group>
+                    <group>
+                        <field name="code"/>
+                        <field name="view_type" />
+                        <field name="mode" />
+                        <field name="type" />
+                    </group>
+                    <group>
+                        <field name="description" />
+                        <field name="options" widget="bootstrap_markdown" />
+                    </group>
+                  </group>
+                  <notebook>
+                    <page string="Виды">
+                    </page>
+                    <page string="Структура">
+                      <group>
+                        <field name="parent_id" />
+                        <field name="child_ids" />
+                      </group>
+                    </page>
+                    <page string="Изображение">
+                      <field name="image_read" />
+                      <field name="image_write" />
+                    </page>
+                    <page string="Служебное инфо">
+                    </page>
+                  </notebook>
+                </sheet>
+            </form>
+        </field>
+        </record>
+
+        <!-- Format Spec Technology Group View Tree -->
+        <record model="ir.ui.view" id="suvit_ir_ui_widget_type_list">
+            <field name="name">suvit_ir_ui_widget_type_list</field>
+            <field name="model">suvit.ir.ui.widget.type</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="view_type" />
+                    <field name="image_read_html" />
+                    <field name="image_write_html" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_suvit_ui_widget_type">
+            <field name="name">Cправочник Виджетов</field>
+            <field name="res_model">suvit.ir.ui.widget.type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+  </data>
+</openerp>
