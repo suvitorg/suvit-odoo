@@ -2,7 +2,7 @@
     'name': 'Сувит. Сайт',
     'category': 'Website',
     'summary': 'Перевод модуля сайт',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'version': '1.0',
     'depends': [
         'website',

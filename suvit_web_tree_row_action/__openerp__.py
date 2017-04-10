@@ -9,7 +9,7 @@
 
         """,
     'author': 'Suvit LLC',
-    'website': 'http://suvit.ru',
+    'website': 'https://suvit.ru',
     'depends': [
         'web',
         'suvit_web_list_row_action',

@@ -6,6 +6,8 @@
     'description':
         """
         """,
+    'author': 'Suvit LLC',
+    'website': 'https://suvit.ru',
     'depends': ['base'],
     'data': [
         'views/update_modules.xml',
