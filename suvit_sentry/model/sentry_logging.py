@@ -19,6 +19,45 @@ from werkzeug.exceptions import ClientDisconnected
 
 logger = logging.getLogger(__name__)
 
+db2max_time = {}
+
+
+def patch_json_request_dispatch():
+    from openerp.http import JsonRequest
+
+    if getattr(JsonRequest.dispatch, 'source', None):
+        return
+
+    import time
+
+    def new_dispatch(self):
+        MAX_RESPONSE_TIME = db2max_time.get(self.db, 0)
+        if MAX_RESPONSE_TIME == 0:
+            return new_dispatch.source(self)
+
+        start_time = time.time()
+        try:
+            return new_dispatch.source(self)
+        finally:
+            work_time = time.time() - start_time
+
+            if work_time > MAX_RESPONSE_TIME:
+
+                endpoint = self.endpoint.method.__name__
+                model = self.params.get('model')
+                method = self.params.get('method')
+
+                if endpoint not in ['poll',  # do not log longpolling/poll
+                                    ]:
+
+                    msg_preffix = '%s/%s.%s' % (endpoint, model, method)
+                    # we use error for notify sentry
+                    logger.error(msg_preffix + u': Slow response time %.2f',
+                                 work_time)
+
+    new_dispatch.source = JsonRequest.dispatch
+    JsonRequest.dispatch = new_dispatch
+
 
 class ContextSentryHandler(SentryHandler):
 
@@ -151,6 +190,8 @@ class ContextSentryHandler(SentryHandler):
 
     def can_record(self, record):
         res = super(ContextSentryHandler, self).can_record(record)
+        if not res:
+            return res
         bad_db = self.db_name != record.dbname
         bad_logger = record.name.startswith(('openerp.sql_db',))
         if record.exc_info and all(record.exc_info):
@@ -167,7 +208,7 @@ class ContextSentryHandler(SentryHandler):
 
         else:
             bad_exc = False
-        return res and not (bad_db or bad_logger or bad_exc)
+        return not (bad_db or bad_logger or bad_exc)
 
     def _emit(self, rec, **kwargs):
         # must be _emit, after can_record
@@ -184,27 +225,26 @@ class SentrySetup(models.AbstractModel):
     _name = 'sentry.setup'
 
     def __init__(self, pool, cr, *args, **kwargs):
-
         registries = openerp.modules.registry.RegistryManager.registries
         params = pool['ir.config_parameter']
+
         for db_name, _ in registries.iteritems():
             db = openerp.sql_db.db_connect(db_name)
             cr = db.cursor()
             res = []
-
             try:
                 select = "select key, value from ir_config_parameter where key = 'SENTRY_CLIENT_DSN'"
                 cr.execute(select)
                 res = cr.fetchall()
-
+                select = "select key, value from ir_config_parameter where key = 'SENTRY_CLIENT_MAX_RESPONSE_TIME'"
+                cr.execute(select)
+                res2 = cr.fetchall()
             except psycopg2.ProgrammingError, e:
-                cr.close()
                 if e.pgcode == '42P01':
                     # Class 42 — Syntax Error or Access Rule Violation; 42P01: undefined_table
                     # The table ir_config_parameter does not exist; this is probably not an OpenERP database.
                     _logger.warning('Tried to poll an undefined table on database %s.', db_name)
                     continue
-
             finally:
                 cr.close()
 
@@ -232,5 +272,21 @@ class SentrySetup(models.AbstractModel):
                 level=getattr(logging, config.get('sentry_level', 'ERROR')),
             )
             setup_logging(handler)
+
+            if not res2:
+                continue
+            try:
+                MAX_RESPONSE_TIME = int(res2[0][1])
+            except:
+                continue
+
+            if not MAX_RESPONSE_TIME:
+                continue
+
+            db2max_time[db_name] = MAX_RESPONSE_TIME
+
+        if db2max_time:
+            print 'Patching JsonRequest.dispatch', db2max_time
+            patch_json_request_dispatch()
 
         super(SentrySetup, self).__init__(pool, cr, *args, **kwargs)
