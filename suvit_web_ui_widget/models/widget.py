@@ -36,6 +36,11 @@ class WidgetType(models.Model):
     # TODO list of attrs
     options = fields.Text(string=u'Настройки')
 
+    module_id = fields.Many2one(string=u'Модуль',
+                                comodel_name='ir.module.module',
+                                ondelete='cascade',
+                                )
+
     parent_id = fields.Many2one(string=u'Принадлежность',
                                 comodel_name=_name)
     child_ids = fields.One2many(string=u'Состав',
@@ -107,17 +112,17 @@ class WidgetTree(models.Model):
     @api.model
     def get_tree_config(self):
         return {'#': {
-                   'valid_children': [self._name],
+                    'valid_children': [self._name],
                 },
                 self._name: {
-                        'name': u'Группа',
-                        'create': True,
-                        'edit': True,
-                        'copy': True,
-                        'delete': True,
-                        'settings': True,
-                        'valid_children': [self._name,
-                                           'suvit.ir.ui.widget.type']
+                    'name': u'Группа',
+                    'create': True,
+                    'edit': True,
+                    'copy': True,
+                    'delete': True,
+                    'settings': True,
+                    'valid_children': [self._name,
+                                       'suvit.ir.ui.widget.type']
                 },
                 'suvit.ir.ui.widget.type': {
                     'name': u'Виджет',
