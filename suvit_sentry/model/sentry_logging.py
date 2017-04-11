@@ -286,7 +286,7 @@ class SentrySetup(models.AbstractModel):
             db2max_time[db_name] = MAX_RESPONSE_TIME
 
         if db2max_time:
-            print 'Patching JsonRequest.dispatch', db2max_time
+            logging.info('Patching JsonRequest.dispatch: %s', db2max_time)
             patch_json_request_dispatch()
 
         super(SentrySetup, self).__init__(pool, cr, *args, **kwargs)
