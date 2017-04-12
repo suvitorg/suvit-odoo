@@ -12,7 +12,10 @@ from openerp.tools import config
 from raven import Client
 from raven.conf import setup_logging
 from raven.handlers.logging import SentryHandler
-from raven.utils.compat import _urlparse
+try:
+    from raven.utils.compat import urlparse as _urlparse
+except ImportError:
+    from raven.utils.compat import _urlparse
 from raven.utils.wsgi import get_headers, get_environ
 
 from werkzeug.exceptions import ClientDisconnected
