@@ -2,14 +2,12 @@
 import logging
 import openerp
 import psycopg2
-import sys
 import threading
 
 from openerp import SUPERUSER_ID, models, exceptions
-from openerp.http import request, to_jsonable, JsonRequest, HttpRequest
+from openerp.http import request
 
-from openerp.tools import config, ustr
-from openerp.tools.translate import _
+from openerp.tools import config
 
 from raven import Client
 from raven.conf import setup_logging
@@ -19,8 +17,8 @@ from raven.utils.wsgi import get_headers, get_environ
 
 from werkzeug.exceptions import ClientDisconnected
 
-
 logger = logging.getLogger(__name__)
+
 
 class ContextSentryHandler(SentryHandler):
 
@@ -59,7 +57,7 @@ class ContextSentryHandler(SentryHandler):
             user_info['is_authenticated'] = True
 
             user = self.get_user(request)
-            user_info['login']= user.login
+            user_info['login'] = user.login
             """
             if 'SENTRY_USER_ATTRS' in current_app.config:
                 for attr in current_app.config['SENTRY_USER_ATTRS']:
@@ -81,29 +79,30 @@ class ContextSentryHandler(SentryHandler):
         if not request:
             return cxt
 
-        if isinstance(request, JsonRequest):
+        if request._request_type == 'json':
             retriever = self.get_json_data
         else:
             retriever = self.get_form_data
-        return self.get_http_info_with_retriever(request.httprequest, retriever)
+        return self.get_http_info_with_retriever(request, retriever)
 
     def get_form_data(self, request):
-        return request.form
+        return request.httprequest.form
 
     def get_json_data(self, request):
-        return request.data
+        return getattr(request, 'jsonrequest', None) or request.httprequest.data
 
-    def get_http_info_with_retriever(self, request, retriever=None):
+    def get_http_info_with_retriever(self, odoo_request, retriever=None):
         """
         Exact method for getting http_info but with form data work around.
         """
+        request = odoo_request.httprequest
         if retriever is None:
             retriever = self.get_form_data
 
         urlparts = _urlparse.urlsplit(request.url)
 
         try:
-            data = retriever(request)
+            data = retriever(odoo_request)
         except ClientDisconnected:
             data = {}
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.menu" id="menu_purge_models">
+            <field name="name">Очистка старых Полей</field>
+            <field name="sequence" eval="25" />
+            <field name="action" ref="action_purge_fields" />
+            <field name="parent_id" ref="database_cleanup.menu_database_cleanup"/>
+        </record>
+
+    </data>
+</openerp>

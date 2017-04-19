@@ -1,4 +1,4 @@
-openerp.suvit_multi_model_tree = function(instance, local) {
+openerp.suvit_multi_model_tree_old = function(instance, local) {
 
   /* Ability
      1. to send all node`s parents to server, to can filter children depends on parent

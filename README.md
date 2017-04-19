@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/suvitorg/suvit-odoo.svg?branch=master)](https://travis-ci.org/suvitorg/suvit-odoo)
+[![codecov](https://codecov.io/gh/suvitorg/suvit-odoo/branch/master/graph/badge.svg)](https://codecov.io/gh/suvitorg/suvit-odoo)
+
 odoo-модули SUVIT
 --------------------------
 
@@ -5,10 +8,11 @@ odoo-модули SUVIT
 
 * suvit_base - Базовая часть
     * Удаление регистрации в odoo.com
+    * Улучшение mail.thread чтобы мог работать с полями с русскими названиями
 * suvit_currency - Модуль для скачивания курса валют с сайта ЦБ + обратные курсы
 * suvit_sentry - Интеграция odoo и sentry
 * suvit_migration - базовая модель Миграции данных.
-* suvit_multimodel_tree - Составления дерева из нескольких разных моделей, соединенных M2O-ключем
+* suvit_multi_model_tree - Составления дерева из нескольких разных моделей, соединенных M2O-ключем
 
 ## Frontend
 
@@ -24,8 +28,8 @@ odoo-модули SUVIT
 
 Планы
 ---------------
-* suvit_datetime - Модуль для нормальной работы с датами и временем
+* suvit_datetime - TODO Модуль для нормальной работы с датами и временем
 
 Переводы
 ------------------
-* suvit_website - перевод модуля website
+* suvit_website - TODO перевод модуля website

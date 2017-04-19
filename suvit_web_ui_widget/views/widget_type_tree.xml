@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="suvit_node_widget_type_form_view">
+            <field name="name">Карточка узла виджетов</field>
+            <field name="model">suvit.node.ui.widget.type</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="suvit_multi_model_tree.format_tree_node_form_view"/>
+            <field name="arch" type="xml">
+               <field name="id" position="before">
+                 <button type="object" name="get_subtree_action"
+                         string="Поддерево" colspan="2"/>
+               </field>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="suvit_node_widget_type_list_view">
+            <field name="name">Ведомость узлов виджетов</field>
+            <field name="model">suvit.node.ui.widget.type</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="suvit_multi_model_tree.format_tree_node_list_view"/>
+            <field name="arch" type="xml">
+               <tree position="after"></tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="suvit_node_widget_type_jstree_view">
+            <field name="name">Дерево виджетов</field>
+            <field name="model">suvit.node.ui.widget.type</field>
+            <field name="type">js_node_tree</field>
+            <field name="field_parent">tree_child_ids</field>
+            <field name="mode">primary</field>
+            <field name="inherit_id" ref="suvit_multi_model_tree.format_tree_node_jstree_view"/>
+            <field name="arch" type="xml">
+               <tree position="attributes">
+                   <attribute name="tree_title">Структура дерева виджетов</attribute>
+                   <attribute name="tree_dynamic_config">1</attribute>
+               </tree>
+               <tree position="inside">
+                 <field name="image_html" />
+               </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="suvit_node_widget_type_tree_action">
+            <field name="name">Дерево виджетов</field>
+            <field name="res_model">suvit.node.ui.widget.type</field>
+            <field name="view_mode">js_node_tree,tree,form</field>
+            <field name="domain">[]</field>
+            <!-- context
+                 'open_formview': 'current',
+                 'format_model_tree': True, -->
+            <field name="context">{'tree_domain': [('parent_id', '=', False)]}</field>
+        </record>
+        <record model="ir.actions.server" id="action_suvit_node_widget_type_open">
+            <field name="name">Переход в карточку узла виджета</field>
+            <field name="model_id" ref="model_suvit_node_ui_widget_type"/>
+            <field name="state">code</field>
+            <field name="code">action = self.get_formview_action(cr, uid, context.get('active_id', False), context=context)</field>
+        </record>
+        <record model="ir.values" id="action_suvit_node_widget_type_open_value">
+            <field name="key2">tree_but_open</field>
+            <field name="model">suvit.node.ui.widget.type</field>
+            <field name="name">Дерево виджетов Форма</field>
+            <field name="value" eval="'ir.actions.server,%d' % action_suvit_node_widget_type_open"/>
+        </record>
+
+    </data>
+</openerp>

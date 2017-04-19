@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from openerp import models, fields, api
+from openerp import models, api
 
 
 class CleanupPurgeWizardModule(models.TransientModel):
@@ -7,6 +7,7 @@ class CleanupPurgeWizardModule(models.TransientModel):
     _cleanup_wizard_list = [
         'cleanup.purge.wizard.module',
         'cleanup.purge.wizard.model',
+        'cleanup.purge.wizard.field',
         'cleanup.purge.wizard.table',
         'cleanup.purge.wizard.column',
     ]

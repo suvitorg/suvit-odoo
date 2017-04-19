@@ -65,11 +65,13 @@ class Migration(models.Model):
 
     @api.multi
     def run(self):
-        for rec in self.filtered(lambda r: not r.implemented):
+        # all migration must be called by SUPERUSER_ID and do not check active
+        for rec in self.sudo().with_context(active_test=False)\
+                       .filtered(lambda r: not r.implemented):
             migration_name = rec.method
             logger.info('start migration "%s"', migration_name)
             try:
-                getattr(rec, rec.method)()
+                getattr(rec, migration_name)()
             except:
                 logger.exception('Exception in migration "%s"', migration_name)
                 rec.state = 'error'
@@ -90,7 +92,6 @@ class Migration(models.Model):
         res = super(Migration, self).write(values)
         if values.keys() == ['state']:
             return res
-        for rec in self:
-            rec.run()
 
+        self.run()
         return res

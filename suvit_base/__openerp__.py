@@ -25,10 +25,14 @@ TODO
                 # 3. support_debranding
                 # 4. hide_db_manager_link oca/server_tools
                 'suvit_sentry',
-                'database_cleanup',
+
+                # change admin right
+                'base_debug4all',  # oca/server_tools
+
+                # for patch
+                'mail',
                 ],
     'data': [
-        'wizards/data/cron.xml'
     ],
     'js': [
     ],

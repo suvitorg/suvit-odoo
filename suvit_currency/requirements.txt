@@ -1,0 +1,2 @@
+﻿# import currency from russian CB
+xmltodict

@@ -42,8 +42,7 @@ openerp.suvit_web_list_cols_visibility = function(instance, local) {
               continue;
 
             self.$current.find('tr').each(function(){
-              var row_ind = ($(this).find('.oe_list_record_selector').length ? ind : ind - 1);
-              $(this).children('td:eq('+row_ind+')').addClass(classes[field]);
+              $(this).children('td[data-field="'+field+'"]').addClass(classes[field]);
             });
             self.view.$el.find('th[data-id="'+field+'"], .oe_list_footer:eq('+ind+')').addClass(classes[field]);
         }
