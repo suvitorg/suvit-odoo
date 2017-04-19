@@ -11,7 +11,7 @@
         """,
     'author': 'Suvit LLC',
     'depends': ['web'],
-    'installable': True,
+    'installable': False,
     'auto_install': True,
     'data': [
         'views/web/assets.xml',

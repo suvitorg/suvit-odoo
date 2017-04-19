@@ -11,9 +11,8 @@
         """,
     'author': 'Suvit LLC',
     'depends': ['web'],
-    'installable': True,
+    'installable': False,
     'auto_install': True,
-
     'data': [
         'suvit_web_widgets_data.xml',
     ],

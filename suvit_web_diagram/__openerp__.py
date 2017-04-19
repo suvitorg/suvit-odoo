@@ -21,6 +21,6 @@
     'js': [
         "static/src/js/diagram.js",
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }

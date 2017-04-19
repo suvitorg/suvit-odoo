@@ -22,6 +22,6 @@
         'views/widget_type_tree.xml',
         'views/menu.xml',
     ],
-    'installable': True,
+    'installable': False,
     # 'auto_install': True,
 }

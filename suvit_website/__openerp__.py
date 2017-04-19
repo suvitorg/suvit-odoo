@@ -14,6 +14,6 @@
         """,
     'author': 'Suvit LLC',
     'depends': ['website'],
-    'installable': True,
+    'installable': False,
     'auto_install': True,
 }

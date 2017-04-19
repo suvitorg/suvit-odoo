@@ -36,6 +36,6 @@ TODO
     ],
     'js': [
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
 }
