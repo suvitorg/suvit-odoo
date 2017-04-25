@@ -169,7 +169,7 @@ class ContextSentryHandler(SentryHandler):
             # the command-line, this will break when installing another
             # database from XML-RPC).
             if not db and hasattr(threading.current_thread(), 'dbname'):
-                return threading.current_thread().dbname
+                db = threading.current_thread().dbname
         return db
 
     def get_extra_info(self):
@@ -195,7 +195,7 @@ class ContextSentryHandler(SentryHandler):
         res = super(ContextSentryHandler, self).can_record(record)
         if not res:
             return res
-        bad_db = self.db_name != record.dbname
+        bad_db = self.db_name != (getattr(record, 'dbname', None) or self.get_db_name())
         bad_logger = record.name.startswith(('openerp.sql_db',))
         if record.exc_info and all(record.exc_info):
             bad_exc = issubclass(record.exc_info[0], (exceptions.ValidationError,
