@@ -10,6 +10,8 @@
 
 * Позволяет установить порядок полей в Mass Edit Wizard.
 
+TODO: Починить MassEditing для Many2many полей
+
 """,
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
