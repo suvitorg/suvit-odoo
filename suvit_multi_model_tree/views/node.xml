@@ -30,7 +30,7 @@
                          </tree>
                        </field>
                      </page>
-                     <page string="Служебное инфо">
+                     <page name="system_info" string="Служебное инфо">
                        <group>
                          <field name="id" />
                          <field name="sequence" />
