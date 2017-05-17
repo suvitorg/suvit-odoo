@@ -23,6 +23,22 @@ class Currency(models.Model):
                             digits=(12, 4),
                             )
 
+    @property
+    def rub_id(self):
+        return self.env.ref('base.RUB')
+
+    @property
+    def eur_id(self):
+        return self.env.ref('base.EUR')
+
+    @api.v8
+    def compute_rub(self, from_amount, round=True):
+        return self.compute(from_amount, self.rub_id, round)
+
+    @api.v8
+    def compute_eur(self, from_amount, round=True):
+        return self.compute(from_amount, self.eur_id, round)
+
     @api.multi
     def compute_rub_currency(self):
         for rec in self:
