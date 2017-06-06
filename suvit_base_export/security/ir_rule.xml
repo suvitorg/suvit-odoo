@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record model="ir.rule" id="suvit_rule_access_ir_exports">
+        <field name="name">Можно удалять и изменять только свои экспорты</field>
+        <field name="model_id" ref="base.model_ir_exports"/>
+        <field name="domain_force">[('create_uid', '!=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record model="ir.rule" id="suvit_rule_access_ir_exports_line">
+        <field name="name">Можно удалять и изменять только состав своих экспортов</field>
+        <field name="model_id" ref="base.model_ir_exports_line"/>
+        <field name="domain_force">[('create_uid', '!=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+  </data>
+</openerp>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+base.access_ir_exports_group_system,ir_exports group_system,base.model_ir_exports,base.group_user,1,0,1,0
+base.access_ir_exports_line_group_system,ir_exports_line group_system,base.model_ir_exports_line,base.group_user,1,0,1,0
+
+access_suvit_ir_exports_admin,access_suvit_ir_exports_admin,base.model_ir_exports,base.group_no_one,1,1,1,1
+access_suvit_ir_exports_line_admin,access_suvit_ir_exports_line_admin,base.model_ir_exports_line,base.group_no_one,1,1,1,1
