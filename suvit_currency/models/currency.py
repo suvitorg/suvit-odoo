@@ -31,6 +31,10 @@ class Currency(models.Model):
     def eur_id(self):
         return self.env.ref('base.EUR')
 
+    @property
+    def usd_id(self):
+        return self.env.ref('base.USD')
+
     @api.v8
     def compute_rub(self, from_amount, round=True):
         return self.compute(from_amount, self.rub_id, round)
@@ -38,6 +42,10 @@ class Currency(models.Model):
     @api.v8
     def compute_eur(self, from_amount, round=True):
         return self.compute(from_amount, self.eur_id, round)
+
+    @api.v8
+    def compute_usd(self, from_amount, round=True):
+        return self.compute(from_amount, self.usd_id, round)
 
     @api.multi
     def compute_rub_currency(self):
