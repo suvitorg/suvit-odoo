@@ -163,16 +163,22 @@ class Currency(models.Model):
             currency_days_with_not_rates = default_param
         today = datetime.date.today()
         date = today - datetime.timedelta(currency_days_with_not_rates)
-        recs = self.env['res.currency.rate'].search(
-            [('name', '>=', fields.Datetime.to_string(date))])
-        if not recs:
-            admin = self.env['res.users'].browse(1)
-            mail = self.env['mail.mail']
-            message = 'Валюты не обновлялись c {}'.format(date.strftime('%d-%m-%Y'))
-            mess = mail.create({
+        admin = self.env['res.users'].browse(1)
+        Mail = self.env['mail.mail']
+
+        for cur in self.search(CURRENCY_DOMAIN):
+            recs = self.env['res.currency.rate'].search(
+                [('currency_id', '=', cur.id),
+                 ('name', '>=', fields.Datetime.to_string(date))])
+            if recs:
+                continue
+
+            message = 'Валюта {} не обновлялась c {}'.format(cur.name,
+                                                             date.strftime('%d-%m-%Y'))
+            mess = Mail.create({
                 'email_to': admin.email,
-                'subject': 'Валюта',
-                'body_html': message})
+                'subject': 'Нет обновления валюты!',
+                'body': message})
             mess.send()
 
 
