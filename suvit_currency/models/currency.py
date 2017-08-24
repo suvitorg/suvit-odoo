@@ -111,7 +111,7 @@ class Currency(models.Model):
 
         if self.name == 'RUB':
             raise exceptions.Warning(
-                'Данная валюта не поддерживается: {}'.format(currency))
+                'Данная валюта не поддерживается: RUB')
 
         factory = Currency_getter_factory()
         getter = factory.register(current_service)
