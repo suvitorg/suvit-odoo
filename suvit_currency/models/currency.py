@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 from openerp import api, models, fields
+from openerp import exceptions
+
+from ..services.currency_getter import Currency_getter_factory
 
 import datetime
+import logging
 
+_logger = logging.getLogger(__name__)
 CURRENCY_DOMAIN = [('name', 'in', ['RUB', 'USD', 'EUR'])]
 
 
@@ -22,6 +27,7 @@ class Currency(models.Model):
                             compute='compute_avg_rate',
                             digits=(12, 4),
                             )
+
 
     @property
     def rub_id(self):
@@ -97,6 +103,78 @@ class Currency(models.Model):
                 self.avg_rate = 1. / avg_rate
             else:
                 self.avg_rate = 0
+
+    @api.one
+    def refrech_empty_date_rates(self):
+        # from ..services import update_service_RU_CBRF
+        current_service = 'RU_CBRF_getter'
+        currency = 'RUB'
+
+        if self.name == currency:
+            raise exceptions.Warning(
+                'Данная валюта не поддерживается: {}'.format(currency))
+
+        factory = Currency_getter_factory()
+        getter = factory.register(current_service)
+
+        all_dates = []
+        today = datetime.date.today()
+        date = datetime.date(today.year, 1, 1)
+
+        rec_dates = set(self.env['res.currency.rate'].search(
+            [('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
+
+        while date < today:
+            all_dates.append(fields.Datetime.to_string(date))
+            date += datetime.timedelta(1)
+
+        dates = set(all_dates) - rec_dates
+        for d in dates:
+            try:
+                date_req = datetime.datetime.strptime(
+                    d[:10], '%Y-%m-%d').strftime('%d/%m/%Y')
+                res, log_info = getter.get_updated_currency(
+                    [self.name],
+                    None,
+                    None,
+                    date_req=date_req)
+                vals = {
+                    'currency_id': self.id,
+                    'rate': res[self.name],
+                    'name': d
+                }
+                self.env['res.currency.rate'].create(vals)
+            except Exception as exc:
+                _logger.info(repr(exc))
+                rec = self.env['currency.rate.update.service'].search(
+                    [('service', '=', current_service)],
+                    limit=1)
+                if rec:
+                    error_msg = '\n%s ERROR : %s %s' % (
+                        fields.Datetime.to_string(datetime.datetime.today()),
+                        repr(exc), rec.note or '')
+                    rec.write({'note': error_msg})
+
+    @api.model
+    def check_rates(self):
+        default_param = 3
+        try:
+            currency_days_with_not_rates = int(self.env['ir.config_parameter'].get_param('currency_days_with_not_rates', default_param))
+        except ValueError:
+            currency_days_with_not_rates = default_param
+        today = datetime.date.today()
+        date = today - datetime.timedelta(currency_days_with_not_rates)
+        recs = self.env['res.currency.rate'].search(
+            [('name', '>=', fields.Datetime.to_string(date))])
+        if not recs:
+            admin = self.env['res.users'].browse(1)
+            mail = self.env['mail.mail']
+            message = 'Валюты не обновлялись c {}'.format(date.strftime('%d-%m-%Y'))
+            mess = mail.create({
+                'email_to': admin.email,
+                'subject': 'Валюта',
+                'body_html': message})
+            mess.send()
 
 
 class Rate(models.Model):

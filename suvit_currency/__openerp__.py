@@ -19,6 +19,8 @@
     'init': [
     ],
     'data': [
+        'data/cron.xml',
+
         'views/currency.xml',
 
         'views/fix_account_menu.xml',
