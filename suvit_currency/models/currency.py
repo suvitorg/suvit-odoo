@@ -28,6 +28,7 @@ class Currency(models.Model):
                             digits=(12, 4),
                             )
 
+
     @property
     def rub_id(self):
         return self.env.ref('base.RUB')
@@ -145,6 +146,27 @@ class Currency(models.Model):
                         fields.Datetime.to_string(datetime.datetime.today()),
                         repr(exc), rec.note or '')
                     rec.write({'note': error_msg})
+
+    @api.model
+    def check_rates(self):
+        default_param = 3
+        try:
+            currency_days_with_not_rates = int(self.env['ir.config_parameter'].get_param('currency_days_with_not_rates', default_param))
+        except ValueError:
+            currency_days_with_not_rates = default_param
+        today = datetime.date.today()
+        date = today - datetime.timedelta(currency_days_with_not_rates)
+        recs = self.env['res.currency.rate'].search(
+            [('name', '>=', fields.Datetime.to_string(date))])
+        if not recs:
+            admin = self.env['res.users'].browse(1)
+            mail = self.env['mail.mail']
+            message = 'Валюты не обновлялись c {}'.format(date.strftime('%d-%m-%Y'))
+            mess = mail.create({
+                'email_to': admin.email,
+                'subject': 'Валюта',
+                'body_html': message})
+            mess.send()
 
 
 class Rate(models.Model):

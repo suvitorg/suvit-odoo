@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+    <record id="suvit_check_rates" model="ir.cron">
+      <field name="name">Проверка обновления валюты</field>
+      <field name="active" eval="True"/>
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="nextcall" eval="datetime.now().replace(day=datetime.utcnow().day + 1, hour=0, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')" />
+      <field name="numbercall">-1</field>
+      <field name="doall" eval="True"/>
+      <field name="model">res.currency</field>
+      <field name="function">check_rates</field>
+    </record>
+
+  </data>
+</openerp>
