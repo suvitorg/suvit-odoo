@@ -4,20 +4,21 @@ from openerp.addons.currency_rate_update.services.currency_getter import Currenc
 from openerp.addons.currency_rate_update.model import currency_rate_update
 
 
-class Currency_getter_factory_new(Currency_getter_factory):
-    def register(self, class_name):
-        print(class_name)
-        try:
-            return Currency_getter_factory.register(self, class_name)
-        except UnknowClassError:
-            if class_name == 'RU_CBRF_getter':
-                from .update_service_RU_CBRF import RU_CBRF_getter
-                return RU_CBRF_getter()
-            else:
-                raise UnknowClassError
+Currency_getter_factory.old_register = Currency_getter_factory.register
 
 
-currency_rate_update.Currency_getter_factory = Currency_getter_factory_new
+def register(self, class_name):
+    try:
+        return Currency_getter_factory.old_register(self, class_name)
+    except UnknowClassError:
+        if class_name == 'RU_CBRF_getter':
+            from .update_service_RU_CBRF import RU_CBRF_getter
+            return RU_CBRF_getter()
+        else:
+            raise
+
+
+Currency_getter_factory.register = register
 
 RU_CBRF_supported_currency_array = [
     "AUD", "AZN", "GBP", "AMD", "BYR", "BGN", "BRL", "HUF", "DKK", "USD",

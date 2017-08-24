@@ -31,10 +31,14 @@ class RU_CBRF_getter(Currency_getter_interface):
     for The Central Bank of the Russian Federation service"""
 
     def get_updated_currency(self, currency_array, main_currency,
-                             max_delta_days):
+                             max_delta_days, date_req=None):
         """implementation of abstract method of Currency_getter_interface"""
 
-        response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp')
+        params = {}
+        if date_req:
+            params['date_req'] = date_req
+        response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp',
+                                params=params)
         response.encoding = 'cp1251'
         rates = {}
         text = response.text.encode('utf-8').replace('windows-1251', 'utf-8')
@@ -46,7 +50,7 @@ class RU_CBRF_getter(Currency_getter_interface):
         if main_currency in currency_array:
             currency_array.remove(main_currency)
         main_currency_data = 1
-        if main_currency != 'RUB':
+        if main_currency != 'RUB' and main_currency:
             main_currency_data = rates[main_currency]
             rates['RUB'] = 1
 

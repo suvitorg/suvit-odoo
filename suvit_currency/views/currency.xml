@@ -16,6 +16,10 @@
               <field name="rate" position="replace">
                 <field name="rub_currency_rate"/>
               </field>
+              <field name="rate_ids" position="before">
+                <button string="Обновить курсы"
+                        type="object" name="refrech_empty_date_rates" />
+              </field>
             </field>
         </record>
         <record model="ir.ui.view" id="format_currency_tree">
