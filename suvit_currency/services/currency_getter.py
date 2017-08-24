@@ -1,23 +1,20 @@
 # -*- coding: utf-8 -*-
+# some parts getter from https://github.com/barachka/account-financial-tools
 from openerp.addons.currency_rate_update.services.currency_getter import Currency_getter_factory, UnknowClassError
-
 from openerp.addons.currency_rate_update.model import currency_rate_update
-
-
-Currency_getter_factory.old_register = Currency_getter_factory.register
 
 
 def register(self, class_name):
     try:
         return Currency_getter_factory.old_register(self, class_name)
     except UnknowClassError:
-        if class_name == 'RU_CBRF_getter':
-            from .update_service_RU_CBRF import RU_CBRF_getter
-            return RU_CBRF_getter()
-        else:
+        if class_name != 'RU_CBRF_getter':
             raise
 
+        from .update_service_RU_CBRF import RU_CBRF_getter
+        return RU_CBRF_getter()
 
+Currency_getter_factory.old_register = Currency_getter_factory.register
 Currency_getter_factory.register = register
 
 RU_CBRF_supported_currency_array = [

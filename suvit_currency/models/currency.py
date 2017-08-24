@@ -108,28 +108,27 @@ class Currency(models.Model):
     def refrech_empty_date_rates(self):
         # from ..services import update_service_RU_CBRF
         current_service = 'RU_CBRF_getter'
-        currency = 'RUB'
 
-        if self.name == currency:
+        if self.name == 'RUB':
             raise exceptions.Warning(
                 'Данная валюта не поддерживается: {}'.format(currency))
 
         factory = Currency_getter_factory()
         getter = factory.register(current_service)
 
-        all_dates = []
+        all_dates = set()
         today = datetime.date.today()
         date = datetime.date(today.year, 1, 1)
-
-        rec_dates = set(self.env['res.currency.rate'].search(
-            [('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
-
         while date < today:
-            all_dates.append(fields.Datetime.to_string(date))
+            all_dates.add(fields.Datetime.to_string(date))
             date += datetime.timedelta(1)
 
-        dates = set(all_dates) - rec_dates
-        for d in dates:
+        rec_dates = set(self.env['res.currency.rate'].search(
+            [('currency_id', '=', self.id),
+             ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
+
+        dates = all_dates - rec_dates
+        for d in sorted(dates):
             try:
                 date_req = datetime.datetime.strptime(
                     d[:10], '%Y-%m-%d').strftime('%d/%m/%Y')

@@ -36,6 +36,8 @@
     'auto_install': False,
     'application': True,
     'external_dependencies': {
-        'python': ['xmltodict'],
+        'python': ['requests',
+                   'xmltodict',
+                   ],
     }
 }
