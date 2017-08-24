@@ -5,16 +5,17 @@
     'category': 'Suvit',
     'complexity': 'easy',
     'description': """
-
 * Установка рубля валютой по умолчанию
+* Добавление ЦБ РФ к местам получения курсов валют
 * Автообновление курсов валют с сайта ЦБ РФ
+* Возможность получить все курсы с начала года
 * Показ обратных курсов к рублю, например 76руб - 1 евро
-
+* Уведомление админа, если курс не получался более 3 дней
     """,
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        'currency_rate_update',  # from barachka with RusCB support
+        'currency_rate_update',  # github/OCA/account-financial-tools
     ],
     'init': [
     ],
