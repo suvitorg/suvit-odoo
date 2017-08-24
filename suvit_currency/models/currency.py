@@ -116,16 +116,16 @@ class Currency(models.Model):
         factory = Currency_getter_factory()
         getter = factory.register(current_service)
 
-        all_dates = set()
-        today = datetime.date.today()
         date = datetime.date(today.year, 1, 1)
-        while date < today:
-            all_dates.add(fields.Datetime.to_string(date))
-            date += datetime.timedelta(1)
-
         rec_dates = set(self.env['res.currency.rate'].search(
             [('currency_id', '=', self.id),
              ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
+
+        all_dates = set()
+        today = datetime.date.today()
+        while date < today:
+            all_dates.add(fields.Datetime.to_string(date))
+            date += datetime.timedelta(1)
 
         dates = all_dates - rec_dates
         for d in sorted(dates):
