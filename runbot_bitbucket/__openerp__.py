@@ -3,7 +3,7 @@
     'name': "Runbot for bitbucket suvit",
     'version': '0.0.1',
     'description': """
-        Расширение runbot для suvit
+        Расширение runbot для работы с bitbucket
     """,
     'author': "Suvit LLC",
 
@@ -19,5 +19,5 @@
     'data': [
         'views/repo.xml',
     ],
-    'installable': True,
+    'installable': False,
 }
