@@ -26,7 +26,7 @@
                       <field mode="tree" name="rate_ids" nolabel="1"
                              attrs="{'readonly':[('base','=',True)]}">
                         <tree string="Rates" editable="bottom">
-                          <field name="name"/>
+                          <field name="name" widget="date"/>
                           <field name="rub_currency_rate"/>
                           <field name="rate" string="Обратный курс"/>
                         </tree>
