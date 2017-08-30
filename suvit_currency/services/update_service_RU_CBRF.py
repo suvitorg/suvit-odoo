@@ -37,6 +37,8 @@ class RU_CBRF_getter(Currency_getter_interface):
         params = {}
         if date_req:
             params['date_req'] = date_req
+        else:
+            params['date_req'] = (datetime.date.today() - datetime.timedelta(1)).strftime('%d/%m/%Y')
         response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp',
                                 params=params)
         response.encoding = 'cp1251'
