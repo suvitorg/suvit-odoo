@@ -20,10 +20,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import datetime
 
-from openerp.addons.currency_rate_update.services.currency_getter_interface import Currency_getter_interface
 from xmltodict import parse
 import requests
+
+from openerp.addons.currency_rate_update.services.currency_getter_interface import Currency_getter_interface
 
 
 class RU_CBRF_getter(Currency_getter_interface):
