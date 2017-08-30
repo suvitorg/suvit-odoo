@@ -123,7 +123,7 @@ class Currency(models.Model):
              ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
 
         all_dates = set()
-        while date < today:
+        while date <= today:
             all_dates.add(fields.Datetime.to_string(date))
             date += datetime.timedelta(1)
 
@@ -189,6 +189,8 @@ class Rate(models.Model):
                                      compute='compute_rub_currency',
                                      digits=(12, 4),
                                      )
+
+    rate = fields.Float(digits=(12, 8))
 
     @api.multi
     def compute_rub_currency(self):
