@@ -9,16 +9,50 @@
             <field name="arch" type="xml">
               <field name="rate_silent" position="replace">
                 <field name="rub_currency_rate"/>
-                <field name="rate_month" readonly="0"
-                       attrs="{'invisible': [('name', '=', 'RUB')]}"/>
-                <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
               </field>
               <field name="rate" position="replace">
                 <field name="rub_currency_rate"/>
               </field>
-              <field name="rate_ids" position="before">
-                <button string="Обновить курсы"
-                        type="object" name="refrech_empty_date_rates" />
+              <group string="Price Accuracy" position="replace" />
+              <group string="Display" position="replace" />
+              <field name="rate_ids" position="replace">
+                <notebook>
+                  <page string="Курсы">
+                    <group>
+                      <field mode="tree" name="rate_ids" nolabel="1"
+                             attrs="{'readonly':[('base','=',True)]}">
+                        <tree string="Rates" editable="bottom">
+                          <field name="name"/>
+                          <field name="rate"/>
+                        </tree>
+                      </field>
+                    </group>
+                  </page>
+                  <page string="Служебное инфо">
+                    <group>
+                      <group>
+                        <field name="rate_month" readonly="0"
+                               attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+                        <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+                      </group>
+                      <group/>
+                      <group>
+                        <group string="Price Accuracy">
+                          <field name="rounding"/>
+                          <field name="accuracy"/>
+                        </group>
+                        <group string="Display">
+                          <field name="symbol"/>
+                          <field name="position"/>
+                        </group>
+                      </group>
+                      <group colspan="2">
+                        <button string="Обновить курсы"
+                                type="object" name="refrech_empty_date_rates" />
+                      </group>
+                    </group>
+                  </page>
+                </notebook>
               </field>
             </field>
         </record>
