@@ -177,8 +177,8 @@ class Currency(models.Model):
                                                              date.strftime('%d-%m-%Y'))
             mess = Mail.create({
                 'email_to': admin.email,
-                'subject': 'Нет обновления валюты!',
-                'body': message})
+                'subject': 'Нет обновления валюты {}!'.format(cur.name),
+                'body_html': message})
             mess.send()
 
 
