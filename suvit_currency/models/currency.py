@@ -178,7 +178,7 @@ class Currency(models.Model):
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': 'Нет обновления валюты {}!'.format(cur.name),
-                'body_html': message})
+                'body_html': u'<pre>%s</pre>' % message})
             mess.send()
 
 
