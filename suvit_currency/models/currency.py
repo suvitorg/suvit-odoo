@@ -173,11 +173,11 @@ class Currency(models.Model):
             if recs:
                 continue
 
-            message = 'Валюта {} не обновлялась c {}'.format(cur.name,
-                                                             date.strftime('%d-%m-%Y'))
+            message = u'Валюта {} не обновлялась c {}'.format(cur.name,
+                                                              date.strftime('%d-%m-%Y'))
             mess = Mail.create({
                 'email_to': admin.email,
-                'subject': 'Нет обновления валюты {}!'.format(cur.name),
+                'subject': u'Нет обновления валюты {}!'.format(cur.name),
                 'body_html': u'<pre>%s</pre>' % message})
             mess.send()
 
