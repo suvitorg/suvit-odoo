@@ -54,10 +54,15 @@
                           <field name="position"/>
                         </group>
                       </group>
-                      <group colspan="2">
+                    </group>
+                    <group>
+                      <group>
+                        <field name="from_date" />
+                        <field name="force_refresh" />
                         <button string="Обновить курсы"
                                 type="object" name="refrech_empty_date_rates" />
                       </group>
+                      <group />
                     </group>
                   </page>
                 </notebook>
