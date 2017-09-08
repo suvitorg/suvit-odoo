@@ -177,27 +177,7 @@ class Currency(models.Model):
         admin = self.env['res.users'].browse(1)
         Mail = self.env['mail.mail']
 
-        footer = ""
-        if admin.signature:
-            signature = admin.signature
-        else:
-            signature = "--<br />%s" % admin.name
-        footer = tools.append_content_to_html(footer, signature, plaintext=False)
-
-        # add company signature
-        if admin.company_id.website:
-            website_url = ('http://%s' % admin.company_id.website) if not admin.company_id.website.lower().startswith(('http:', 'https:')) \
-                          else admin.company_id.website
-            company = "<a style='color:inherit' href='%s'>%s</a>" % (website_url, admin.company_id.name)
-        else:
-            company = admin.company_id.name
-        sent_by = _('Sent by %(company)s using %(odoo)s')
-
-        signature_company = '<br /><small>%s</small>' % (sent_by % {
-            'company': company,
-            'odoo': "<a style='color:inherit' href='https://www.odoo.com/'>Odoo</a>"
-        })
-        footer = tools.append_content_to_html(footer, signature_company, plaintext=False, container_tag='div')
+        footer = self.env['mail.notification'].get_signature_footer(admin.id)
 
         for cur in self.search(CURRENCY_DOMAIN):
             recs = self.env['res.currency.rate'].search(
@@ -206,13 +186,13 @@ class Currency(models.Model):
             if recs:
                 continue
 
-            message = u'Валюта {} не обновлялась c {}.<br/>{}'.format(cur.name,
-                                                                      date.strftime('%d-%m-%Y'),
-                                                                      footer)
+            message = u'Валюта {} не обновлялась c {}.'.format(cur.name,
+                                                               date.strftime('%d-%m-%Y'))
+            message = tools.append_content_to_html(message, footer, plaintext=False, container_tag='div')
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': u'Нет обновления валюты {}!'.format(cur.name),
-                'body_html': u'<pre>%s</pre>' % message})
+                'body_html': message})
             mess.send()
 
 
