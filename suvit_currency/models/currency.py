@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from openerp import api, models, fields
+from openerp import api, models, fields, tools
 from openerp import exceptions
+from openerp.tools.translate import _
 
 from ..services.currency_getter import Currency_getter_factory
 
@@ -28,6 +29,10 @@ class Currency(models.Model):
                             digits=(12, 4),
                             )
 
+    from_date = fields.Date(string=u'От даты',
+                            default=datetime.date(datetime.date.today().year, 1, 1))
+
+    force_refresh = fields.Boolean(string=u'Принудительно')
 
     @property
     def rub_id(self):
@@ -106,7 +111,6 @@ class Currency(models.Model):
 
     @api.one
     def refrech_empty_date_rates(self):
-        # from ..services import update_service_RU_CBRF
         current_service = 'RU_CBRF_getter'
 
         if self.name == 'RUB':
@@ -117,10 +121,13 @@ class Currency(models.Model):
         getter = factory.register(current_service)
 
         today = datetime.date.today()
-        date = datetime.date(today.year, 1, 1)
-        rec_dates = set(self.env['res.currency.rate'].search(
-            [('currency_id', '=', self.id),
-             ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
+        date = fields.Date.from_string(self.from_date)
+        if self.force_refresh:
+            rec_dates = set()
+        else:
+            rec_dates = set(self.env['res.currency.rate'].search(
+                [('currency_id', '=', self.id),
+                 ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
 
         all_dates = set()
         while date <= today:
@@ -142,7 +149,11 @@ class Currency(models.Model):
                     'rate': res[self.name],
                     'name': d
                 }
-                self.env['res.currency.rate'].create(vals)
+                rec = self.env['res.currency.rate'].search([('name', '=', d)], limit=1)
+                if rec:
+                    rec.write(vals)
+                else:
+                    self.env['res.currency.rate'].create(vals)
             except Exception as exc:
                 _logger.info(repr(exc))
                 rec = self.env['currency.rate.update.service'].search(
@@ -166,6 +177,8 @@ class Currency(models.Model):
         admin = self.env['res.users'].browse(1)
         Mail = self.env['mail.mail']
 
+        footer = self.env['mail.notification'].get_signature_footer(admin.id)
+
         for cur in self.search(CURRENCY_DOMAIN):
             recs = self.env['res.currency.rate'].search(
                 [('currency_id', '=', cur.id),
@@ -173,12 +186,13 @@ class Currency(models.Model):
             if recs:
                 continue
 
-            message = u'Валюта {} не обновлялась c {}'.format(cur.name,
-                                                              date.strftime('%d-%m-%Y'))
+            message = u'Валюта {} не обновлялась c {}.'.format(cur.name,
+                                                               date.strftime('%d-%m-%Y'))
+            message = tools.append_content_to_html(message, footer, plaintext=False, container_tag='div')
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': u'Нет обновления валюты {}!'.format(cur.name),
-                'body_html': u'<pre>%s</pre>' % message})
+                'body_html': message})
             mess.send()
 
 
