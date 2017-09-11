@@ -149,9 +149,10 @@ class Currency(models.Model):
                     'rate': res[self.name],
                     'name': d
                 }
-                rec = self.env['res.currency.rate'].search([('name', '=', d)], limit=1)
+                rec = self.env['res.currency.rate'].search([('currency_id', '=', self.id),
+                                                            ('name', '=', d)], limit=1)
                 if rec:
-                    rec.write(vals)
+                    rec.write({'rate': res[self.name]})
                 else:
                     self.env['res.currency.rate'].create(vals)
             except Exception as exc:
