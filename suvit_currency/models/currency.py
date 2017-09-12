@@ -180,15 +180,16 @@ class Currency(models.Model):
 
         footer = self.env['mail.notification'].get_signature_footer(admin.id)
 
-        for cur in self.search(CURRENCY_DOMAIN):
+        domain = CURRENCY_DOMAIN + [('name', '!=', 'RUB')]
+        for cur in self.search(domain):
             recs = self.env['res.currency.rate'].search(
                 [('currency_id', '=', cur.id),
                  ('name', '>=', fields.Datetime.to_string(date))])
             if recs:
                 continue
 
-            message = u'Валюта {} не обновлялась c {}.'.format(cur.name,
-                                                               date.strftime('%d-%m-%Y'))
+            message = u'<div>Валюта {} не обновлялась c {}.</div>'.format(cur.name,
+                                                                          date.strftime('%d-%m-%Y'))
             message = tools.append_content_to_html(message, footer, plaintext=False, container_tag='div')
             mess = Mail.create({
                 'email_to': admin.email,
