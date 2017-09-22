@@ -294,7 +294,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           new instance.web.CompoundContext(form_view.dataset.context, context)
       );
       pop.on('closed', self, function(){
-        self.reload_tree(self.can_dragging());
+        self.reload_tree();
       });
     },
     do_add_record: function (listView, $node, element, domen) {
@@ -333,7 +333,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                 [parseInt($node.original.tree_obj_real_id)],
                 vals
             ]).then(function(){
-              self.reload_tree(self.can_dragging());
+              self.reload_tree();
             });
         });
     },
@@ -400,7 +400,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               [self.get_id(obj.id)],
               {'context': ctx})
         .then(function(){
-           self.reload_tree(self.can_dragging());
+           self.reload_tree();
         });
     },
     jstree_contextmenu_paste: function (data) {
@@ -484,7 +484,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               self.dataset._model.call('action_copy',
                                        [self.get_id(obj.id)],
                                        {'context': self.dataset.get_context()}).then(function(){
-                self.reload_tree(self.can_dragging());
+                self.reload_tree();
                 inst.copy(obj);
               });
             }
@@ -511,7 +511,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               return;
 
             self.dataset._model.call('unlink', [self.get_id(obj.id)], {'context': self.dataset.get_context()}).then(function(){
-              self.reload_tree(self.can_dragging());
+              self.reload_tree();
             });
           }
         };
@@ -531,7 +531,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_remove', [self.get_id(obj.id)], {'context': ctx}).then(function(){
-              self.reload_tree(self.can_dragging());
+              self.reload_tree();
               // inst.delete_node(obj);
             });
           }
@@ -552,7 +552,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_exclude', [self.get_id(obj.id)], {'context': ctx}).then(function(){
-              self.reload_tree(self.can_dragging());
+              self.reload_tree();
               //inst.delete_node(obj);
             });
           }
@@ -699,7 +699,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       self.dataset._model.call('action_change_parent',
                                [self.get_id(data.node.id)],
                                {'context': ctx}).fail(function(){
-                                self.reload_tree(self.can_dragging());
+                                self.reload_tree();
                                });
     },
     jstree_load: function () {
