@@ -143,7 +143,6 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       if (self.tree_type_field) {
           this.fields_view.fields[self.tree_type_field] = {};
       }
-
       // console.log('JSTree.load', Object.keys(this.fields_view.fields));
 
       this.tree_fields_cols = [{'header': this.fields_view.arch.attrs.tree_title || 'Структура'}];
