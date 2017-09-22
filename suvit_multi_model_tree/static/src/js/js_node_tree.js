@@ -54,7 +54,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     },
     init: function (parent, dataset, view_id, options) {
       this._super(parent, dataset, view_id, options);
-
+      
       if (parent.action && parent.action.context.tree_domain){
         var domain = new instance.web.CompoundDomain(dataset.domain,
                                                      parent.action.context.tree_domain);
@@ -69,6 +69,10 @@ openerp.suvit_multi_model_tree = function (instance, local) {
 
       this.records = {};
       this.options = _.extend({}, this.defaults, options || {});
+      
+      this.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
+      this.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'});
+      this.$dragging_option.append(this.$dragging);
     },
     switch_mode: function(opt){
       this.reload_tree(opt);
@@ -83,23 +87,27 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       this.dataset._model._domain = this.dataset.domain;
       this.reload_tree();
     },
+    can_dragging: function() {
+      this.$dragging.is(':checked');
+    },
+    set_dragging: function(dragging_on) {
+      this.$dragging.prop('checked', dragging_on);
+    },
     reload_tree: function(opt){
       this.$el.empty();
       this.records = {};
       this.load_tree(opt);
-      // if (!this.options.nodrag) this.$el.append(this.$dragging_option);
-      $('.dragging_option').remove();
-      if (!this.options.nodrag) this.ViewManager.$el.find('.oe_view_title').after(this.$dragging_option);
+      if (!this.options.nodrag) {
+        this.set_dragging(this.can_dragging());
+        $('.dragging_option').remove();
+        this.ViewManager.$el.find('.oe_view_title').after(this.$dragging_option);
+      }
       this.$el.append(this.$jstree);
     },
     load_tree: function (dragging_on) {
       var self = this;
 
       self.$jstree = $(QWeb.render("JsNodeTreeView", this));
-
-      self.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
-      self.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'}).prop('checked', dragging_on);
-      self.$dragging_option.append(self.$dragging);
 
       self.tree_name_field = self.fields_view.arch.children[0].attrs.name;
       self.tree_icon_field = this.fields_view.arch.attrs.icon_field || self.options.icon_field;
@@ -135,7 +143,6 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       if (self.tree_type_field) {
           this.fields_view.fields[self.tree_type_field] = {};
       }
-
       // console.log('JSTree.load', Object.keys(this.fields_view.fields));
 
       this.tree_fields_cols = [{'header': this.fields_view.arch.attrs.tree_title || 'Структура'}];
@@ -287,7 +294,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           new instance.web.CompoundContext(form_view.dataset.context, context)
       );
       pop.on('closed', self, function(){
-        self.reload_tree(self.$dragging.is(':checked'));
+        self.reload_tree();
       });
     },
     do_add_record: function (listView, $node, element, domen) {
@@ -326,7 +333,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
                 [parseInt($node.original.tree_obj_real_id)],
                 vals
             ]).then(function(){
-              self.reload_tree(self.$dragging.is(':checked'));
+              self.reload_tree();
             });
         });
     },
@@ -393,7 +400,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               [self.get_id(obj.id)],
               {'context': ctx})
         .then(function(){
-           self.reload_tree(self.$dragging.is(':checked'));
+           self.reload_tree();
         });
     },
     jstree_contextmenu_paste: function (data) {
@@ -477,7 +484,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               self.dataset._model.call('action_copy',
                                        [self.get_id(obj.id)],
                                        {'context': self.dataset.get_context()}).then(function(){
-                self.reload_tree(self.$dragging.is(':checked'));
+                self.reload_tree();
                 inst.copy(obj);
               });
             }
@@ -504,7 +511,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               return;
 
             self.dataset._model.call('unlink', [self.get_id(obj.id)], {'context': self.dataset.get_context()}).then(function(){
-              self.reload_tree(self.$dragging.is(':checked'));
+              self.reload_tree();
             });
           }
         };
@@ -524,7 +531,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_remove', [self.get_id(obj.id)], {'context': ctx}).then(function(){
-              self.reload_tree(self.$dragging.is(':checked'));
+              self.reload_tree();
               // inst.delete_node(obj);
             });
           }
@@ -545,7 +552,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_exclude', [self.get_id(obj.id)], {'context': ctx}).then(function(){
-              self.reload_tree(self.$dragging.is(':checked'));
+              self.reload_tree();
               //inst.delete_node(obj);
             });
           }
@@ -679,7 +686,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     },
     jstree_move_node: function(event, data) {
       var self = this;
-      console.log('change_parent', this, data);
+      console.debug('change_parent', this, data);
       var local_context = {
         'old_parent': data.old_parent,
         'old_parent_id': self.get_id(data.old_parent),
@@ -692,7 +699,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       self.dataset._model.call('action_change_parent',
                                [self.get_id(data.node.id)],
                                {'context': ctx}).fail(function(){
-                                self.reload_tree(self.$dragging.is(':checked'));
+                                self.reload_tree();
                                });
     },
     jstree_load: function () {
@@ -719,6 +726,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       tmp_opt = this.node.attrs;
       tmp_opt.nodrag = true;
       this.jstree = new instance.web.JsNodeTreeView(this, this.dataset, false, tmp_opt);
+      this.jstree.set_dragging(!this.get("effective_readonly"));
       this.$el.empty();
       this.jstree.appendTo(this.$el);
       return this._super();
