@@ -93,6 +93,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     set_dragging: function(dragging_on) {
       this.$dragging.prop('checked', dragging_on);
     },
+    set_contextmenu: function(has_contextmenu) {
+      this.has_contextmenu = has_contextmenu;
+    },
     reload_tree: function(opt){
       this.$el.empty();
       this.records = {};
@@ -418,6 +421,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         });
     },
     jstree_config_contextmenu: function($node) {
+      if (!this.has_contextmenu)
+        return;
+      
       var self = this,
           tree = self.$jstree.jstree(true),
           parent = tree.get_node($node.parent),
@@ -727,6 +733,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       tmp_opt.nodrag = true;
       this.jstree = new instance.web.JsNodeTreeView(this, this.dataset, false, tmp_opt);
       this.jstree.set_dragging(!this.get("effective_readonly"));
+      this.jstree.set_contextmenu(!this.get("effective_readonly"));
       this.$el.empty();
       this.jstree.appendTo(this.$el);
       return this._super();
