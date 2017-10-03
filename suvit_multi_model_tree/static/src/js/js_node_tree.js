@@ -73,7 +73,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
       this.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
       this.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'});
       this.$dragging_option.append(this.$dragging);
-      this.has_contextmenu = true;
+      this.set_contextmenu(true);
     },
     switch_mode: function(opt){
       this.reload_tree(opt);
