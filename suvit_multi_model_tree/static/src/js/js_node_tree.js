@@ -99,15 +99,11 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     },
     save_scroll_position: function() {
       var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
-      localStorage[key] = $('.oe_view_manager_body').scrollTop(); 
-      //console.log('save_scroll_position', key, localStorage.getItem(key));
+      localStorage[key] = $('.oe_view_manager_body').scrollTop();
     },
     restore_scroll_position: function() {
-      //$('.oe_view_manager_body').scrollTop(700);
       var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
-      //localStorage.removeItem(key);
       $('.oe_view_manager_body').scrollTop(localStorage.getItem(key));
-      //console.log('restore_scroll_position', key, localStorage.getItem(key));
     },
     reload_tree: function(opt){
       this.$el.empty();
@@ -218,7 +214,6 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     load_records: function (records) {
       var self = this;
           // TODO check
-          self.restore_scroll_position();
           self.new_records = [];
 
       _(records).each(function (record) {
@@ -239,7 +234,6 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           record.icon = icon_src;
           record.children = !!(record[self.field_parent] && record[self.field_parent].length);
       });
-      //self.restore_scroll_position();
     },
     // get_process_child_field: function(tree_inst, process) {
     //   // console.log(process);
@@ -700,6 +694,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     },
     jstree_select_node: function(event, data) {
       var self = this;
+      self.save_scroll_position();
       var our_ids = _.map(self.$jstree.jstree(true).get_node(data.node.parent).children, function(id){
         return self.get_id(id);
       });
@@ -741,6 +736,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
         .on('hover_node.jstree',function(e, data){
           // console.log('JSTree.hover', data);
           $("#" + data.node.id).prop('title', data.node.original[self.tree_title_field]);
+        })
+        .on('ready.jstree',function(){
+          self.restore_scroll_position();
         });
     }
   });
