@@ -97,6 +97,18 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     set_contextmenu: function(has_contextmenu) {
       this.has_contextmenu = has_contextmenu;
     },
+    save_scroll_position: function() {
+      var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
+      localStorage[key] = $('.oe_view_manager_body').scrollTop();
+      //console.log('save_scroll_position', key, localStorage.getItem(key));
+    },
+    restore_scroll_position: function() {
+      //$('.oe_view_manager_body').scrollTop(700);
+      var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
+      //localStorage.removeItem(key);
+      $('.oe_view_manager_body').scrollTop(localStorage.getItem(key));
+      //console.log('restore_scroll_position', key, localStorage.getItem(key));
+    },
     reload_tree: function(opt){
       this.$el.empty();
       this.records = {};
@@ -206,6 +218,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     load_records: function (records) {
       var self = this;
           // TODO check
+          self.restore_scroll_position();
           self.new_records = [];
 
       _(records).each(function (record) {
@@ -226,6 +239,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
           record.icon = icon_src;
           record.children = !!(record[self.field_parent] && record[self.field_parent].length);
       });
+      //self.restore_scroll_position();
     },
     // get_process_child_field: function(tree_inst, process) {
     //   // console.log(process);
@@ -518,6 +532,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
               return;
 
             self.dataset._model.call('unlink', [self.get_id(obj.id)], {'context': self.dataset.get_context()}).then(function(){
+              self.save_scroll_position();
               self.reload_tree();
             });
           }
@@ -531,13 +546,14 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             // console.log('JSTree.unlink', data, inst, obj);
             if (!confirm('Вы действительно хотите отцепить узел "' + obj.text + '"?'))
               return;
-
+            
             var local_context = {
               'new_parent': self.get_id(obj.parent)
             };
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_remove', [self.get_id(obj.id)], {'context': ctx}).then(function(){
+              self.save_scroll_position();
               self.reload_tree();
               // inst.delete_node(obj);
             });
@@ -559,6 +575,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
             var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_exclude', [self.get_id(obj.id)], {'context': ctx}).then(function(){
+              self.save_scroll_position();
               self.reload_tree();
               //inst.delete_node(obj);
             });
