@@ -20,7 +20,7 @@ openerp.suvit_web_tree = function(instance, local) {
           });
 
           return self._super(e).then(function(){
-              if (self.ViewManager.views.tree)
+              if (self.ViewManager.views.tree && self.ViewManager.views.tree.controller)
                 self.ViewManager.views.tree.controller.switch_mode()
           });
       },
