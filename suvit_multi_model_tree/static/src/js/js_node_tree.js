@@ -105,7 +105,6 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     },
     restore_scroll_position: function() {
       if (this.ViewManager && this.ViewManager.action && this.ViewManager.action.menu_id) {
-        console.log('trooloo');
         var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
         $('.oe_view_manager_body').scrollTop(localStorage.getItem(key));
       }
