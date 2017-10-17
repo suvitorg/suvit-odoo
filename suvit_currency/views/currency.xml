@@ -7,14 +7,11 @@
             <field name="model">res.currency</field>
             <field name="inherit_id" ref="base.view_currency_form"/>
             <field name="arch" type="xml">
-              <field name="rate_silent" position="replace">
+              <field name="rate" position="replace">
                 <field name="rub_currency_rate"/>
                 <field name="rate_month" readonly="0"
                        attrs="{'invisible': [('name', '=', 'RUB')]}"/>
                 <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
-              </field>
-              <field name="rate" position="replace">
-                <field name="rub_currency_rate"/>
               </field>
             </field>
         </record>
@@ -23,7 +20,7 @@
             <field name="model">res.currency</field>
             <field name="inherit_id" ref="base.view_currency_tree"/>
             <field name="arch" type="xml">
-              <field name="rate_silent" position="replace">
+              <field name="rate" position="replace">
                 <field name="rub_currency_rate"/>
                 <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
               </field>

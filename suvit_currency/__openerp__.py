@@ -14,7 +14,7 @@
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        'currency_rate_update',  # from barachka with RusCB support
+        # 'currency_rate_update',  # from barachka with RusCB support
     ],
     'init': [
     ],
@@ -23,13 +23,13 @@
 
         'views/fix_account_menu.xml',
 
-        'migrations/data/0001_currency_rate_update.xml',
+        # 'migrations/data/0001_currency_rate_update.xml',
     ],
     'demo': [
     ],
     'qweb': [
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': True,
     'external_dependencies': {

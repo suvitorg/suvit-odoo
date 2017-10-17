@@ -42,7 +42,6 @@
         </field>
         </record>
 
-        <!-- Format Spec Technology Group View Tree -->
         <record model="ir.ui.view" id="suvit_ir_ui_widget_type_list">
             <field name="name">suvit_ir_ui_widget_type_list</field>
             <field name="model">suvit.ir.ui.widget.type</field>

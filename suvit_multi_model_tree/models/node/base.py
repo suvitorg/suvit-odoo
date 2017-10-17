@@ -124,13 +124,13 @@ class TreeNode(models.AbstractModel):
             rec.tree_type = main_obj._name if main_obj else self._name
 
     # low level
-    @classmethod
-    def _add_field(cls, name, field):
-        super(TreeNode, cls)._add_field(name, field)
+    @api.model
+    def _add_field(self, name, field):
+        super(TreeNode, self)._add_field(name, field)
 
         if isinstance(field, fields._Relational):
             if field.comodel_name == 'suvit.tree.node.mixin':
-                field.comodel_name = cls.__name__
+                field.comodel_name = self._name
 
             # print 'TreeNode._add_field', cls.__name__, name, field.comodel_name
 

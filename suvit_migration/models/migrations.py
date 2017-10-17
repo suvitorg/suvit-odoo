@@ -71,7 +71,8 @@ class Migration(models.Model):
             migration_name = rec.method
             logger.info('start migration "%s"', migration_name)
             try:
-                getattr(rec, migration_name)()
+                # getattr(rec, migration_name)()
+                pass
             except:
                 logger.exception('Exception in migration "%s"', migration_name)
                 rec.state = 'error'

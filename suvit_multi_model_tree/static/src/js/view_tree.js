@@ -1,9 +1,13 @@
-openerp.suvit_multi_model_tree_old = function(instance, local) {
+odoo.define('suvit.multi_model_tree.old', function (require) {
+"use strict";
+
+var instance = window.openerp;
+var TreeView = require('web.TreeView');
 
   /* Ability
      1. to send all node`s parents to server, to can filter children depends on parent
      2. server may response with id with all parents, so extract only last id */
-  instance.web.TreeView.include({
+  TreeView.include({
     getparents: function(id) {
       /* by default row id is integer server id,
          but we can modify id too support same tree node in different branches,
@@ -32,4 +36,4 @@ openerp.suvit_multi_model_tree_old = function(instance, local) {
     },
   });
 
-};
+});

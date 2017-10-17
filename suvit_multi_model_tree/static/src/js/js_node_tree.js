@@ -1,14 +1,18 @@
-openerp.suvit_multi_model_tree = function (instance, local) {
-  openerp.suvit_multi_model_tree_old(instance, local)
+odoo.define('suvit.multi_model_tree', function (require) {
+"use strict";
+
+var instance = window.openerp;
+var core = require('web.core');
+
+var FieldMany2Many = core.form_widget_registry.get('many2many');
 
   var QWeb = instance.web.qweb;
   var _t = instance.web._t;
-  instance.web.views.add('js_node_tree', 'instance.web.JsNodeTreeView');
 
   var process_model = false;
   var document_model = false;
   var field_model = false;
-  config_model = new instance.web.Model("ir.config_parameter");
+  var config_model = new instance.web.Model("ir.config_parameter");
   config_model.call("get_param", ['PROCESS_MODEL']).then(function(value) {
     process_model = value || "format.frontend.demo.process";
   });
@@ -46,7 +50,7 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     }
   });
 
-  instance.web.JsNodeTreeView = instance.web.View.extend({
+  var JsNodeTreeView = instance.web.View.extend({
     view_type: 'js_node_tree',
     destroy: function () {
       this.$jstree.jstree('destroy');
@@ -714,16 +718,22 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     }
   });
 
-  local.JsNodeTreeViewField = instance.web.form.FieldMany2Many.extend({
+  var JsNodeTreeViewField = FieldMany2Many.extend({
     render_value: function() {
       tmp_opt = this.node.attrs;
       tmp_opt.nodrag = true;
-      this.jstree = new instance.web.JsNodeTreeView(this, this.dataset, false, tmp_opt);
+      this.jstree = new JsNodeTreeView(this, this.dataset, false, tmp_opt);
       this.$el.empty();
       this.jstree.appendTo(this.$el);
       return this._super();
     }
   });
 
-  instance.web.form.widgets.add('js_node_tree', 'instance.suvit_multi_model_tree.JsNodeTreeViewField');
-};
+  core.form_widget_registry.add('js_node_tree', JsNodeTreeView);
+  core.view_registry.add('js_node_tree', JsNodeTreeViewField);
+
+return {
+    JsNodeTreeView: JsNodeTreeView,
+    JsNodeTreeViewField: JsNodeTreeViewField,
+}
+});

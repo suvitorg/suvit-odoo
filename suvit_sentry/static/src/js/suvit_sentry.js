@@ -1,4 +1,5 @@
 openerp.suvit_sentry = function(instance, local) {
+  return;
   $('.oe_error_detail .show_details').live('click', function() {
     $('.oe_error_detail .hide_details').show();
     $('.oe_error_detail .error_details').show();
