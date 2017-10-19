@@ -97,12 +97,21 @@ openerp.suvit_multi_model_tree = function (instance, local) {
     set_contextmenu: function(has_contextmenu) {
       this.has_contextmenu = has_contextmenu;
     },
+    get_position_key: function() {
+      if (this.ViewManager && this.ViewManager.action && this.ViewManager.action.menu_id) {
+        var key = "jstree_scroll_position_"+this.ViewManager.action.menu_id+'_'+openerp.session.uid;
+        return key;
+      }
+    },
     save_scroll_position: function() {
-      var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
+      var key = this.get_position_key();
+      if (!key) return;
       localStorage[key] = $('.oe_view_manager_body').scrollTop();
+      console.log('jstree_save_scroll_position', key);
     },
     restore_scroll_position: function() {
-      var key = "jstree_scroll_position"+this.ViewManager.action.menu_id;
+      var key = this.get_position_key();
+      if (!key) return;
       $('.oe_view_manager_body').scrollTop(localStorage.getItem(key));
     },
     reload_tree: function(opt){
