@@ -65,6 +65,8 @@ class Migration(models.Model):
 
     @api.multi
     def run(self):
+        if tools.config.options['test_enable']:
+            return
         # all migration must be called by SUPERUSER_ID and do not check active
         for rec in self.sudo().with_context(active_test=False)\
                        .filtered(lambda r: not r.implemented):
@@ -82,8 +84,7 @@ class Migration(models.Model):
     @api.model
     def create(self, values):
         rec = super(Migration, self).create(values)
-        if not tools.config.options['test_enable']:
-            rec.run()
+        rec.run()
 
         return rec
 
