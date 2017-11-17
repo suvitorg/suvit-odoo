@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_group_tree">
+            <field name="name">odoo.suvit.web.ui.widget.group.tree</field>
+            <field name="model">odoo.suvit.web.ui.widget.group</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_odoo_suvit_web_ui_widget_group">
+            <field name="res_model">odoo.suvit.web.ui.widget.group</field>
+            <field name="name">Справочник групп виджетов</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_tree">
+            <field name="name">odoo.suvit.web.ui.widget.tree</field>
+            <field name="model">odoo.suvit.web.ui.widget</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="group_id"/>
+                    <field name="text"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_search">
+            <field name="name">odoo.suvit.web.ui.widget.search</field>
+            <field name="model">odoo.suvit.web.ui.widget</field>
+            <field name="arch" type="xml">
+                <search string="Группы">
+                    <group string="Группировать" name="groupby">
+                    <filter name="widget_group" string="Группа виджетов"
+                        context="{'group_by': 'group_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_odoo_suvit_web_ui_widget">
+            <field name="res_model">odoo.suvit.web.ui.widget</field>
+            <field name="name">Справочник виджетов</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'search_default_widget_group': True}</field>
+        </record>
+
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_features_group_tree">
+            <field name="name">odoo.suvit.web.ui.widget.features.group.tree</field>
+            <field name="model">odoo.suvit.web.ui.widget.features.group</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="widget_id"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_features_group_search">
+            <field name="name">odoo.suvit.web.ui.widget.features.group.search</field>
+            <field name="model">odoo.suvit.web.ui.widget.features.group</field>
+            <field name="arch" type="xml">
+                <search string="Группы свойств">
+                    <group string="Группировать" name="groupby">
+                    <filter name="widget" string="Виджет"
+                        context="{'group_by': 'widget_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_odoo_suvit_web_ui_widget_features_group">
+            <field name="res_model">odoo.suvit.web.ui.widget.features.group</field>
+            <field name="name">Справочник групп свойств виджетов</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'search_default_widget': True}</field>
+        </record>
+
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_feature_tree">
+            <field name="name">odoo.suvit.web.ui.widget.feature.tree</field>
+            <field name="model">odoo.suvit.web.ui.widget.feature</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name"/>
+                    <field name="group_id"/>
+                    <field name="widget_id" invisible="1"/>
+                    <field name="text"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_feature_search">
+            <field name="name">odoo.suvit.web.ui.widget.feature.search</field>
+            <field name="model">odoo.suvit.web.ui.widget.feature</field>
+            <field name="arch" type="xml">
+                <search string="Свойства">
+                    <group string="Группировать" name="groupby">
+                        <filter name="widget" string="Виджет"
+                            context="{'group_by': 'widget_id'}" />
+                        <filter name="group" string="Свойство виджета"
+                            context="{'group_by': 'group_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_odoo_suvit_web_ui_widget_feature">
+            <field name="res_model">odoo.suvit.web.ui.widget.feature</field>
+            <field name="name">Справочник свойств виджетов</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'search_default_widget': True,
+                                   'search_default_group': True}</field>
+        </record>
+
+    </data>
+</openerp>

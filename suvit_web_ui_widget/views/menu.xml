@@ -12,5 +12,30 @@
               action="suvit_node_widget_type_tree_action"
               sequence="4"/>
 
+
+    <menuitem id="menu_ui_widget_group"
+              name="Группы виджетов"
+              action="action_odoo_suvit_web_ui_widget_group"
+              parent="base.next_id_2"
+              sequence="100"/>
+
+    <menuitem id="menu_ui_widget"
+              name="Виджеты"
+              action="action_odoo_suvit_web_ui_widget"
+              parent="base.next_id_2"
+              sequence="101"/>
+
+    <menuitem id="menu_ui_widget_features_group"
+              name="Группы свойств виджетов"
+              action="action_odoo_suvit_web_ui_widget_features_group"
+              parent="base.next_id_2"
+              sequence="102"/>
+
+    <menuitem id="menu_ui_widget_features"
+              name="Свойства виджетов"
+              action="action_odoo_suvit_web_ui_widget_feature"
+              parent="base.next_id_2"
+              sequence="103"/>
+
   </data>
 </openerp>
