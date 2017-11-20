@@ -49,4 +49,4 @@ class MassObject(models.Model):
     @api.multi
     def compute_field_ids(self):
         for rec in self:
-            rec.field_ids = [r.field_id.id for r in rec.field_rel_ids]
+            rec.field_ids = rec.field_rel_ids.mapped('field_id')
