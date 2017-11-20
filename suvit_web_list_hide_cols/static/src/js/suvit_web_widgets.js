@@ -54,6 +54,10 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             self.load_list(self.fields_view);
             self.reload();
         });
+
+        this.$pager.find("button.btn_hide_cols").on('click', function (event) {
+            console.log(event);
+        });
     }
   });
 };

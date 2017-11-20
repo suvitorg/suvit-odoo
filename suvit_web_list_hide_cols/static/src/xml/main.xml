@@ -2,7 +2,7 @@
 <templates>
     <t t-name="ListView.hide_cols">
       <div class="oe_view_hide_cols_menu btn-group oe_left" style="width: 100px;">
-        <button type="button" class="btn btn-default dropdown-toggle"
+        <button type="button" class="btn btn-default dropdown-toggle btn_hide_cols"
                 data-toggle="dropdown"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
           <t t-foreach="columns" t-as="col">
