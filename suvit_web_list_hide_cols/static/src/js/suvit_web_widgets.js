@@ -11,10 +11,8 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
     },
     get_hide_cols_id: function() {
       var id = this.fields_view.view_id
-      //console.log('this', this, this.is_inside_form());
       if(this.is_inside_form()){
         id = this.ViewManager.field_manager.fields_view.view_id+'_'+this.ViewManager.field_manager.fields_view.name;
-        console.log('nammmee', this, id);
       }
       return id;
     },
@@ -71,7 +69,6 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             self.reload();
         });
         
-        console.log('$menu', $menu, $menu.selector);
         $menu.selector === '.oe_list_sidebar .oe_view_hide_cols_menu' ? $(''+$menu.selector+'').addClass('oe_left') : $(''+$menu.selector+'').css({"text-align": "center", "vertical-align": "top"});
 
         if(this.is_inside_form()){
