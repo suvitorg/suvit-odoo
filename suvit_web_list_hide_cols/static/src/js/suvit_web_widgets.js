@@ -3,19 +3,27 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       QWeb = instance.web.qweb;
 
   instance.web.ListView.include({
-    hide_cols_id: function() {
+    is_inside_form: function() {
+      //returns 'true' if we're in formView
+      if(this.ViewManager.field_manager) {
+        return true;
+      }
+    },
+    get_hide_cols_id: function() {
       var id = this.fields_view.view_id
-      if(this.ViewManager.field_manager){
-        id = this.ViewManager.field_manager.fields_view.view_id+'_'+this.ViewManager.name;
+      //console.log('this', this, this.is_inside_form());
+      if(this.is_inside_form()){
+        id = this.ViewManager.field_manager.fields_view.view_id+'_'+this.ViewManager.field_manager.fields_view.name;
+        console.log('nammmee', this, id);
       }
       return id;
     },
     load_hide_cols: function() {
-        var data = localStorage[this.hide_cols_id()] || '{}';
+        var data = localStorage[this.get_hide_cols_id()] || '{}';
         this.hide_cols = JSON.parse(data);
     },
     save_hide_cols: function(data) {
-        localStorage[this.hide_cols_id()] = JSON.stringify(data || this.hide_cols);
+        localStorage[this.get_hide_cols_id()] = JSON.stringify(data || this.hide_cols);
     },
     add_invisible: function(field, is_invisible, save) {
         var modifiers = JSON.parse(field.attrs.modifiers);
@@ -29,7 +37,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
     load_list: function(data) {
         var self = this;
         this._super(data);
-        var $sidebar = this.ViewManager.field_manager ? $('.oe_list_sidebar') : $('.oe_sidebar');
+        var $sidebar = this.is_inside_form() ? $('.oe_list_sidebar') : $('.oe_sidebar');
         
         var $menu = $sidebar.find('.oe_view_hide_cols_menu');
         if (!$menu.size()) {
@@ -63,10 +71,10 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             self.reload();
         });
         
-        var hide_cols_menu = $('.oe_view_hide_cols_menu');
-        this.ViewManager.field_manager ? hide_cols_menu.addClass('oe_left') : hide_cols_menu.css({"text-align": "center", "vertical-align": "top"});
+        console.log('$menu', $menu, $menu.selector);
+        $menu.selector === '.oe_list_sidebar .oe_view_hide_cols_menu' ? $(''+$menu.selector+'').addClass('oe_left') : $(''+$menu.selector+'').css({"text-align": "center", "vertical-align": "top"});
 
-        if(this.ViewManager.field_manager){
+        if(this.is_inside_form()){
           this.$el.find('button.btn_hide_cols').on('click', function (event) {
             $('.oe_view_hide_cols_menu').toggleClass('open');
           });
