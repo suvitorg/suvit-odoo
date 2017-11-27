@@ -76,6 +76,9 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             $(''+$menu.selector+'').toggleClass('open');
           });
         }        
+        //this.$pager.find("button.btn_hide_cols").on('click', function (event) {
+        //    console.log(event);
+        //});
     }
   });
 };
