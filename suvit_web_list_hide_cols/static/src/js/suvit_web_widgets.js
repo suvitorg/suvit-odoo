@@ -36,12 +36,13 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         var self = this;
         this._super(data);
         var $sidebar = this.is_inside_form() ? $('.oe_list_sidebar') : $('.oe_sidebar');
-        
+
         var $menu = $sidebar.find('.oe_view_hide_cols_menu');
         if (!$menu.size()) {
           $sidebar.append(QWeb.render("ListView.hide_cols", this));
+          $menu = $sidebar.find('.oe_view_hide_cols_menu');
         }
-        
+
         if ( $('.oe_view_hide_cols_menu li input:checked').length <= 1 ) {
             $('.oe_view_hide_cols_menu li input:checked').prop('disabled', true);
         } else {
@@ -59,7 +60,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
                     self.add_invisible(field, !$checkbox.prop('checked'), true);
                 }
             });
-            
+
             if ($checkbox.data('field') == '_row_no') {
                 self.hide_cols['_row_no'] = !$checkbox.prop('checked');
                 self.save_hide_cols();
@@ -68,17 +69,18 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             self.load_list(self.fields_view);
             self.reload();
         });
-        
-        $menu.selector === '.oe_list_sidebar .oe_view_hide_cols_menu' ? $(''+$menu.selector+'').addClass('oe_left') : $(''+$menu.selector+'').css({"text-align": "center", "vertical-align": "top"});
+
+        if(this.is_inside_form())
+          $menu.addClass('oe_left')
+        else
+          $menu.css({"text-align": "center", "vertical-align": "top", "margin-top": "1px"});
 
         if(this.is_inside_form()){
           this.$el.find('button.btn_hide_cols').on('click', function (event) {
-            $(''+$menu.selector+'').toggleClass('open');
+            // console.log(event);
+            $menu.toggleClass('open');
           });
-        }        
-        //this.$pager.find("button.btn_hide_cols").on('click', function (event) {
-        //    console.log(event);
-        //});
+        }
     }
   });
 };
