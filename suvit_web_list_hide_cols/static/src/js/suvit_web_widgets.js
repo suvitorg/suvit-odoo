@@ -49,7 +49,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
             $('.oe_view_hide_cols_menu li input').prop('disabled', false);
         }
         $('.oe_view_hide_cols_menu li input[data-swichable = "0"]').prop('disabled', true);
-        this.$el.find('.oe_view_hide_cols_menu li input').off('click').on('click',function(event){
+        $('.oe_view_hide_cols_menu li input').off('click').on('click',function(event){
             $checkbox = $(this);
             if ($checkbox.data('swichable') === 0) {
                 event.preventDefault();
@@ -65,7 +65,9 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
                 self.hide_cols['_row_no'] = !$checkbox.prop('checked');
                 self.save_hide_cols();
             };
-            self.$pager = null;
+            if(self.is_inside_form()){
+              self.$pager = null;
+            }
             self.load_list(self.fields_view);
             self.reload();
         });
