@@ -90,6 +90,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self.reload();
       });
 
+<<<<<<< HEAD
       if(this.is_inside_form())
         $menu.addClass('oe_left')
       else
@@ -100,6 +101,14 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
           $menu.toggleClass('open');
         });
       }
+=======
+        if(this.is_inside_form()){
+          this.$el.find('button.btn_hide_cols').on('click', function (event) {
+            // console.log(event);
+            $menu.toggleClass('open');
+          });
+        }
+>>>>>>> 17c42995d305ecd41c66e734afa6d182014a40c0
     }
   });
 };
