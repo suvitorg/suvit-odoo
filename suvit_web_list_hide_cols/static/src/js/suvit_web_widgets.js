@@ -79,6 +79,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
 
         if(this.is_inside_form()){
           this.$el.find('button.btn_hide_cols').on('click', function (event) {
+            // console.log(event);
             $menu.toggleClass('open');
           });
         }
