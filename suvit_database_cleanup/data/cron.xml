@@ -7,7 +7,7 @@
             <field name="active" eval="False"/>
             <field name="interval_number">24</field>
             <field name="interval_type">hours</field>
-            <field name="nextcall" eval="datetime.now().replace(day=datetime.now().day + 1, hour=0, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')" />
+            <field name="nextcall" eval="(datetime.now()+timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')" />
             <field name="numbercall">-1</field>
             <field name="doall" eval="False"/>
             <field name="model">cleanup.purge.wizard.all</field>
