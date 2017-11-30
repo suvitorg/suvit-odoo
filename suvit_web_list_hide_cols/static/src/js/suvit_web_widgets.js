@@ -31,7 +31,6 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       this.hide_cols = JSON.parse(data);
     },
     save_hide_cols: function(data) {
-      var ddd = this.get_hide_cols_id();
       localStorage[this.get_hide_cols_id()] = JSON.stringify(data || this.hide_cols);
     },
     add_invisible: function(field, is_invisible, save) {
@@ -46,16 +45,17 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
     load_list: function(data) {
       var self = this;
       this._super(data);
-      var list_sidebar = false;
-      if(this.is_inside_form() && this.$el.find('.oe_field_editable')) {
+      
+      var $sidebar;
+      if(this.is_inside_form() && this.$el.find('.oe_field_editable')){
         this.$el.find('.oe_list_header_columns').before('<div class="preheader_wrap"></div>');
-        list_sidebar = this.$el.find('.oe_list_sidebar');
+        var list_sidebar = this.$el.find('.oe_list_sidebar');
+        $sidebar = list_sidebar.length ? list_sidebar : this.$el.find('.preheader_wrap');
+      } else {
+        $sidebar = $('.oe_sidebar');
       }
-      list_sidebar = list_sidebar.length ? list_sidebar : this.$el.find('.preheader_wrap');        
       
-      var $sidebar = this.is_inside_form() ? list_sidebar : $('.oe_sidebar');
       var $menu = $sidebar.find('.oe_view_hide_cols_menu');
-      
       if (!$menu.size()) {
         $sidebar.append(QWeb.render("ListView.hide_cols", this));
         $menu = $sidebar.find('.oe_view_hide_cols_menu');
@@ -89,8 +89,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self.load_list(self.fields_view);
         self.reload();
       });
-
-<<<<<<< HEAD
+      
       if(this.is_inside_form())
         $menu.addClass('oe_left')
       else
@@ -101,14 +100,6 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
           $menu.toggleClass('open');
         });
       }
-=======
-        if(this.is_inside_form()){
-          this.$el.find('button.btn_hide_cols').on('click', function (event) {
-            // console.log(event);
-            $menu.toggleClass('open');
-          });
-        }
->>>>>>> 17c42995d305ecd41c66e734afa6d182014a40c0
     }
   });
 };
