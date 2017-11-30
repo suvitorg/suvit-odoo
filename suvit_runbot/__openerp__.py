@@ -18,5 +18,5 @@
     # always loaded
     'data': [
     ],
-    'installable': True,
+    'installable': False,
 }
