@@ -66,7 +66,7 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         if tools.config.options['test_enable']:
-            rec.state = 'done'
+            self.write({'state': 'done'})
             return
 
         # all migration must be called by SUPERUSER_ID and do not check active
