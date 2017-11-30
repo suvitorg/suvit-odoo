@@ -66,7 +66,9 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         if tools.config.options['test_enable']:
+            rec.state = 'done'
             return
+
         # all migration must be called by SUPERUSER_ID and do not check active
         for rec in self.sudo().with_context(active_test=False)\
                        .filtered(lambda r: not r.implemented):
