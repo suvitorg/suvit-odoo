@@ -25,6 +25,8 @@ odoo-модули SUVIT
 * suvit_web_tree - Показ дерева в карточке. Показ вместе Дерева и Списка
 * suvit_web_tree_row_action - Удалить. см. suvit_web_list_row_action
 * suvit_web_widgets - Виджеты. Показ картинки в списке
+* suvit_web_ui_widget - Справочник виджетов
+* suvit_website_widget - Расширение website для отображения информации по виджетам.
 
 Планы
 ---------------

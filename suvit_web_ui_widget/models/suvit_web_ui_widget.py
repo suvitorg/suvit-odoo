@@ -22,9 +22,9 @@ class SuvitWebUiWidget(models.Model):
     group_id = fields.Many2one(string=u"Группа",
                                comodel_name='odoo.suvit.web.ui.widget.group', )
 
-    features_group_ids = fields.One2many(string=u"Группы свойств виджета",
-                                         comodel_name='odoo.suvit.web.ui.widget.features.group',
-                                         inverse_name='widget_id', )
+    features_ids = fields.One2many(string=u"Свойства виджета",
+                                   comodel_name='odoo.suvit.web.ui.widget.feature',
+                                   inverse_name='widget_id', )
 
     text = fields.Text(string=u"Описание виджета")
 
@@ -38,7 +38,7 @@ class SuvitWebUiWidgetFaturesGroup(models.Model):
     widget_id = fields.Many2one(string=u"Виджет",
                                 comodel_name='odoo.suvit.web.ui.widget', )
 
-    feature_ids = fields.One2many(string=u"Группы свойств виджета",
+    feature_ids = fields.One2many(string=u"Виджеты в группе свойств",
                                   comodel_name='odoo.suvit.web.ui.widget.feature',
                                   inverse_name='group_id', )
 
@@ -53,7 +53,6 @@ class SuvitWebUiWidgetFature(models.Model):
                                comodel_name='odoo.suvit.web.ui.widget.features.group', )
 
     widget_id = fields.Many2one(string=u"Виджет",
-                                related='group_id.widget_id',
-                                store=True, )
+                                comodel_name='odoo.suvit.web.ui.widget')
 
     text = fields.Text(string=u"Описание свойства")
