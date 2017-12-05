@@ -4,17 +4,13 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
 
   instance.web.ListView.include({
     is_inside_form: function() {
-      if(this.is_m2m() || this.is_o2m()) {
-        return true;
-      }
+      return this.is_m2m() || this.is_o2m();
     },
     is_m2m: function() {
-      if(this.ViewManager.field_manager)
-        return true;
+      return !!this.ViewManager.field_manager
     },
     is_o2m: function() {
-      if(this.ViewManager.o2m)
-        return true;
+      return !!this.ViewManager.o2m;
     },
     open_group: function(group, close){
       if (group.$row) {
