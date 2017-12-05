@@ -3,7 +3,19 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
   var QWeb = instance.web.qweb;
 
   instance.web.ListView.include({
-
+    is_inside_form: function() {
+      if(this.is_m2m() || this.is_o2m()) {
+        return true;
+      }
+    },
+    is_m2m: function() {
+      if(this.ViewManager.field_manager)
+        return true;
+    },
+    is_o2m: function() {
+      if(this.ViewManager.o2m)
+        return true;
+    },
     open_group: function(group, close){
       if (group.$row) {
         if (close) {
@@ -37,6 +49,8 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
     reload_content: function() {
         var tmp = this._super();
         var self = this;
+        if(this.is_inside_form())
+          return tmp;
         var $menu = this.sidebar.$el.find('.oe_view_open_groups_menu');
 
         if (!$menu.size() && self.grouped) {
