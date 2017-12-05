@@ -93,7 +93,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       if(this.is_inside_form())
         $menu.addClass('oe_left')
       else
-        $menu.css({"text-align": "center", "vertical-align": "top", "margin-top": "1px"});
+        $menu.css({"width": "auto", "text-align": "center", "vertical-align": "top", "margin-top": "1px"});
 
       if(this.is_inside_form()){
         this.$el.find('button.btn_hide_cols').on('click', function (event) {
