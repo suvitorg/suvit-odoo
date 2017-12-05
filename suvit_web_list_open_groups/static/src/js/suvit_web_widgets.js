@@ -37,12 +37,11 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
     reload_content: function() {
         var tmp = this._super();
         var self = this;
-
-        var $menu = $('.oe_view_open_groups_menu');
+        var $menu = this.sidebar.$el.find('.oe_view_open_groups_menu');
 
         if (!$menu.size() && self.grouped) {
-          $('.oe_sidebar').append(QWeb.render("ListView.open_groups", self));          
-          $('.oe_view_open_groups_menu').removeClass('oe_left').css({"text-align": "center", "vertical-align": "top", "margin-top": "1px"}).click(function(){
+          this.sidebar.$el.find('.oe_sidebar').append(QWeb.render("ListView.open_groups", self));          
+          this.sidebar.$el.find('.oe_view_open_groups_menu').removeClass('oe_left').click(function(){
             $('i.fa', this).toggleClass('fa-plus').toggleClass('fa-minus');
             $('i.fa', this).hasClass('fa-plus') ? close = true : close = false;
             self.full_open_group(self.groups, close);
