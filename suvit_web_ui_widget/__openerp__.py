@@ -21,6 +21,8 @@
         'views/widget_type.xml',
         'views/widget_type_tree.xml',
         'views/suvit_web_ui_widget.xml',
+        'views/suvit_web_ui_widget_card.xml',
+        'views/suvit_web_ui_widget_features_group.xml',
         'views/menu.xml',
     ],
     'installable': True,
