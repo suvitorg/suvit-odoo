@@ -51,4 +51,27 @@ openerp.suvit_web_list_row_action = function(instance, local) {
 
   });
 
+  instance.web.ListView.List.include({
+
+    row_clicked: function (event, view) {
+        var field = this.view.o2m || this.view.m2m_field;
+        if (!field)
+          return this._super.apply(this, arguments);
+
+        var parent_view = this.dataset.parent_view;
+        var actual_mode = (parent_view ? parent_view.get("actual_mode") : 'view');
+        if (actual_mode != 'view')
+          return this._super.apply(this, arguments);
+
+        var context = field.build_context().eval();
+        if (!context || !context.open_formview)
+          return this._super.apply(this, arguments);
+
+        $(this).trigger(
+          'row_link',
+          [this.dataset.ids[this.dataset.index],
+           this.dataset, view]);
+        },
+    });
+
 };
