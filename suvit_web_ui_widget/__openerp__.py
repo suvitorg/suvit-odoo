@@ -12,16 +12,19 @@
 
         """,
     'depends': [
-        'web_widget_text_markdown',  # oca/web
-        'suvit_multi_model_tree', # for widget tree
+        # 'web_widget_text_markdown',  # oca/web
+        'suvit_multi_model_tree',  # for widget tree
     ],
     'data': [
         'security/ir.model.access.csv',
 
         'views/widget_type.xml',
         'views/widget_type_tree.xml',
+        'views/suvit_web_ui_widget.xml',
+        'views/suvit_web_ui_widget_card.xml',
+        'views/suvit_web_ui_widget_features_group.xml',
         'views/menu.xml',
     ],
-    'installable': False,
+    'installable': True,
     # 'auto_install': True,
 }

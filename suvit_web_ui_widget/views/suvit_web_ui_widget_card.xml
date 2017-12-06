@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_form">
+            <field name="name">odoo.suvit.web.ui.widget.form</field>
+            <field name="model">odoo.suvit.web.ui.widget</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <h2><field name="name"/></h2>
+                        <group>
+                            <group>
+                                <field name="transcribe_name"/>
+                                <field name="group_id"/>
+                                <field name="parent_id"/>
+                            </group>
+                            <group>
+                                <field name="image_read" widget="image" height="200"/>
+                                <field name="descr"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Состав">
+                                <field name="child_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <!--field name="descr"/-->
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Свойства">
+                                <field name="features_groups_ids">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Изображение">
+                                <field name="image_read" />
+                                <field name="image_write" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_tree">
+            <field name="name">odoo.suvit.web.ui.widget.tree</field>
+            <field name="model">odoo.suvit.web.ui.widget</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="group_id"/>
+                    <field name="descr"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_search">
+            <field name="name">odoo.suvit.web.ui.widget.search</field>
+            <field name="model">odoo.suvit.web.ui.widget</field>
+            <field name="arch" type="xml">
+                <search string="Группы">
+                    <group string="Группировать" name="groupby">
+                    <filter name="widget_group" string="Группа виджетов"
+                        context="{'group_by': 'group_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_odoo_suvit_web_ui_widget">
+            <field name="res_model">odoo.suvit.web.ui.widget</field>
+            <field name="name">Справочник виджетов</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_widget_group': True}</field>
+        </record>
+    </data>
+</openerp>
