@@ -44,7 +44,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       
       var $sidebar;
       if(this.is_inside_form() && this.$el.find('.oe_field_editable')){
-        this.$el.find('.oe_list_header_columns').before('<div class="preheader_wrap"></div>');
+        this.$el.find('.oe_list_header_columns').before('<tr class="preheader_wrap"></tr>');
         var list_sidebar = this.$el.find('.oe_list_sidebar');
         $sidebar = list_sidebar.length ? list_sidebar : this.$el.find('.preheader_wrap');
       } else {
@@ -85,9 +85,6 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
         self.load_list(self.fields_view);
         self.reload();
       });
-      
-      if(this.is_inside_form())
-        $menu.addClass('oe_left')
 
       if(this.is_inside_form()){
         this.$el.find('button.btn_hide_cols').on('click', function (event) {
