@@ -3,9 +3,13 @@ openerp.suvit_web_list_row_action = function(instance, local) {
   var QWeb = instance.web.qweb;
 
 
-  var do_action = function(view, id, context){
+  var do_action = function(view, index, id, context){
     var model_obj = new instance.web.Model(view.dataset.model);
     model_obj.call('get_formview_action', [id], {'context':context}).then(function(action){
+      if(!action) {
+        view.select_record(index);
+        return;
+      }
       action['target'] = context.open_formview_target || 'current';
       view.do_action(action);
     });
@@ -22,7 +26,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
         if (!context || !context.open_formview)
           return this._super(index, id, dataset, view);
 
-        do_action(this, id, context);
+        do_action(this, index, id, context);
     }
 
   });
@@ -34,7 +38,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
         if (!context || !context.open_formview)
           return this._super(index, id);
 
-        do_action(this, id, context);
+        do_action(this, index, id, context);
     }
 
   });
@@ -46,7 +50,7 @@ openerp.suvit_web_list_row_action = function(instance, local) {
         if (!context || !context.open_formview)
           return this._super(index, id);
 
-        do_action(this, id, context);
+        do_action(this, index, id, context);
     }
 
   });
