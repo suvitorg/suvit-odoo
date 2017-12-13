@@ -2,6 +2,7 @@
 import re
 
 from openerp import api, models, fields, exceptions
+from odoo.exceptions import ValidationError
 
 CYRILLIC_PATTERN = re.compile(u"[^а-яА-Я]")
 
@@ -36,16 +37,6 @@ class SuvitWebUiWidget(models.Model):
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
                                 inverse_name='parent_id')
-
-    transcribe_name = fields.Char(string=u"Наименование на английском")
-
-    @api.multi
-    @api.constrains('name')
-    def check_cyrillic_name(self):
-        for rec in self:
-            if not CYRILLIC_PATTERN.search(rec.name):
-                continue
-            raise api.Warning(u"Имя виджета должно быть написано кириллицей!")
 
 
 class SuvitWebUiWidgetFaturesGroup(models.Model):

@@ -12,7 +12,7 @@
                                 </div>
                                 <t t-foreach="w_group.widget_ids" t-as="w_id">
                                     <div class="row">
-                                        <p><a t-attf-href="/widgets/{{ slug(w_id) }}">
+                                        <p><a t-attf-href="/widgets/{{ w_id.id }}">
                                             <t t-esc="w_id.name"/></a></p>
                                     </div>
                                 </t>
