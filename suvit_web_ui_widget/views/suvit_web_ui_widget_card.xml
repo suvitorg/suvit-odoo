@@ -22,7 +22,7 @@
                                 <field name="id" invisible="1"/>
                                 <field name="features_ids" context="{'default_widget_id': id}">
                                     <tree editable="bottom">
-                                        <!--field name="name"/-->
+                                        <field name="name"/>
                                         <field name="group_id"/>
                                         <field name="descr"/>
                                         <field name="widget_id" invisible="1"/>
