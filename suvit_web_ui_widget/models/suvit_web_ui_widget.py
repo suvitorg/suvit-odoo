@@ -65,3 +65,6 @@ class SuvitWebUiWidgetFature(models.Model):
                                 store=True)
 
     text = fields.Text(string=u"Описание свойства")
+
+    group_ids = fields.Many2many(string=u"Права доступа",
+                                 comodel_name='res.groups')
