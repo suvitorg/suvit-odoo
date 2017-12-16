@@ -30,6 +30,10 @@ class SuvitWebUiWidget(models.Model):
                                    comodel_name='odoo.suvit.web.ui.widget.feature',
                                    inverse_name='widget_id', )
 
+    features_group_ids = fields.Many2many(string=u"Группы свойств виджета",
+                                          comodel_name='odoo.suvit.web.ui.widget.features.group',
+                                          compute='compute_feature_group_ids', )
+
     descr = fields.Text(string=u"Описание виджета")
 
     parent_id = fields.Many2one(string=u'Принадлежность',
@@ -59,6 +63,11 @@ class SuvitWebUiWidget(models.Model):
                    .replace(' ', '_')
         return text
 
+    @api.multi
+    def compute_feature_group_ids(self):
+        for rec in self:
+            rec.features_group_ids = rec.features_ids.mapped('group_id')
+
 
 class SuvitWebUiWidgetFaturesGroup(models.Model):
     _name = 'odoo.suvit.web.ui.widget.features.group'
@@ -87,3 +96,7 @@ class SuvitWebUiWidgetFature(models.Model):
                                 )
 
     descr = fields.Text(string=u"Описание свойства")
+
+    system_module_id = fields.Many2one(string=u"Модуль системы",
+                                       comodel_name='ir.module.module',
+                                       )

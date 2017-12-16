@@ -25,6 +25,7 @@
                     <field name="group_id"/>
                     <field name="widget_id" readonly="1"/>
                     <field name="descr"/>
+                    <field name="system_module_id"/>
                 </tree>
             </field>
         </record>
