@@ -12,7 +12,7 @@
                                 </div>
                                 <t t-foreach="w_group.widget_ids" t-as="w_id">
                                     <div class="row">
-                                        <p><a t-attf-href="/widgets/{{ w_id.id }}">
+                                        <p><a t-attf-href="/widgets/{{ slug(w_id) }}">
                                             <t t-esc="w_id.name"/></a></p>
                                     </div>
                                 </t>
@@ -24,31 +24,39 @@
         </template>
         <template id="widget_page">
             <t t-call="website.layout">
-                <t t-set="title">Виджет <t t-esc="widget.name"/></t>
+                <t t-set="title">Виджет <t t-esc="widget_id.name"/></t>
                 <div class="oe_structure">
                     <div class="container">
-                        <h2><t t-esc="widget.name"/></h2>
                         <div class="row">
-                            <div class="col-md-1">
-                                <t t-foreach="widget.features_groups_ids" t-as="feature_group_id">
-                                    <p><b><t t-esc="feature_group_id.name"/></b></p>
+                            <h2 align="center"><t t-esc="widget_id.name"/></h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <t t-foreach="widget_groups_ids" t-as="widget_group_id">
+                                    <p><b><t t-esc="widget_group_id.name"/></b></p>
                                 </t>
                             </div>
-                            <div class="col-md-5">
-                                <p><t t-esc="widget.descr"></t></p>
+                            <div class="col-md-4">
                                 <ol>
-                                    <t t-foreach="widget.features_groups_ids" t-as="feature_group_id">
-                                        <h4><t t-esc="feature_group_id.name"/></h4>
-                                        <t t-foreach="feature_group_id.feature_ids" t-as="feature_id">
-                                            <li><t t-esc="feature_id.text"/></li>
-                                        </t>
+                                    <p><t t-esc="widget_id.descr"></t></p>
+                                    <t t-foreach="widget_id.features_ids" t-as="feature_id">
+                                        <p><b><t t-esc="feature_id.name"/></b></p>
+                                        <li><t t-esc="feature_id.descr"/></li>
                                     </t>
                                 </ol>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <p>
-                                    <img t-attf-src="data:image/*;base64,{{widget.image_read}}" t-att-alt="widget.name" />
+                                    <img t-attf-src="data:image/*;base64,{{widget_id.image_read}}" t-att-alt="widget_id.name" align="center"/>
                                 </p>
+                            </div>
+                            <div class="col-md-2">
+                                <t t-foreach="features_groups_ids" t-as="features_groups_id">
+                                    <h4><t t-esc="features_groups_id.name"/></h4>
+                                    <t t-foreach="features_groups_id.feature_ids" t-as="feature_id">
+                                        <p><t t-esc="feature_id.name"/></p>
+                                    </t>
+                                </t>
                             </div>
                         </div>
                     </div>
