@@ -17,7 +17,7 @@
         </record>
 
 
-        <record model="ir.ui.vieq" id="view_odoo_suvit_web_ui_widget_feature_form">
+        <record model="ir.ui.view" id="view_odoo_suvit_web_ui_widget_feature_form">
             <field name="name">odoo.suvit.web.ui.widget.feature.form</field>
             <field name="model">odoo.suvit.web.ui.widget.feature</field>
             <field name="arch" type="xml">
@@ -52,7 +52,8 @@
                     <field name="name"/>
                     <field name="group_id"/>
                     <field name="widget_id" readonly="1"/>
-                    <field name="text"/>
+                    <field name="descr"/>
+                    <field name="system_module_id"/>
                 </tree>
             </field>
         </record>
