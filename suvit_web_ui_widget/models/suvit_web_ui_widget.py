@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import re
+from pytils.translit import translify
 
-from openerp import api, models, fields, exceptions
-from odoo.exceptions import ValidationError
+from openerp import api, models, fields
 
 CYRILLIC_PATTERN = re.compile(u"[^а-яА-Я]")
 
@@ -26,9 +26,9 @@ class SuvitWebUiWidget(models.Model):
     group_id = fields.Many2one(string=u"Группа",
                                comodel_name='odoo.suvit.web.ui.widget.group', )
 
-    features_groups_ids = fields.One2many(string=u"Свойства виджета",
-                                          comodel_name='odoo.suvit.web.ui.widget.features.group',
-                                          inverse_name='widget_id', )
+    features_ids = fields.One2many(string=u"Свойства виджета",
+                                   comodel_name='odoo.suvit.web.ui.widget.feature',
+                                   inverse_name='widget_id', )
 
     descr = fields.Text(string=u"Описание виджета")
 
@@ -37,6 +37,27 @@ class SuvitWebUiWidget(models.Model):
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
                                 inverse_name='parent_id')
+    display_name = fields.Char(string=u"ЧПУ",
+                               compute='compute_cpu',
+                               store=True)
+
+    @api.multi
+    @api.depends('name')
+    def compute_cpu(self):
+        for rec in self:
+            rec.display_name = self.translit(rec.name)
+
+    def translit(self, text):
+        if not isinstance(text, basestring):
+            return text
+        text = translify(text, strict=False)
+        text = text.replace("'", '')\
+                   .replace('"', '')\
+                   .replace('.', '')\
+                   .replace(',', '')\
+                   .replace('#', 'n')\
+                   .replace(' ', '_')
+        return text
 
 
 class SuvitWebUiWidgetFaturesGroup(models.Model):
@@ -61,7 +82,8 @@ class SuvitWebUiWidgetFature(models.Model):
 
     group_id = fields.Many2one(string=u"Группа свойств виджета",
                                comodel_name='odoo.suvit.web.ui.widget.features.group', )
-    widget_id = fields.Many2one(related='group_id.widget_id',
-                                store=True)
+    widget_id = fields.Many2one(string=u"Виджет",
+                                comodel_name='odoo.suvit.web.ui.widget',
+                                )
 
-    text = fields.Text(string=u"Описание свойства")
+    descr = fields.Text(string=u"Описание свойства")

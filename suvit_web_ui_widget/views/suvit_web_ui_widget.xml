@@ -24,7 +24,7 @@
                     <field name="name"/>
                     <field name="group_id"/>
                     <field name="widget_id" readonly="1"/>
-                    <field name="text"/>
+                    <field name="descr"/>
                 </tree>
             </field>
         </record>
