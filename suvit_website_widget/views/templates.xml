@@ -63,5 +63,64 @@
                 </div>
             </t>
         </template>
+        <template id="modules">
+            <t t-call="website.layout">
+                <t t-set="title">Odoo Модули</t>
+                <div class="oe_structure">
+                    <div class="container">
+                        <t t-foreach="modules" t-as="module">
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <p><t t-esc="module.name"/></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <p>
+                                        <a t-attf-href="/widgets/modules/{{module.name}}">
+                                        <t t-esc="module.shortdesc"/></a></p>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="module">
+            <t t-call="website.layout">
+                <t t-set="title">Модуль <t t-esc="shortdesc"/></t>
+                <div class="oe_structure">
+                    <div class="container">
+                        <div class="row">
+                            <h2 align="center">Модуль <t t-esc="shortdesc"/></h2>
+                        </div>
+                        <t t-foreach="widget_ids" t-as="widget_id">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <p><b><t t-esc="widget_id.name"/></b></p>
+                                </div>
+                            </div>
+                            <t t-foreach="widget_id.features_group_ids" t-as="features_group_id">
+                                <div class="row">
+                                    <div class="col-md-1"/>
+                                    <div class="col-md-2">
+                                        <p><b><t t-esc="features_group_id.name"/></b></p>
+                                    </div>
+                                </div>
+                                <t t-foreach="features_group_id.feature_ids" t-as="feature_id">
+                                    <div class="row">
+                                        <div class="col-md-1"/>
+                                        <div class="col-md-1"/>
+                                        <div class="col-md-4">
+                                            <t t-esc="feature_id.descr"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
     </data>
 </odoo>

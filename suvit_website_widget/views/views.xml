@@ -4,6 +4,11 @@
         <field name="name">Виджеты</field>
         <field name="url">/widgets/</field>
     </record>
+
+    <record id="suvit_website_modules_action" model="ir.actions.act_url">
+        <field name="name">Odoo Модули</field>
+        <field name="url">/widgets/modules/</field>
+    </record>
     <!-- explicit list view definition -->
     <!--
     <record model="ir.ui.view" id="suvit_website_widget.list">
@@ -45,6 +50,7 @@
 
     <!-- Top menu item -->
     <menuitem name="Виджеты" id="suvit_website_widget.menu_root" action="suvit_website_widget_action"/>
+    <menuitem name="Odoo Модули" id="suvit_website_widget.menu_root" action="suvit_website_modules_action"/>
     <!-- menu categories -->
     <!--
     <menuitem name="Menu 1" id="suvit_website_widget.menu_1" parent="suvit_website_widget.menu_root"/>
