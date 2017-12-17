@@ -97,8 +97,6 @@ class SuvitWebUiWidgetFature(models.Model):
 
     descr = fields.Text(string=u"Описание свойства")
 
-    text = fields.Text(string=u"Описание свойства")
-
     group_ids = fields.Many2many(string=u"Права доступа",
                                  comodel_name='res.groups')
     system_module_id = fields.Many2one(string=u"Модуль системы",

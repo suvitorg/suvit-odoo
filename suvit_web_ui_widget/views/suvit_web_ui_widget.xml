@@ -30,7 +30,7 @@
                                 <field name="widget_id"/>
                             </group>
                             <group>
-                                <field name="text"/>
+                                <field name="descr"/>
                             </group>
                         </group>
                         <notebook>
