@@ -19,7 +19,7 @@ class SuvitWebsiteWidget(http.Controller):
             'widget_groups_ids': WidgetGroups.search([]),
             'widget_id': Widget.search([('display_name', '=', w_id.display_name)]),
             'features_groups_ids': FeaturesGroups.search([]),
-            'user': http.request.env['res.users'].search([('id', '=', http.request.env.uid)])
+            'user': http.request.env.user
         })
 
     @http.route('/widgets/modules/', auth='public', website=True)
@@ -34,10 +34,8 @@ class SuvitWebsiteWidget(http.Controller):
         module_id = http.request.env['ir.module.module'].search([('name', '=', name)])
         widget_ids = http.request.env['odoo.suvit.web.ui.widget.feature'].\
             search([('system_module_id', '=', module_id.id)]).mapped('widget_id')
-        Groups = http.request.env['res.groups']
         return http.request.render('suvit_website_widget.module', {
             'widget_ids': widget_ids,
             'shortdesc': module_id.shortdesc,
-            'group_ids': Groups.search([]),
-            'user': http.request.env['res.users'].search([('id', '=', http.request.env.uid)])
+            'user': http.request.env.user
         })
