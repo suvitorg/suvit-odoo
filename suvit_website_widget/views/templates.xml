@@ -12,7 +12,7 @@
                                 </div>
                                 <t t-foreach="w_group.widget_ids" t-as="w_id">
                                     <div class="row">
-                                        <p><a t-attf-href="/widgets/{{ slug(w_id) }}">
+                                        <p><a t-attf-href="/widgets/{{ slug(w_id) }}/">
                                             <t t-esc="w_id.name"/></a></p>
                                     </div>
                                 </t>
@@ -37,13 +37,11 @@
                                 </t>
                             </div>
                             <div class="col-md-4">
-                                <ol>
-                                    <p><t t-esc="widget_id.descr"></t></p>
-                                    <t t-foreach="widget_id.features_ids" t-as="feature_id">
-                                        <p><b><t t-esc="feature_id.name"/></b></p>
-                                        <li><t t-esc="feature_id.descr"/></li>
-                                    </t>
-                                </ol>
+                                <t t-set="line_number" t-value="1"/>
+                                <t t-foreach="widget_id.features_ids" t-as="feature_id">
+                                    <t t-call="suvit_website_widget.feature_list_item"/>
+                                    <t t-set="line_number" t-value="line_number+1"/>
+                                </t>
                             </div>
                             <div class="col-md-3">
                                 <p>
@@ -94,6 +92,7 @@
                         <div class="row">
                             <h2 align="center">Модуль <t t-esc="shortdesc"/></h2>
                         </div>
+                        <t t-set="line_number" t-value="1"/>
                         <t t-foreach="widget_ids" t-as="widget_id">
                             <div class="row">
                                 <div class="col-md-2">
@@ -112,7 +111,8 @@
                                         <div class="col-md-1"/>
                                         <div class="col-md-1"/>
                                         <div class="col-md-4">
-                                            <t t-esc="feature_id.descr"/>
+                                            <t t-call="suvit_website_widget.feature_list_item"/>
+                                            <t t-set="line_number" t-value="line_number+1"/>
                                         </div>
                                     </div>
                                 </t>
@@ -121,6 +121,15 @@
                     </div>
                 </div>
             </t>
+        </template>
+        <template id="feature_list_item">
+            <p>
+                <a t-attf-href="#0{{ line_number }}" t-attf-name="0{{ line_number }}">0<t t-esc="line_number"/></a>
+                <b><t t-esc="feature_id.name"/></b>
+            </p>
+            <p t-if="((feature_id.group_ids &amp; user.groups_id) or (not feature_id.group_ids))">
+                <t t-esc="feature_id.descr"/></p>
+            <p t-else="">Доступ закрыт</p>
         </template>
     </data>
 </odoo>

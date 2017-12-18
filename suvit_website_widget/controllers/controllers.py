@@ -18,7 +18,8 @@ class SuvitWebsiteWidget(http.Controller):
         return http.request.render('suvit_website_widget.widget_page', {
             'widget_groups_ids': WidgetGroups.search([]),
             'widget_id': Widget.search([('display_name', '=', w_id.display_name)]),
-            'features_groups_ids': FeaturesGroups.search([])
+            'features_groups_ids': FeaturesGroups.search([]),
+            'user': http.request.env.user
         })
 
     @http.route('/widgets/modules/', auth='public', website=True)
@@ -35,5 +36,6 @@ class SuvitWebsiteWidget(http.Controller):
             search([('system_module_id', '=', module_id.id)]).mapped('widget_id')
         return http.request.render('suvit_website_widget.module', {
             'widget_ids': widget_ids,
-            'shortdesc': module_id.shortdesc
+            'shortdesc': module_id.shortdesc,
+            'user': http.request.env.user
         })
