@@ -13,8 +13,9 @@
 
     """,
     # any module necessary for this one to work correctly
-    'depends': ['base',
-                'website'],
+    'depends': ['website',
+                'suvit_web_ui_widget'  # for models
+                ],
 
     # always loaded
     'data': [
