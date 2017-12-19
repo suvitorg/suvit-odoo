@@ -44,14 +44,24 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
 
     reload_content: function() {
         var tmp = this._super();
-        var self = this;
         if(this.is_inside_form())
           return tmp;
-        var $menu = this.sidebar.$el.find('.oe_view_open_groups_menu');
 
+        var self = this;
+        if (this.sidebar && this.sidebar.$el)
+          var $sidebar = this.sidebar.$el.find('.oe_sidebar')
+        else {
+          // TODO is inside form
+          // only suport modal list view (for selectcreate popup)
+          // get pager for sidebar
+          var $sidebar = this.getParent().$el.find('.oe_popup_list_pager');
+        }
+        var $menu = $sidebar.find('.oe_view_open_groups_menu');
+
+        console.log('check menu grouped', $menu, self.grouped);
         if (!$menu.size() && self.grouped) {
-          this.sidebar.$el.find('.oe_sidebar').append(QWeb.render("ListView.open_groups", self));          
-          this.sidebar.$el.find('.oe_view_open_groups_menu').click(function(){
+          $sidebar.append(QWeb.render("ListView.open_groups", self));
+          $sidebar.find('.oe_view_open_groups_menu').click(function(){
             $('i.fa', this).toggleClass('fa-plus').toggleClass('fa-minus');
             $('i.fa', this).hasClass('fa-plus') ? close = true : close = false;
             self.full_open_group(self.groups, close);
