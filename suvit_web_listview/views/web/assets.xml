@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="0">
+    <template id="assets_backend" inherit_id="web_tree_dynamic_colored_field.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/suvit_web_listview/static/src/js/suvit_web_listview.js"></script>
+        </xpath>
+    </template>
+  </data>
+</openerp>

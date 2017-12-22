@@ -11,6 +11,7 @@
         """,
     'author': 'Suvit LLC',
     'depends': ['web',
+                'suvit_web_listview',
                 # 'format_web_list_group_fix' - Василий объясни зачем нужен
                 ],
     'installable': True,

@@ -10,7 +10,9 @@
 
         """,
     'author': 'Suvit LLC',
-    'depends': ['web'],
+    'depends': ['web',
+                'suvit_web_listview',
+               ],
     'installable': True,
     'auto_install': False,
     'data': [

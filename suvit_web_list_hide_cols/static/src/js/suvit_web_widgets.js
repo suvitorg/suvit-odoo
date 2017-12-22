@@ -3,31 +3,12 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       QWeb = instance.web.qweb;
 
   instance.web.ListView.include({
-    is_inside_form: function() {
-      return this.is_m2m() || this.is_o2m();
-    },
-    is_m2m: function() {
-      return !!this.ViewManager.field_manager;
-    },
-    is_o2m: function() {
-      return !!this.ViewManager.o2m;
-    },
-    get_hide_cols_id: function() {
-      var id = this.fields_view.view_id;
-      if(this.is_m2m()){
-        id = this.ViewManager.field_manager.fields_view.view_id + '_' + this.ViewManager.field_manager.fields_view.name;
-      }
-      if(this.is_o2m()){
-        id = this.ViewManager.o2m.view.fields_view.view_id + '_' + this.ViewManager.o2m.name;
-      }
-      return id;
-    },
     load_hide_cols: function() {
-      var data = localStorage[this.get_hide_cols_id()] || '{}';
+      var data = localStorage[this.get_id()] || '{}';
       this.hide_cols = JSON.parse(data);
     },
     save_hide_cols: function(data) {
-      localStorage[this.get_hide_cols_id()] = JSON.stringify(data || this.hide_cols);
+      localStorage[this.get_id()] = JSON.stringify(data || this.hide_cols);
     },
     add_invisible: function(field, is_invisible, save) {
       var modifiers = JSON.parse(field.attrs.modifiers);

@@ -2,16 +2,7 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
 
   var QWeb = instance.web.qweb;
 
-  instance.web.ListView.include({
-    is_inside_form: function() {
-      return this.is_m2m() || this.is_o2m();
-    },
-    is_m2m: function() {
-      return !!this.ViewManager.field_manager
-    },
-    is_o2m: function() {
-      return !!this.ViewManager.o2m;
-    },
+  instance.web.ListView.include({    
     open_group: function(group, close){
       if (group.$row) {
         if (close) {
