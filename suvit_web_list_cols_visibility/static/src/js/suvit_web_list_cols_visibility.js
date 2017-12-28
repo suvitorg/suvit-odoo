@@ -1,24 +1,24 @@
-openerp.suvit_web_list_cols_visibility = function(instance, local) {
-  var localStorage = window['localStorage'] || {},
-      QWeb = instance.web.qweb;
-
-  instance.web.ListView.include({
+odoo.define('suvit_web_list_cols_visibility', function (require) {
+"use strict";
+  
+  var localStorage = window['localStorage'] || {};
+  var ListView = require('web.ListView');
+  
+  ListView.include({
     setup_columns: function (fields, grouped) {
         var self = this;
-        this.load_hide_cols();
+        this._super(fields, grouped);
         self.fields_addition_class = {};
         _.map(self.fields_view.arch.children, function(field){
-            if (self.hide_cols[field.attrs.name] !== undefined ) {
-                self.add_invisible(field, self.hide_cols[field.attrs.name]);
-            }
             if (field.attrs.class) {
                 self.fields_addition_class[field.attrs.name] = field.attrs.class;
             }
         });
-        this._super(fields, grouped);
+        
     }
   });
-  instance.web.ListView.List.include({
+  
+  ListView.List.include({
     render_record: function (record) {
         self = this;
         classes = self.view.fields_addition_class;
@@ -48,4 +48,5 @@ openerp.suvit_web_list_cols_visibility = function(instance, local) {
         }
     },
   });
-};
+
+});
