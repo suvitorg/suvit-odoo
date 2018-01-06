@@ -8,7 +8,7 @@
 {
     'name': 'Suvit. Odoo Sentry connector',
     'version': '0.1',
-    'author': 'Suvit, LLC',
+    'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'sequence': 4,
     'summary': 'Exceptions tracker',
