@@ -8,6 +8,8 @@ from openerp import api, fields, models
 _logger = logging.getLogger(__name__)
 
 def get_odoo_icons():
+    from openerp.addons import web
+
     result = []
     for filename in os.listdir(os.path.join(web.__path__[0], 'static', 'src', 'img', 'icons')):
         icon_name = os.path.splitext(filename)[0]
