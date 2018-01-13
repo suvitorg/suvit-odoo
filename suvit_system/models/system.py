@@ -76,6 +76,8 @@ class SystemNode(models.Model):
                 'mail.thread',
                 'ir.needaction_mixin',
                 ]
+    # XXX. restore
+    _order = 'parent_id,sequence,id'
 
     object_id = fields.Reference(selection='compute_selection_object_id',
                                  )
