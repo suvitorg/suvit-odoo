@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 class Migration(models.Model):
     _name = 'suvit.migration'
     _description = u"Миграция"
-
+    _order = "create_date desc"
+    
     name = fields.Char(string=u"Название",
                        required=True,
                        )
