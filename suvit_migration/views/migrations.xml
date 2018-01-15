@@ -25,24 +25,9 @@
             <field name="view_mode">tree</field>
         </record>
 
-        <record id="suvit_migration_run_action" model="ir.actions.server">
-            <field name="name">Мигрировать</field>
-            <field name="model_id" ref="model_suvit_migration"/>
-            <field name="state">code</field>
-            <field name="code">action = self.run_all(cr, uid, context=context)</field>
-        </record>
-
-        <menuitem id="menu_suvit_migration" name="Миграции"
-                  parent="base.menu_custom"
-                  sequence="100"/>
-          <menuitem id="menu_suvit_migration_tree" name="Список Миграций"
-                    parent="menu_suvit_migration"
+          <menuitem id="menu_suvit_migration_tree" name="Миграции"
+                    parent="base.menu_custom"
                     action="action_suvit_migration"
-                    sequence="10"/>
-          <menuitem id="menu_suvit_migration_run" name="Мигрировать"
-                    parent="menu_suvit_migration"
-                    action="suvit_migration_run_action"
-                    sequence="20"/>
-
+                    sequence="100"/>
     </data>
 </openerp>
