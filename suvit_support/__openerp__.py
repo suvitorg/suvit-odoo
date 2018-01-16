@@ -8,7 +8,7 @@
     'author': 'Suvit LLC',
     'depends': ['web'],
     'installable': True,
-    'auto_install': True,
+    'auto_install': False,
 
     'data': [
         'suvit_support.xml',
