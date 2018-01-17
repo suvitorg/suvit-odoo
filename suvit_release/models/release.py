@@ -15,6 +15,6 @@ class Release(models.Model):
     @api.model
     def create(self, values):
         rec = super(Release, self).create(values)
-        group = self.env['mail.group'].search([('name', '=', u'Обновления')])
+        group = self.env.ref['group_suvit_release']
         group.message_post(body=values['description'])
         return rec
