@@ -1,7 +1,6 @@
 odoo.define('suvit_support.Support', function(require){
   var UserMenu = require('web.UserMenu')
   var Custom_Menu = UserMenu.include({
-    template: 'UserMenu',
     on_menu_support: function(){      
       window.open('https://suvit.ru', '_blank')
     }
