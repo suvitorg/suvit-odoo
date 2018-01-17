@@ -1,1 +1,1 @@
-import release
+from . import release
