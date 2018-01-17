@@ -26,12 +26,5 @@
         <record model="mail.group" id="group_suvit_release">
             <field name="name">Обновления</field>
         </record>
-
-        <record model="mail.message" id="group_id_suvit_release" >
-            <field name="model">suvit.release</field>
-            <field name="res_id" ref="suvit_release.group_suvit_release"/>
-            <field name="type">notification</field>
-            <field name="subtype_id" ref="mail.mt_comment"/>
-        </record>
 	</data>
 </openerp>
