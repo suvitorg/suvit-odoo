@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 class Release(models.Model):
     _name = 'suvit.release'
-    _description = u"Релиз
+    _description = u"Релиз"
     _inherit = 'mail.thread'
     
     name = fields.Integer(string=u"Номер релиза")
