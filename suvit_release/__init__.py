@@ -1,1 +1,1 @@
-import models
+from . import release
