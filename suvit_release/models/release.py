@@ -5,7 +5,7 @@ from openerp import models, fields, api
 logger = logging.getLogger(__name__)
 
 class Release(models.Model):
-	_name = 'suvit.release'
+    _name = 'suvit.release'
 	_description = u"Релиз"
 	_inherit = 'mail.thread'
 
