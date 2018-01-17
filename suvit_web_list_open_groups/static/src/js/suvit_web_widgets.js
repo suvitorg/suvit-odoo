@@ -58,7 +58,7 @@ openerp.suvit_web_list_open_groups = function(instance, local) {
         }
         var $menu = $sidebar.find('.oe_view_open_groups_menu');
 
-        console.log('check menu grouped', $menu, self.grouped);
+        //console.log('check menu grouped', $menu, self.grouped);
         if (!$menu.size() && self.grouped) {
           $sidebar.append(QWeb.render("ListView.open_groups", self));
           $sidebar.find('.oe_view_open_groups_menu').click(function(){
