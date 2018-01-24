@@ -21,7 +21,7 @@ odoo.define('suvit_web_list_cols_visibility', function (require) {
   ListView.List.include({
     render_record: function (record) {
         self = this;
-        classes = self.view.fields_addition_class;
+        var classes = self.view.fields_addition_class;
         r = this._super(record);
         d = $(r);
         for (field in classes) {
@@ -31,7 +31,7 @@ odoo.define('suvit_web_list_cols_visibility', function (require) {
     },
     render: function () {
         self = this;
-        classes = self.view.fields_addition_class;
+        var classes = self.view.fields_addition_class;
         self._super();
         for (field in classes) {
             var ind = self.columns.findIndex(function(col, i){
