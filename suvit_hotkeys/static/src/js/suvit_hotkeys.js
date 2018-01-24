@@ -9,6 +9,7 @@ $.alt_shift = function(key, callback, args) {
 };
 
 //Edit the current object
+// alt + shift + e
 $.alt_shift('69', function() {
   $('.oe_form_button_edit').each(function() {
     if($(this).parents('div:hidden').length == 0){
@@ -19,6 +20,7 @@ $.alt_shift('69', function() {
 
 
 //Save the current object
+// alt + shift + s
 $.alt_shift('83', function() {
   $('.oe_form_button_save').each(function() {
     if($(this).parents('div:hidden').length == 0){
@@ -28,6 +30,7 @@ $.alt_shift('83', function() {
 });
 
 //Create new object
+// alt + shift + c
 $.alt_shift('67', function() {
   $('.oe_form_button_create').each(function() {
     if($(this).parents('div:hidden').length == 0){
@@ -37,6 +40,7 @@ $.alt_shift('67', function() {
 });
 
 //Cancel
+// alt + shift + d
 $.alt_shift('68', function() {
   $('.oe_form_button_cancel').each(function() {
     if($(this).parents('div:hidden').length == 0){
