@@ -4,7 +4,7 @@
 
     <template id="suvit_web_list_hide_cols_backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/suvit_web_list_hide_cols/static/src/css/suvit_web_list_hide_cols.css"/>
+            <link rel="stylesheet" type="text/less" href="/suvit_web_list_hide_cols/static/src/less/suvit_web_list_hide_cols.less"/>
             <script type="text/javascript" src="/suvit_web_list_hide_cols/static/src/js/suvit_web_list_hide_cols.js"></script>
         </xpath>
     </template>

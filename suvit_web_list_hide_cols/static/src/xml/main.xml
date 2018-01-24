@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates>
     <t t-name="ListView.hide_cols">
-      <div class="oe_view_hide_cols_menu btn-group" style="text-align: center; vertical-align: top;">
-        <button type="button" style="" class="o_dropdown_toggler_btn btn btn-sm dropdown-toggle btn_hide_cols"
+      <div class="oe_view_hide_cols_menu btn-group">
+        <button type="button" class="o_dropdown_toggler_btn btn btn-sm dropdown-toggle btn_hide_cols"
                 data-toggle="dropdown"><i class="glyphicon glyphicon-th-list"></i> <span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
           <t t-foreach="columns" t-as="col">
             <t t-set="checked" t-value="col.invisible !== '1' ? 'checked' : null"/>
-            <li t-if="col.id != '_empty_col'" style="margin-left: 4px;">
-              <label style="margin-bottom: 1px; color: black;"><input type="checkbox"
+            <li t-if="col.id != '_empty_col'">
+              <label><input type="checkbox"
                             t-attf-data-field="{{ col.name }}"
                             t-attf-checked="{{checked}}"
                             t-att-data-swichable="col.swichable || (col.options &amp;&amp; col.options['swichable'])"
