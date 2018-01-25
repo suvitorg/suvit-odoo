@@ -44,17 +44,17 @@ openerp.suvit_web_notebook_focus = function(instance, local) {
       
       if (!selected)
         return note;
-      self.selected_name = note;
+      self.selected_note = note;
       note.tabs('select', selected);
       return note;
     },
     process_form: function($form) {
       var self = this;
       var res = this._super($form);
-      if(!this.selected_name)
+      if(!this.selected_note)
         return res;
-      var ggg = this.selected_name;
-      var parents = ggg.parents('div.oe_notebook_page');
+      var selected_note = this.selected_note;
+      var parents = selected_note.parents('div.oe_notebook_page');
       parents.each(function(i, val) {
         var tab_id = $("a[href=#"+val.id+"]", self.$form);
         if(tab_id && tab_id.length) {
