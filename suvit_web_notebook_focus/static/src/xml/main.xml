@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates id='template' xmlspace='preserve'>
+    <t t-extend="FormRenderingNotebook">
+        <t t-jquery="a" t-operation="replace">
+            <a t-attf-href="##{page.id}" t-attf-name="#{page.name}" t-attf-string="#{page.string}" t-att-accesskey="page.accesskey">
+                <t t-esc="page.string"/>
+            </a>
+        </t>
+    </t>
+</templates>

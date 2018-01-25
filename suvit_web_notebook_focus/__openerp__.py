@@ -16,4 +16,7 @@
     'data': [
         'views/web/assets.xml',
     ],
+    'qweb': [
+        'static/src/xml/main.xml',
+    ],
 }
