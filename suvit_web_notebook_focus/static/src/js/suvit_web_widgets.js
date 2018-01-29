@@ -36,7 +36,7 @@ openerp.suvit_web_notebook_focus = function(instance, local) {
       note.mousedown(function(ev){
         //tab name - ev.target.attributes.name && ev.target.attributes.name.value;
         //tab string - ev.target.attributes.string && ev.target.attributes.string.value
-        var tab_name = ev.target.attributes.name && ev.target.attributes.name.value;
+        var tab_name = (ev.target.attributes.name && ev.target.attributes.name.value) || (ev.target.attributes.string && ev.target.attributes.string.value);
         if(tab_name) {
           self.save_tab_id(tab_name);
         }
