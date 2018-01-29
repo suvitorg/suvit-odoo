@@ -34,9 +34,9 @@ openerp.suvit_web_notebook_focus = function(instance, local) {
       var note = this._super($notebook);
       
       note.mousedown(function(ev){
-        //tab name - ev.toElement.attributes.name && ev.toElement.attributes.name.value;
-        //tab string - ev.toElement.attributes.string && ev.toElement.attributes.string.value
-        var tab_name = ev.toElement.attributes.name && ev.toElement.attributes.name.value;
+        //tab name - ev.target.attributes.name && ev.target.attributes.name.value;
+        //tab string - ev.target.attributes.string && ev.target.attributes.string.value
+        var tab_name = ev.target.attributes.name && ev.target.attributes.name.value;
         if(tab_name) {
           self.save_tab_id(tab_name);
         }
