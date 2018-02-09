@@ -1,5 +1,5 @@
 openerp.suvit_hotkeys = function(instance, local) {
-  
+
   $.alt_shift = function(key, callback, args) {
     $(document).keydown(function(e) {
       if(!args) args=[]; // IE barks when args is null
@@ -58,6 +58,54 @@ openerp.suvit_hotkeys = function(instance, local) {
         $(this).trigger('click');
       }
     });
+  });
+  
+  instance.web.Menu.include({
+    on_menu_click: function(ev) {  
+      //Ctrl + left button mouseClick on menu (top or secondary menu) => opens the clicked menu in a new window
+      if (ev.ctrlKey && ev.currentTarget.dataset) {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        localStorage.setItem('last_menu_id', ev.currentTarget.dataset.menu);
+        var url = ev.currentTarget.hash;
+        window.open(url, '_blank');
+
+        return;
+      }
+      return this._super(ev);
+    },
+  });
+  
+  instance.web.ListView.List.include({
+    row_clicked: function (e, view) {
+      //Ctrl + left button mouseClick on ListView item => opens the clicked item in a new window
+      if (e.ctrlKey) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var view = view || this.dataset.index === null || this.dataset.index === undefined ? 'form' : 'form';
+        var state = {
+          'id': this.dataset.ids[this.dataset.index],
+          'view_type': view,
+          'model': this.dataset.model,
+        };
+
+        var menu_id = this.view.ViewManager.action && this.view.ViewManager.action.menu_id ? this.view.ViewManager.action.menu_id : false;
+        if (menu_id)
+          state['menu_id'] = menu_id;
+        var action_id = this.view.ViewManager.action && this.view.ViewManager.action.id ? this.view.ViewManager.action.id : false;
+        if (action_id)
+          state['action'] = action_id;
+
+        localStorage.setItem('force_ctrl_click_open', 'force_open');
+        var url = '#' + $.param(state);
+        window.open(url, '_blank');
+
+        return;
+      }      
+      return this._super(e, view);
+    },
   });
   
   instance.web.form.FieldMany2One.include({
