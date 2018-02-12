@@ -49,7 +49,9 @@ openerp.suvit_multi_model_tree = function (instance, local) {
   instance.web.JsNodeTreeView = instance.web.View.extend({
     view_type: 'js_node_tree',
     destroy: function () {
-      this.$jstree.jstree('destroy');
+      console.log('destroy', this);
+      if(this.$jstree)
+        this.$jstree.jstree('destroy');
       this._super();
     },
     init: function (parent, dataset, view_id, options) {
