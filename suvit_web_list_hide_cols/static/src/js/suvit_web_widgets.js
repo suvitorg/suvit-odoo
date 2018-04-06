@@ -41,7 +41,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
     load_list: function(data) {
       var self = this;
       this._super(data);
-      
+
       var $sidebar;
       if(this.is_inside_form() && this.$el.find('.oe_field_editable')){
         this.$el.find('.oe_list_header_columns').before('<tr class="preheader_wrap"></tr>');
@@ -50,7 +50,7 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
       } else {
         $sidebar = $('.oe_sidebar');
       }
-      
+
       var $menu = $sidebar.find('.oe_view_hide_cols_menu');
       if (!$menu.size()) {
         $sidebar.append(QWeb.render("ListView.hide_cols", this));
@@ -76,8 +76,8 @@ openerp.suvit_web_list_hide_cols = function(instance, local) {
           }
         });
 
-        if ($checkbox.data('field') == '_row_no') {
-          self.hide_cols['_row_no'] = !$checkbox.prop('checked');
+        if ($checkbox.data('field') == '_num_row') {
+          self.hide_cols['_num_row'] = !$checkbox.prop('checked');
           self.save_hide_cols();
         };
         if(self.is_inside_form())
