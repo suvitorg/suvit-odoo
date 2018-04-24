@@ -41,33 +41,22 @@ class CRUDCase(TransactionCase):
         arch = model.fields_view_get(view_type='search')
         self.assertTrue(arch)
         nodes = etree.XML(arch['arch']).xpath("/search/group/filter")
-<<<<<<< HEAD
         if not nodes:
             nodes = etree.XML(arch['arch']).xpath("/search/filter")
-=======
->>>>>>> 652d7d0b3f7001a220f5a6d0f53664ddf505282b
         groups = []
         fields = []
         for node in nodes:
             node = eval(node.get('context'))
-<<<<<<< HEAD
             if 'group_by' not in node:
-=======
-            if not 'group_by' in node:
->>>>>>> 652d7d0b3f7001a220f5a6d0f53664ddf505282b
                 continue
             node = node.get('group_by').decode('utf-8', 'ignore')
             groups.append(node)
             fields.append(node.split(":")[0])
-<<<<<<< HEAD
         fields = list(set(fields))
         if groups:
             field_names = self.env['ir.model.fields'].search([
                 ('model', '=', model._name), ('name', 'in', fields)]).mapped('name')
             self.assertEqual(len(fields), len(field_names))
-=======
-        if groups:
->>>>>>> 652d7d0b3f7001a220f5a6d0f53664ddf505282b
             res = model.read_group(domain=[], fields=fields, groupby=groups, lazy=True)
             self.assertTrue(res)
 
