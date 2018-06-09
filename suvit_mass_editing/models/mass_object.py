@@ -4,7 +4,7 @@ from openerp import models, fields, api
 
 class MassObjectRel(models.Model):
     _name = 'suvit.mass.field.rel'
-    _order = 'sequence'
+    _order = 'sequence,id'
 
     sequence = fields.Integer(string=u"Порядок",
                               required=True,
@@ -20,6 +20,14 @@ class MassObjectRel(models.Model):
                                required=True,
                                ondelete='cascade',
                                )
+    field_name = fields.Char(string=u"Наим в коде",
+                             related='field_id.name',
+                             readonly=True,
+                             )
+    field_type = fields.Selection(string=u"Тип",
+                                  related='field_id.ttype',
+                                  readonly=True,
+                                  )
     model_id = fields.Many2one(related='mass_id.model_id',
                                )
     model_ids = fields.Many2many(string=u'Список Моделей',
@@ -49,4 +57,4 @@ class MassObject(models.Model):
     @api.multi
     def compute_field_ids(self):
         for rec in self:
-            rec.field_ids = rec.field_rel_ids.mapped('field_id')
+            rec.field_ids = [r.field_id.id for r in rec.field_rel_ids]
