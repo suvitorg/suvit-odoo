@@ -7,6 +7,8 @@
             <field name="model">suvit.migration</field>
             <field name="arch" type="xml">
                 <tree editable="bottom" create="false">
+                    <field name="create_date" />
+                    <field name="write_date" />
                     <field name="name"/>
                     <field name="description" />
                     <field name="module_id"/>
