@@ -6,15 +6,13 @@
             <field name="name">suvit.migration.tree</field>
             <field name="model">suvit.migration</field>
             <field name="arch" type="xml">
-                <tree editable="bottom" create="false">
+                <tree editable="top">
                     <field name="name"/>
-                    <field name="description" />
                     <field name="module_id"/>
                     <field name="method"/>
                     <field name="state"/>
-                    <field name="implemented"/>
                     <button name="run" type="object" string="Запуск"
-                            attrs="{'invisible': [('implemented', '=', True)]}"/>
+                            attrs="{'invisible': [('state', '=', 'done')]}"/>
                 </tree>
             </field>
         </record>
@@ -34,15 +32,12 @@
 
         <menuitem id="menu_suvit_migration" name="Миграции"
                   parent="base.menu_custom"
+                  action="action_suvit_migration"
                   sequence="100"/>
-          <menuitem id="menu_suvit_migration_tree" name="Список Миграций"
-                    parent="menu_suvit_migration"
-                    action="action_suvit_migration"
-                    sequence="10"/>
-          <menuitem id="menu_suvit_migration_run" name="Мигрировать"
+          <!--menuitem id="menu_suvit_migration_run" name="Мигрировать"
                     parent="menu_suvit_migration"
                     action="suvit_migration_run_action"
-                    sequence="20"/>
+                    sequence="10"/-->
 
     </data>
 </openerp>
