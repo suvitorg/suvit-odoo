@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 class Migration(models.Model):
     _name = 'suvit.migration'
     _description = u"Миграция"
+    _order = 'create_date desc'
 
     name = fields.Char(string=u"Название",
                        required=True,
@@ -71,8 +72,7 @@ class Migration(models.Model):
             migration_name = rec.method
             logger.info('start migration "%s"', migration_name)
             try:
-                # getattr(rec, migration_name)()
-                pass
+                getattr(rec, migration_name)()
             except:
                 logger.exception('Exception in migration "%s"', migration_name)
                 rec.state = 'error'
