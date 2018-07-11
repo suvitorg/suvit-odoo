@@ -1,5 +1,4 @@
 ﻿# XXX only for tests, when all modules installed together
-pylist
 -r suvit_currency/requirements.txt
 -r suvit_sentry/requirements.txt
 -r suvit_web_ui_widget/requirements.txt
