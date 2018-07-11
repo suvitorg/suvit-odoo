@@ -11,22 +11,24 @@ class CurrencyMigration(models.Model):
         if not cur_rate_upd:
             return
 
-        rub = self.search([('name', '=', 'RUB')], limit=1)
+        rub = self.search([('name', '=', 'RUB'), ('active', '=', False)], limit=1)
+        comp = self.env['res.company'].search([('id', '=', 1)])
+        rub.write({'active': True})
+        comp.write({'currency_id': rub.id})
+
         if rub.rate != 1:
-            self.search([('base', '=', True)]).write({'base': False})
-            rub.base = True
             self.env['res.currency.rate'].create(
                 {'currency_id': rub.id,
                  'name': fields.Date.today(),
                  'rate': 1})
 
-        comp = self.env['res.company'].search([('id', '=', 1)])
         comp.auto_currency_up = True
 
-        if not comp.services_to_use:
+        service = self.env['currency.rate.update.service'].search([('service', '=', 'RU_CBRF')], limit=1)
+        if not service:
             eur = self.search([('name', '=', 'EUR')], limit=1)
             usd = self.search([('name', '=', 'USD')], limit=1)
             self.env['currency.rate.update.service'].create(
-                {'service': 'RU_CBRF_getter',
+                {'service': 'RU_CBRF',
                  'company_id': comp.id,
                  'currency_to_update': [(6, 0, [eur.id, usd.id])]})
