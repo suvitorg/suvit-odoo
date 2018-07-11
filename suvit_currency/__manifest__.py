@@ -14,6 +14,7 @@
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
+        'suvit_migration',
         'currency_rate_update',  # from barachka with RusCB support
     ],
     'init': [
