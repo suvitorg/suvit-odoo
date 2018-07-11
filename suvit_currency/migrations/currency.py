@@ -11,10 +11,11 @@ class CurrencyMigration(models.Model):
         if not cur_rate_upd:
             return
 
-        rub = self.search([('name', '=', 'RUB'), ('active', '=', False)], limit=1)
+        rub = self.search([('name', '=', 'RUB'), '|', ('active', '=', False), ('active', '=', True)], limit=1)
         comp = self.env['res.company'].search([('id', '=', 1)])
         rub.write({'active': True})
-        comp.write({'currency_id': rub.id})
+        if comp.currency_id != rub.id:
+            comp.write({'currency_id': rub.id})
 
         if rub.rate != 1:
             self.env['res.currency.rate'].create(
