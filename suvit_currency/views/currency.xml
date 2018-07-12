@@ -83,7 +83,7 @@
         <record model="ir.actions.act_window" id="action_format_currency">
             <field name="name">Валюта</field>
             <field name="res_model">res.currency</field>
-            <field name="view_mode">tree,form,calendar</field>
+            <field name="view_mode">tree,form</field>
             <field name="domain">[('name', 'in', ['RUB', 'EUR', 'USD'])]</field>
         </record>
 
