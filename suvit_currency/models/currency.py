@@ -3,9 +3,8 @@
 import datetime
 import logging
 
-from openerp import api, models, fields
-from openerp import exceptions
-from openerp.tools.translate import _
+from odoo import _, api, models, fields, exceptions
+from odoo.tools.translate import _
 
 # from ..services.currency_getter import Currency_getter_factory
 from ..services.update_service_RU_CBRF import RU_CBRF_getter
@@ -191,12 +190,17 @@ class Currency(models.Model):
 
             message = u'<div>Валюта {} не обновлялась c {}.</div>'.format(cur.name,
                                                                           date.strftime('%d-%m-%Y'))
-            message = tools.append_content_to_html(message, plaintext=False, container_tag='div')
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': u'Нет обновления валюты {}!'.format(cur.name),
                 'body_html': message})
             mess.send()
+
+    @api.multi
+    def get_rates_update(self):
+        for rec in self.search([]):
+            if rec.name != 'RUB':
+                rec.refrech_empty_date_rates()
 
 
 class Rate(models.Model):

@@ -14,7 +14,7 @@ class CurrencyMigration(models.Model):
         rub = self.search([('name', '=', 'RUB'), '|', ('active', '=', False), ('active', '=', True)], limit=1)
         comp = self.env['res.company'].search([('id', '=', 1)])
         rub.write({'active': True})
-        if comp.currency_id != rub.id:
+        if comp.currency_id.id != rub.id:
             comp.write({'currency_id': rub.id})
 
         if rub.rate != 1:
