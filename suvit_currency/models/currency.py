@@ -196,13 +196,6 @@ class Currency(models.Model):
                 'body_html': message})
             mess.send()
 
-    @api.multi
-    def get_rates_update(self):
-        for rec in self.search([]):
-            if rec.name != 'RUB':
-                rec.refrech_empty_date_rates()
-
-
 class Rate(models.Model):
     _inherit = "res.currency.rate"
 
