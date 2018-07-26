@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="suvit_mass_object_form">
+            <field name="name">suvit.mass.object.form</field>
+            <field name="model">mass.object</field>
+            <field name="inherit_id" ref="mass_editing.view_mass_object_form"/>
+            <field name="arch" type="xml">
+                <field name="field_ids" position="replace">
+                  <field name="field_rel_ids"
+                         context="{'default_model_id': model_id}">
+                    <tree editable="bottom">
+                      <field name="sequence" widget="handle"/>
+                      <field name="model_id" invisible="1"/>
+                      <field name="field_id"
+                             domain="[('ttype', 'not in', ['reference', 'function']),
+                                      ('model_id', '=', model_id)]"/>
+                      <field name="field_name"/>
+                      <field name="field_type"/>
+                    </tree>
+                  </field>
+                </field>
+                <field name="model_id" position="attributes">
+                  <attribute name="on_change">0</attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>
