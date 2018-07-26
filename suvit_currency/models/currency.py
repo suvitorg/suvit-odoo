@@ -3,9 +3,8 @@
 import datetime
 import logging
 
-from openerp import api, models, fields
-from openerp import exceptions
-from openerp.tools.translate import _
+from odoo import _, api, models, fields, exceptions
+from odoo.tools.translate import _
 
 # from ..services.currency_getter import Currency_getter_factory
 from ..services.update_service_RU_CBRF import RU_CBRF_getter
@@ -181,8 +180,6 @@ class Currency(models.Model):
         admin = self.env['res.users'].browse(1)
         Mail = self.env['mail.mail']
 
-        footer = self.env['mail.notification'].get_signature_footer(admin.id)
-
         domain = CURRENCY_DOMAIN + [('name', '!=', 'RUB')]
         for cur in self.search(domain):
             recs = self.env['res.currency.rate'].search(
@@ -193,13 +190,11 @@ class Currency(models.Model):
 
             message = u'<div>Валюта {} не обновлялась c {}.</div>'.format(cur.name,
                                                                           date.strftime('%d-%m-%Y'))
-            message = tools.append_content_to_html(message, footer, plaintext=False, container_tag='div')
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': u'Нет обновления валюты {}!'.format(cur.name),
                 'body_html': message})
             mess.send()
-
 
 class Rate(models.Model):
     _inherit = "res.currency.rate"

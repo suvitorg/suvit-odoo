@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<openerp>
-    <data noupdate="0">
-        <function name="_0001_update_currency_rate" model="res.currency"/>
-    </data>
-</openerp>
