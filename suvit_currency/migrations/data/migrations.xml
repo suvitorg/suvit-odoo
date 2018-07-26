@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record model="suvit.migration" id="set_diagram_spec_base">
+            <field name="name">Обновление курса валют</field>
+            <field name="method">update_currency_rate</field>
+        </record>
+    </data>
+</openerp>
