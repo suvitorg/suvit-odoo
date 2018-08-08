@@ -47,7 +47,7 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
       var self = this;
       var res = this._super();
       $.when(res).then(function() {
-        
+
         var $sidebar;
         if(self.is_inside_form() && self.$el.find('.o_list_view')){
           $sidebar = self.ViewManager.$el.find('.o_x2m_control_panel');
@@ -55,7 +55,13 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
           if(self.ViewManager && self.ViewManager.action_manager && self.ViewManager.action_manager.main_control_panel)
             $sidebar = self.ViewManager.action_manager.main_control_panel.nodes.$sidebar;
         }
-        
+
+        // TODO 10.0
+        // not work when m2m modal popup
+        if (!$sidebar){
+          return;
+        }
+
         var $menu = $sidebar.find('.oe_view_hide_cols_menu');
         if (!$menu.size()) {
           self.is_inside_form() ? $sidebar.prepend(QWeb.render("ListView.hide_cols", self)) : $sidebar.append(QWeb.render("ListView.hide_cols", self));
@@ -93,8 +99,8 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
           self.$el.find('button.btn_hide_cols').on('click', function (event) {
             $menu.toggleClass('open');
           });
-        }        
+        }
       });
-    },    
+    },
   });
 });
