@@ -1,4 +1,6 @@
 odoo.define('suvit_web_list_cols_visibility', function (require) {
+  //TODO odoo10.0
+  return;
 "use strict";
   
   var localStorage = window['localStorage'] || {};

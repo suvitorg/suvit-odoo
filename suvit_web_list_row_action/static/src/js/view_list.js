@@ -1,4 +1,6 @@
 openerp.suvit_web_list_row_action = function(instance, local) {
+  //TODO odoo10.0
+  return;
 
   var QWeb = instance.web.qweb;
 

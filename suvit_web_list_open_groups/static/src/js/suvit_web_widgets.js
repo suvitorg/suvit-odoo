@@ -1,4 +1,6 @@
 openerp.suvit_web_list_open_groups = function(instance, local) {
+  //TODO odoo10.0
+  return;
 
   var QWeb = instance.web.qweb;
 
