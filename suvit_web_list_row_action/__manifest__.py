@@ -19,6 +19,6 @@
     'js': [
         "static/src/js/view_list.js",
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }

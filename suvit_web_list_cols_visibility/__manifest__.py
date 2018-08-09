@@ -10,7 +10,7 @@
     'website': 'https://suvit.ru',
     'depends': ['web',
                 'web_tree_dynamic_colored_field'],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'data': [
         'views/web/assets.xml',

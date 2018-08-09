@@ -13,7 +13,7 @@
     'depends': ['web',
                 # 'format_web_list_group_fix' - Василий объясни зачем нужен
                 ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'data': [
         'views/web/assets.xml',

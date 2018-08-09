@@ -1,4 +1,6 @@
 openerp.suvit_web_notebook_focus = function(instance, local) {
+  //TODO odoo10.0
+  return;
 
   instance.web.form.FormRenderingEngine.include({
 
