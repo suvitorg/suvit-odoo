@@ -62,10 +62,14 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
           return;
         }
 
-        var $menu = $sidebar.find('.oe_view_hide_cols_menu');
+        var empty_th = self.$el.find('th[data-id=_empty_col]');
+        empty_th.css({'overflow': 'unset'});
+        empty_th.append(QWeb.render("ListView.hide_cols", self));
+
+        /*var $menu = $sidebar.find('.oe_view_hide_cols_menu');
         if (!$menu.size()) {
           self.is_inside_form() ? $sidebar.prepend(QWeb.render("ListView.hide_cols", self)) : $sidebar.append(QWeb.render("ListView.hide_cols", self));
-        }
+        }*/
 
         if ( $('.oe_view_hide_cols_menu li input:checked').length <= 1 ) {
           $('.oe_view_hide_cols_menu li input:checked').prop('disabled', true);
@@ -97,7 +101,7 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
 
         if(self.is_inside_form()){
           self.$el.find('button.btn_hide_cols').on('click', function (event) {
-            $menu.toggleClass('open');
+            $(event.target).toggleClass('open');
           });
         }
       });
