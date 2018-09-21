@@ -43,63 +43,62 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
       });
       this._super(fields, grouped);
     },
+    hide_col_click: function($checkbox) {
+      var self = this;
+      if ($checkbox.data('swichable') === 0) {
+        event.preventDefault();
+        return false;
+      }
+      _.map(self.fields_view.arch.children, function(field){
+        if (field.attrs.name == $checkbox.data('field')) {
+          self.add_invisible(field, !$checkbox.prop('checked'), true);
+        }
+      });
+      if ($checkbox.data('field') == '_row_no') {
+        self.hide_cols['_row_no'] = !$checkbox.prop('checked');
+        self.save_hide_cols();
+      };
+      //To be checked, in Odoo 8 it was necessary to null $pager, otherwise page navigation arrows were not rendered after list reload in form
+      //if(self.is_inside_form())
+        //self.$pager = null;
+      self.load_list(self.fields_view);
+      self.reload();
+    },
     reload_content: function () {
       var self = this;
       var res = this._super();
       $.when(res).then(function() {
 
-        var $sidebar;
-        if(self.is_inside_form() && self.$el.find('.o_list_view')){
-          $sidebar = self.ViewManager.$el.find('.o_x2m_control_panel');
+        var $parent;
+        if(self.is_inside_form()){
+          $parent = self.$el.find('th[data-id=_empty_col]');
+          $parent.css({'overflow': 'unset'});
+        } else if (self.ViewManager && self.ViewManager.action_manager && self.ViewManager.action_manager.main_control_panel){
+          $parent = self.sidebar.$el.parent();
+        } else if (self.ViewManager && self.ViewManager.$modal && self.ViewManager.searchview){
+          $parent = self.ViewManager.searchview.$buttons;
         } else {
-          if(self.ViewManager && self.ViewManager.action_manager && self.ViewManager.action_manager.main_control_panel)
-            $sidebar = self.ViewManager.action_manager.main_control_panel.nodes.$sidebar;
-        }
-
-        // TODO 10.0
-        // not work when m2m modal popup
-        if (!$sidebar){
           return;
         }
 
-        var $menu = $sidebar.find('.oe_view_hide_cols_menu');
-        if (!$menu.size()) {
-          self.is_inside_form() ? $sidebar.prepend(QWeb.render("ListView.hide_cols", self)) : $sidebar.append(QWeb.render("ListView.hide_cols", self));
-        }
+        if ($parent.find('.oe_view_hide_cols_menu').length)
+          return;
 
-        if ( $('.oe_view_hide_cols_menu li input:checked').length <= 1 ) {
-          $('.oe_view_hide_cols_menu li input:checked').prop('disabled', true);
-        } else {
-          $('.oe_view_hide_cols_menu li input').prop('disabled', false);
-        }
-        $('.oe_view_hide_cols_menu li input[data-swichable = "0"]').prop('disabled', true);
-        $sidebar.find('.oe_view_hide_cols_menu li input').off('click').on('click',function(event){
-          var $checkbox = $(this);
-          if ($checkbox.data('swichable') === 0) {
-            event.preventDefault();
-            return false;
-          }
-          _.map(self.fields_view.arch.children, function(field){
-            if (field.attrs.name == $checkbox.data('field')) {
-              self.add_invisible(field, !$checkbox.prop('checked'), true);
-            }
-          });
-          if ($checkbox.data('field') == '_row_no') {
-            self.hide_cols['_row_no'] = !$checkbox.prop('checked');
-            self.save_hide_cols();
-          };
-          //To be checked, in Odoo 8 it was necessary to null $pager, otherwise page navigation arrows were not rendered after list reload in form 
-          //if(self.is_inside_form())
-            //self.$pager = null;
-          self.load_list(self.fields_view);
-          self.reload();
+        $parent.append(QWeb.render("ListView.hide_cols", self));
+
+        var $inputs = $parent.find('li input');
+        $inputs.off('click').on('click',function(event){
+          self.hide_col_click($(this));
         });
 
-        if(self.is_inside_form()){
-          self.$el.find('button.btn_hide_cols').on('click', function (event) {
-            $menu.toggleClass('open');
-          });
+        var $inputs_checked = $inputs.find(':checked');
+        if ($inputs_checked.length <= 1) {
+          $inputs_checked.prop('disabled', true);
+        } else {
+          $inputs.prop('disabled', false);
         }
+        $inputs.find('[data-swichable = "0"]').prop('disabled', true);
+
       });
     },
   });
