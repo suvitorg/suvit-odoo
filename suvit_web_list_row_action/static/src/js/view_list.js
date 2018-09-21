@@ -1,56 +1,41 @@
-openerp.suvit_web_list_row_action = function(instance, local) {
-  //TODO odoo10.0
-  return;
-
-  var QWeb = instance.web.qweb;
-
+odoo.define('suvit.web.list.row.action', function (require) {
+  var Model = require('web.DataModel');
+  var ListView = require('web.ListView');
+  var core = require('web.core');
+  //var FieldMany2Many = core.form_widget_registry.get('many2many');
+  //var Many2ManyListView = new FieldMany2Many(field_manager, node).x2many_views.list;
+  var One2ManyListView = core.one2many_view_registry.get('list');
 
   var do_action = function(view, id, context){
-    var model_obj = new instance.web.Model(view.dataset.model);
+    var model_obj = new Model(view.dataset.model);
     model_obj.call('get_formview_action', [id], {'context':context}).then(function(action){
-      action['target'] = context.open_formview_target || 'current';
+      action['target'] = context.open_formview;
       view.do_action(action);
     });
   };
 
-  instance.web.ListView.include({
+  var x2m_do_activate_record = function(index, id) {
+    var context = this.x2m.build_context().eval();
+    if (!context || !context.open_formview)
+      return this._super(index, id);
+    do_action(this, id, context);
+  };
 
+  ListView.include({
     do_activate_record: function (index, id, dataset, view) {
         var action = this.ViewManager.action;
-        if (!action)
+        if (!action || !action.context || !action.context.open_formview)
           return this._super(index, id, dataset, view);
-
-        var context = action.context;
-        if (!context || !context.open_formview)
-          return this._super(index, id, dataset, view);
-
-        do_action(this, id, context);
+        do_action(this, id, action.context);
     }
-
   });
 
-  instance.web.form.Many2ManyListView.include({
-
-    do_activate_record: function (index, id) {
-        var context = this.m2m_field.build_context().eval();
-        if (!context || !context.open_formview)
-          return this._super(index, id);
-
-        do_action(this, id, context);
-    }
-
+  One2ManyListView.include({
+    do_activate_record: x2m_do_activate_record,
   });
 
-  instance.web.form.One2ManyListView.include({
+  /*Many2ManyListView.include({
+    do_activate_record: x2m_do_activate_record,
+  });*/
 
-    do_activate_record: function(index, id) {
-        var context = this.o2m.build_context().eval();
-        if (!context || !context.open_formview)
-          return this._super(index, id);
-
-        do_action(this, id, context);
-    }
-
-  });
-
-};
+});
