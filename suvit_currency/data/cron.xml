@@ -12,5 +12,10 @@
       <field name="model">res.currency</field>
       <field name="function">check_rates</field>
     </record>
+
+    <record model="ir.cron" id="currency_rate_update.ir_cron_currency_update_every_day">
+      <field name="nextcall" eval="(datetime.now()+timedelta(days=1)).replace(hour=0, minute=30, second=0, microsecond=0).strftime('%Y-%m-%d %H:%M:%S')" />
+    </record>
+
   </data>
 </odoo>
