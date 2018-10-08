@@ -132,10 +132,9 @@ class Currency(models.Model):
                  ('name', '>=', fields.Datetime.to_string(date))]).mapped('name'))
 
         all_dates = set()
-        all_dates.add(fields.Datetime.to_string(date))
         while date <= today:
-            date += datetime.timedelta(1)
             all_dates.add(fields.Datetime.to_string(date))
+            date += datetime.timedelta(1)
 
         dates = all_dates - rec_dates
         for d in sorted(dates):
