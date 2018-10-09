@@ -2,10 +2,10 @@
 <templates>
 
   <t t-extend="CrashManager.error">
-    <t t-jquery="div.oe_error_detail" t-operation="replace">
+    <t t-jquery="div.o_error_detail" t-operation="replace">
 
       <!-- Hide traceback from users -->
-      <div class="oe_error_detail">
+      <div class="o_error_detail">
       <t t-if="!error.lost_network">
         <h2>Произошла внутренняя ошибка <t t-if="error.client">браузера</t><t t-if="!error.client">сервера</t></h2>
         <div class="oe_view_nocontent">
