@@ -224,9 +224,8 @@ class Model(models.Model):
     """
     _inherit = 'ir.model'
 
-    # @api.model_cr
-    def _register_hook(self, cr):
-        res =  super(Model, self)._register_hook(cr)
+    def _register_hook(self):
+        res =  super(Model, self)._register_hook()
 
         Param = self.env['ir.config_parameter']
         dsn = Param.get_param('SENTRY_CLIENT_DSN')
@@ -245,7 +244,7 @@ class Model(models.Model):
         )
         handler = ContextSentryHandler(
             client,
-            db_name=cr.dbname,
+            db_name=self._cr.dbname,
             level=getattr(logging, config.get('sentry_level', 'ERROR')),
         )
         setup_logging(handler)
@@ -258,7 +257,7 @@ class Model(models.Model):
         if not max_response_time:
             return res
 
-        db2max_time[db_name] = max_response_time
+        db2max_time[self._cr.dbname] = max_response_time
 
         logger.info('Patching JsonRequest.dispatch: %s', db2max_time)
         patch_json_request_dispatch()
