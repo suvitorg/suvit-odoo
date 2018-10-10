@@ -30,8 +30,14 @@ odoo.define('suvit.sentry', function (require) {
   Client.include({
     init: function(parent) {
       this._super(parent);
+      var self = this;
       new Model("ir.config_parameter").call("get_param", ['SENTRY_CLIENT_JS_DSN']).then(function(value) {
         if (value) {
+          Raven.setUserContext({
+            name: self.session.username,
+            context: self.session.user_context,
+            id: self.session.uid
+          });
           Raven.config(value).install();
         }
       });
@@ -39,39 +45,15 @@ odoo.define('suvit.sentry', function (require) {
   });
 
   WebClient.include({
-    show_common: function() {
-      var self = this;
-      this._super();
-      window.onerror = function (message, file, line) {
-          self.crashmanager.show_error({
-              type: _t("Client Error"),
-              message: message,
-              data: {debug: file + ':' + line},
-              client: true
-          });
-      };
-    },
-  });
-
-  CrashManager.include({
-    show_error: function(error) {
-      if (error.client) {
-        try {
-          Raven.setUserContext({
-            name: instance.session.username,
-            context: instance.session.user_context,
-            id: instance.session.uid
-          });
-          Raven.captureException(error.message, {extra: error});
-          error.last_code = Raven.lastEventId();
-        } catch (e) {}
-      }
-      if (error.message.indexOf('XmlHttpRequestError') === 0) {
-        error.lost_network = true;
-        error.message = 'Связь с сервером потеряна, попробуйте зайти позже';
-      }
-      return this._super(error);
-    },
+    bind_events: function() {
+        this._super();
+        var onerror_func = window.onerror
+        window.onerror = function (message, file, line, col, error) {
+          if (!window.onOriginError)
+            Raven.captureException(error);
+          onerror_func(message, file, line, col, error);
+        };
+    }
   });
 
 });
