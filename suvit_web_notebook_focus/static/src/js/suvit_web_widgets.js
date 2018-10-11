@@ -1,5 +1,6 @@
 odoo.define('web.autofocus', function (require) {
 "use strict";
+return;
 
   var FormRenderingEngine = require('web.FormRenderingEngine');
 
