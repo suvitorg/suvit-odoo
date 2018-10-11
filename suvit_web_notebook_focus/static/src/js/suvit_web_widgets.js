@@ -10,7 +10,7 @@ odoo.define('web.autofocus', function (require) {
       var action = this.view.ViewManager.action;
       var af_name = action && action.context.autofocus;
       if (!af_name)
-        this._super($notebook);
+        return this._super($notebook);
 
       var pages = $notebook.find('> page');
       pages.each(function(i) {
