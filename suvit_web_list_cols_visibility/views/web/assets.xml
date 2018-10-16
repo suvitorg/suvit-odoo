@@ -5,7 +5,7 @@
     <template id="suvit_web_list_cols_visibility_backend" inherit_id="web_tree_dynamic_colored_field.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/suvit_web_list_cols_visibility/static/src/js/suvit_web_list_cols_visibility.js"></script>
-            <link rel="stylesheet" href="/suvit_web_list_cols_visibility/static/src/css/suvit_web_list_cols_visibility.css"/>
+            <link rel="stylesheet" href="/suvit_web_list_cols_visibility/static/src/less/suvit_web_list_cols_visibility.less"/>
         </xpath>
     </template>
 

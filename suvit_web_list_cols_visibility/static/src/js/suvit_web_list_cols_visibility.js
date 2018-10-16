@@ -1,11 +1,9 @@
 odoo.define('suvit_web_list_cols_visibility', function (require) {
-  //TODO odoo10.0
-  return;
-"use strict";
-  
+  "use strict";
+
   var localStorage = window['localStorage'] || {};
   var ListView = require('web.ListView');
-  
+
   ListView.include({
     setup_columns: function (fields, grouped) {
         var self = this;
@@ -16,39 +14,28 @@ odoo.define('suvit_web_list_cols_visibility', function (require) {
                 self.fields_addition_class[field.attrs.name] = field.attrs.class;
             }
         });
-        
     }
   });
-  
+
   ListView.List.include({
     render_record: function (record) {
-        self = this;
-        var classes = self.view.fields_addition_class;
-        r = this._super(record);
-        d = $(r);
-        for (field in classes) {
-            d.find('.oe_list_field_cell[data-field="'+field+'"]').addClass(classes[field]);
-        }
-        return d;
+        var res = this._super(record);
+        this.set_additional_classes();
+        return res;
     },
     render: function () {
-        self = this;
-        var classes = self.view.fields_addition_class;
-        self._super();
-        for (field in classes) {
-            var ind = self.columns.findIndex(function(col, i){
-                if (col.name == field)
-                  return i;
-            });
-            if (!ind)
-              continue;
-
-            self.$current.find('tr').each(function(){
-              $(this).children('td[data-field="'+field+'"]').addClass(classes[field]);
-            });
-            self.view.$el.find('th[data-id="'+field+'"], .oe_list_footer:eq('+ind+')').addClass(classes[field]);
-        }
+        this._super();
+        this.set_additional_classes();
     },
+    set_additional_classes: function () {
+        if (!this.view.fields_addition_class)
+          return;
+
+        var self = this;
+        _.each(_.pairs(this.view.fields_addition_class), function(field){
+            self.$current.find("td[data-field='" + field[0] + "']").addClass(field[1]);
+        });
+    }
   });
 
 });
