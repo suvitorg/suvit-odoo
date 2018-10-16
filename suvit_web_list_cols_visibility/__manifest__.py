@@ -8,14 +8,14 @@
 """,
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
-    'depends': ['web',
-                'web_tree_dynamic_colored_field'],
+    'depends': [
+        'web',
+    ],
     'installable': True,
     'auto_install': False,
     'data': [
-        'views/web/assets.xml',
     ],
     'qweb': [
-        "static/src/xml/main.xml",
+        "static/src/xml/widget.xml",
     ],
 }
