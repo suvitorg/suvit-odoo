@@ -1,60 +1,61 @@
-openerp.suvit_web_list_open_groups = function(instance, local) {
-  //TODO odoo10.0
+odoo.define('suvit.web.list.open.groups', function (require) {
+  "use strict";
   return;
+  // TODO remove, moved to format-frontend module format_web_list_group_fix
 
-  var QWeb = instance.web.qweb;
+  var ListView = require('web.ListView');
+  var core = require('web.core');
+  var QWeb = core.qweb;
 
-  instance.web.ListView.include({
-
+  ListView.include({
     open_group: function(group, close){
       if (group.$row) {
-        if (close) {
-          var open_groups = JSON.parse(localStorage.getItem('open_groups') || '{}');
-          delete open_groups[this.view_id];
-          localStorage["open_groups"] = JSON.stringify(open_groups);
-          if (group.$row.data('open'))
-            group.$row.trigger('click', [false, true]);
-        } else {
-          if (!group.$row.data('open'))
-            group.$row.trigger('click', [true, false]);
-        }
+        group.$row.click()
       }
     },
-
     open_children: function(group, close){
-      if (_.isEmpty(group.children))
-        return;
-
-      for (var i in group.children) {
-        var child = group.children[i];
-        this.full_open_group(child, close);
-      };
+      var self = this;
+      _.each(group.children, function(child) {
+        self.full_open_group(child, close);
+      });
     },
-
     full_open_group: function(group, close){
       this.open_group(group, close);
       this.open_children(group, close);
     },
-
-    reload_content: function() {
-        var tmp = this._super();
+    render_sidebar: function($node) {
         var self = this;
+        this._super($node);
+        if (!self.sidebar)
+          return;
 
-        var $menu = self.$pager.find('.oe_view_open_groups_menu');
+        var parent = self.sidebar.$el.parent();
+        var tmpl = QWeb.render("ListView.open_groups", self);
+        parent.append(tmpl);
 
-        if (!$menu.size() && self.grouped) {
-          self.$pager.prepend(QWeb.render("ListView.open_groups", self));
+        var btn = parent.find('> .oe_view_open_groups_menu');
+        btn.click(function(){
+          var icon = $(this).find('i.fa');
+          icon.toggleClass('fa-plus').toggleClass('fa-minus');
+          var close = icon.hasClass('fa-plus');
+          self.full_open_group(self.groups, close);
 
-          self.$pager.find('.oe_view_open_groups_menu').click(function(){
-            $('i.fa', this).toggleClass('fa-plus').toggleClass('fa-minus');
-            $('i.fa', this).hasClass('fa-plus') ? close = true : close = false;
-            self.full_open_group(self.groups, close);
-          });
-        } else if ($menu.size() && !self.grouped) {
-          $menu.remove();
+          var open_groups = JSON.parse(localStorage.getItem('open_groups_all') || '{}');
+          open_groups[this.view_id] = !close;
+          localStorage['open_groups_all'] = JSON.stringify(open_groups);
+        });
+    },
+    reload_content: function () {
+      var self = this;
+      var res = this._super();
+      $.when(res).then(function() {
+        if (JSON.parse(localStorage.getItem('open_groups_all') || '{}')[this.view_id]){
+            setTimeout(function() {
+              self.sidebar.$el.parent().find('> .oe_view_open_groups_menu i.fa').click();
+            }, 1);
         }
-        return tmp;
-    }
+      });
+    },
   });
 
-};
+});

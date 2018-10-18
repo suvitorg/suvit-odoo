@@ -67,7 +67,7 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
     reload_content: function () {
       var self = this;
       var res = this._super();
-      $.when(res).then(function() {
+      return $.when(res).then(function() {
 
         var $parent;
         if(self.is_inside_form()){
