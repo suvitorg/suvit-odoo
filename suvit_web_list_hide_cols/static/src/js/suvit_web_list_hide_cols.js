@@ -67,13 +67,13 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
     reload_content: function () {
       var self = this;
       var res = this._super();
-      $.when(res).then(function() {
+      return $.when(res).then(function() {
 
         var $parent;
         if(self.is_inside_form()){
           $parent = self.$el.find('th[data-id=_empty_col]');
           $parent.css({'overflow': 'unset'});
-        } else if (self.ViewManager && self.ViewManager.action_manager && self.ViewManager.action_manager.main_control_panel){
+        } else if (self.sidebar && self.ViewManager && self.ViewManager.action_manager && self.ViewManager.action_manager.main_control_panel){
           $parent = self.sidebar.$el.parent();
         } else if (self.ViewManager && self.ViewManager.$modal && self.ViewManager.searchview){
           $parent = self.ViewManager.searchview.$buttons;
