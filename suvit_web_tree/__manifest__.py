@@ -22,6 +22,6 @@ TreeView. Расширения
     'js': [
         "static/src/js/view_tree.js",
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
 }
