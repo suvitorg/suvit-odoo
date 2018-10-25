@@ -20,9 +20,9 @@ odoo.define('suvit.web.tree', function(require) {
         //    self.dataset.index = self.dataset.ids.indexOf(self.dataset.context.active_id);
         //}
       },
-      on_button_save1: function(e) {
+      // TODO support odoo10
+      DONT_WORK_on_button_save: function(e) {
           var self = this;
-          console.log(this);
           _.each(this.ViewManager.ActionManager.breadcrumbs, function(br){
             br.need_update = true;
           });
@@ -32,7 +32,7 @@ odoo.define('suvit.web.tree', function(require) {
                 self.ViewManager.views.tree.controller.switch_mode()
           });
       },
-      on_button_create1: function() {
+      DONT_WORK_on_button_create1: function() {
           var self = this;
           self._super();
           if (self.ViewManager.views.tree)
