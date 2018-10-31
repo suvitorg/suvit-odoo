@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'Taxn. Ядро',
+    'name': 'СУВИТ. Ядро',
     'version': '0.0.1',
-    'category': 'TAXN',
+    'category': 'suvit',
     'complexity': 'easy',
     'description': """
 TODO
