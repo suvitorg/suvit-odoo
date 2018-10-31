@@ -5,7 +5,6 @@
     <template id="assets_backend" name="suvit_web_tree_assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/suvit_web_tree/static/src/js/view_tree.js"></script>
-            <link rel="stylesheet" href="/suvit_web_tree/static/src/css/base.css"/>
         </xpath>
     </template>
 
