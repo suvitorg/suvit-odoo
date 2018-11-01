@@ -41,12 +41,12 @@ odoo.define('suvit.web.tree', function(require) {
     });
 
     TreeView.include({
-        init: function (parent, dataset, view_id, options) {
+        init: function (parent, dataset, fields_view, options) {
             if (parent.action && parent.action.context.tree_domain){
               var domain = new data.CompoundDomain(dataset.domain, parent.action.context.tree_domain);
               dataset = new data.DataSetSearch(this, parent.action.res_model, dataset.context, domain);
             }
-            this._super(parent, dataset, view_id, options);
+            this._super(parent, dataset, fields_view, options);
         },
         switch_mode: function () {
           this.$el.find(".oe-treeview-table > tbody").empty();
