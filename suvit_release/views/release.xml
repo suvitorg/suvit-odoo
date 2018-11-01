@@ -23,7 +23,7 @@
                     action="action_suvit_release"
                     />
 
-        <record model="mail.group" id="group_suvit_release">
+        <record model="mail.channel" id="mail_channel_suvit_release">
             <field name="name">Обновления</field>
         </record>
     </data>

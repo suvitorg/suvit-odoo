@@ -7,7 +7,7 @@
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        'base', 'mail'
+        'mail'
     ],
     'data': [
         'security/ir.model.access.csv',
