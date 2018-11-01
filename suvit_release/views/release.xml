@@ -1,16 +1,16 @@
 <?xml version = "1.0" encoding = "utf-8" ?>
 <openerp>
-	<data>
-		<record model="ir.ui.view" id="suvit_release_tree">
-			<field name="name">suvit.release.tree</field>
-			<field name="model">suvit.release</field>
-			<field name="arch" type="xml">
-				<tree>				
-					<field name="create_date" string="Дата создания"/>
-					<field name="description"/>
-				</tree>
-			</field>
-		</record>
+    <data>
+        <record model="ir.ui.view" id="suvit_release_tree">
+            <field name="name">suvit.release.tree</field>
+            <field name="model">suvit.release</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="create_date" string="Дата создания"/>
+                    <field name="description"/>
+                </tree>
+            </field>
+        </record>
 
         <record model="ir.actions.act_window" id="action_suvit_release">
             <field name="name">Обновление</field>
@@ -18,13 +18,13 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem 	id="menu_suvit_release" name="Обновления"
-        			parent="base.menu_custom"
-        			action="action_suvit_release"                  	
-                  	/>
+        <menuitem   id="menu_suvit_release" name="Обновления"
+                    parent="base.menu_custom"
+                    action="action_suvit_release"
+                    />
 
         <record model="mail.group" id="group_suvit_release">
             <field name="name">Обновления</field>
         </record>
-	</data>
+    </data>
 </openerp>
