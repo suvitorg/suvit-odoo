@@ -28,15 +28,15 @@ odoo.define('suvit.multi.model.tree', function (require) {
     on_button_save: function(e) {
       var self = this;
       return self._super(e).then(function(){
-          if (self.ViewManager.views.jstree)
-            self.ViewManager.views.jstree.controller.switch_mode();
+          if (self.ViewManager.views.js_node_tree)
+            self.ViewManager.views.js_node_tree.controller.switch_mode();
       });
     },
     on_button_create: function() {
       var self = this;
       self._super();
-      if (self.ViewManager.views.jstree)
-        self.ViewManager.views.jstree.controller.switch_mode();
+      if (self.ViewManager.views.js_node_tree)
+        self.ViewManager.views.js_node_tree.controller.switch_mode();
     }
   });
 
@@ -67,7 +67,6 @@ odoo.define('suvit.multi.model.tree', function (require) {
       // if (!this.options.nodrag) this.$el.append(this.$dragging_option);
       this.$el.append(this.$jstree);
       $('.dragging_option').remove();
-      console.log('NODE RELOAD', this, opt)
       if (!this.nodrag){
         this.$el.before(this.$dragging_option);
       }
@@ -85,7 +84,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
           record.text = record[self.tree_name_field];
           record.type = record[self.tree_type_field] || self.model;
           record.tree_type = record.type;
-          record.icon = null;
+          record.icon = null; // TODO fix old icons
           record.children = !!(record[self.field_parent] && record[self.field_parent].length);
       });
     },
@@ -206,7 +205,6 @@ odoo.define('suvit.multi.model.tree', function (require) {
       var self = this;
 
       self.$jstree = $(QWeb.render("JsNodeTreeView", this));
-      console.log('NODE load_tree', this, dragging_on)
 
       self.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
       self.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'}).prop('checked', dragging_on);
@@ -230,11 +228,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
           })
       } else {
           self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
-          console.log('LOAD NODE', self, self.tree_config)
 
           _.each(self.tree_config, function(element, name){
               _.each(element.create, function(child){
-                  console.log('EACH NODE', element, name, child)
                   if (child.model)
                      _.defaults(self.tree_config[name], {'valid_children': []})
                      self.tree_config[name]['valid_children'].push(child.model);
@@ -627,7 +623,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
     jstree_move_node: function(event, data) {
       var self = this;
-      console.log('change_parent', this, data);
+      // console.log('change_parent', this, data);
       var local_context = {
         'old_parent': data.old_parent,
         'old_parent_id': self.get_id(data.old_parent),
@@ -661,11 +657,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
         });
     },
     reload_content: function () {
-        var reloaded = $.Deferred();
         this.records = {};
         this.reload_tree();
-        reloaded.resolve();
-        return reloaded.promise();
+        return $.when();
     },
     is_valid: function(){
       return true;
@@ -676,8 +670,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
     select_breadcrumb: function(index, subindex) {
       var self = this;
       var item = this.breadcrumbs[index];
-      if (item.widget.views.jstree) {
-        item.widget.views.jstree.controller.switch_mode();
+      if (item.widget.views.js_node_tree) {
+        item.widget.views.js_node_tree.controller.switch_mode();
       }
       return this._super(index, subindex);
     }
