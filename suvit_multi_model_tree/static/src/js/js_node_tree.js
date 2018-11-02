@@ -1,13 +1,14 @@
-odoo.define('suvit.multi_model_tree', function (require) {
+odoo.define('suvit.multi.model.tree', function (require) {
 "use strict";
 
-var instance = window.openerp;
-var core = require('web.core');
-
-var FieldMany2Many = core.form_widget_registry.get('many2many');
-
-  var QWeb = instance.web.qweb;
-  var _t = instance.web._t;
+  var instance = window.openerp;
+  var core = require('web.core');
+  var TreeView = require('web.TreeView');
+  var ListView = require('web.ListView');
+  var View = require('web.View');
+  var FieldMany2Many = core.form_widget_registry.get('many2many');
+  var QWeb = core.qweb;
+  var _t = core._t;
 
   var process_model = false;
   var document_model = false;
@@ -27,174 +28,48 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
     on_button_save: function(e) {
       var self = this;
       return self._super(e).then(function(){
-          if (self.ViewManager.views.js_tree)
-            self.ViewManager.views.js_tree.controller.switch_mode();
+          if (self.ViewManager.views.js_node_tree)
+            self.ViewManager.views.js_node_tree.controller.switch_mode();
       });
     },
     on_button_create: function() {
       var self = this;
       self._super();
-      if (self.ViewManager.views.js_tree)
-        self.ViewManager.views.js_tree.controller.switch_mode();
+      if (self.ViewManager.views.js_node_tree)
+        self.ViewManager.views.js_node_tree.controller.switch_mode();
     }
   });
 
-  instance.web.ActionManager.include({
-    select_breadcrumb: function(index, subindex) {
-      var self = this;
-      var item = this.breadcrumbs[index];
-      if (item.widget.views.js_tree) {
-        item.widget.views.js_tree.controller.switch_mode();
-      }
-      return this._super(index, subindex);
-    }
-  });
 
   var JsNodeTreeView = instance.web.View.extend({
     view_type: 'js_node_tree',
     destroy: function () {
-      this.$jstree.jstree('destroy');
+      if (this.$jstree)
+        this.$jstree.jstree('destroy');
       this._super();
     },
-    init: function (parent, dataset, view_id, options) {
-      this._super(parent, dataset, view_id, options);
-
-      if (parent.action && parent.action.context.tree_domain){
-        var domain = new instance.web.CompoundDomain(dataset.domain,
-                                                     parent.action.context.tree_domain);
-        this.dataset.domain = domain;
-        this.dataset._model._domain = domain;
-      }
-      // save init domain
-      this.domain = this.dataset.domain;
-
-      this.model = this.dataset.model;
-      this.view_id = view_id;
-
+    init: function (parent, dataset, fields_view, options) {
+      this._super(parent, dataset, fields_view, options);
       this.records = {};
-      this.options = _.extend({}, this.defaults, options || {});
+      var attrs = parent.x2m ? parent.x2m.node.attrs : fields_view.arch.attrs
+      this.field_parent = attrs.field_parent;
+      this.nodrag = attrs.nodrag;
     },
     switch_mode: function(opt){
       this.reload_tree(opt);
     },
-    view_loading: function (r) {
-      this.reload_tree();
-    },
-    do_search: function(domain, context, group_by) {
-      // console.log('JSTree.do_search', arguments);
-      this.dataset.domain = new instance.web.CompoundDomain(this.domain,
-                                                            domain);
-      this.dataset._model._domain = this.dataset.domain;
+    start: function(){
       this.reload_tree();
     },
     reload_tree: function(opt){
       this.$el.empty();
-      this.records = {};
       this.load_tree(opt);
       // if (!this.options.nodrag) this.$el.append(this.$dragging_option);
-      $('.dragging_option').remove();
-      if (!this.options.nodrag) this.ViewManager.$el.find('.oe_view_title').after(this.$dragging_option);
       this.$el.append(this.$jstree);
-    },
-    load_tree: function (dragging_on) {
-      var self = this;
-
-      self.$jstree = $(QWeb.render("JsNodeTreeView", this));
-
-      self.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
-      self.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'}).prop('checked', dragging_on);
-      self.$dragging_option.append(self.$dragging);
-
-      self.tree_name_field = self.fields_view.arch.children[0].attrs.name;
-      self.tree_icon_field = this.fields_view.arch.attrs.icon_field || self.options.icon_field;
-      self.tree_type_field = this.fields_view.arch.attrs.tree_type || self.options.tree_type;
-      self.tree_title_field = this.fields_view.arch.attrs.tree_title_field || self.options.tree_title_field || 'title';
-
-      self.field_parent = this.fields_view.field_parent || this.options.field_parent;
-
-      self.tree_config = {};
-      var config_loaded = $.Deferred();
-      if (this.fields_view.arch.attrs.tree_dynamic_config) {
-          config_loaded = self.dataset._model
-                              .call('get_tree_config', [],
-                                    {'context': self.dataset.get_context()});
-          config_loaded.then(function(result){
-              _.extend(self.tree_config, result || {});
-          })
-      } else {
-          self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
-
-          _.each(self.tree_config, function(element, name){
-              _.each(element.create, function(child){
-                  if (child.model)
-                     self.tree_config[name]['valid_children'].push(child.model);
-              });
-          });
-          config_loaded.resolve();
+      $('.dragging_option').remove();
+      if (!this.nodrag){
+        this.$el.before(this.$dragging_option);
       }
-
-      this.fields_view.fields[self.tree_type_field] = {};
-      this.fields_view.fields[self.tree_title_field] = {};
-      this.fields_view.fields[self.field_parent] = {};
-      if (self.tree_type_field) {
-          this.fields_view.fields[self.tree_type_field] = {};
-      }
-
-      // console.log('JSTree.load', Object.keys(this.fields_view.fields));
-
-      this.tree_fields_cols = [{'header': this.fields_view.arch.attrs.tree_title || 'Структура'}];
-      /*_.each(_.difference(_.keys(this.fields_view.fields),
-                          ["tree_name", "icon", "tree_child_ids", "tree_obj_real_id", "tree_type", self.field_parent, "row_empty"]), function(col){
-        self.tree_fields_cols.push({
-          'header': col,
-          'value': function (node) {
-            return node.original[col];
-          }
-        });
-      });*/
-      this.columns = [];
-      var registry = instance.web.list.columns;
-      _.each(this.fields_view.arch.children, function(field){
-        if (field.tag == 'field' && !field.attrs.invisible){
-            var id = field.attrs.name;
-            self.columns.push(registry.for_(id, self.fields_view.fields[id], field));
-        }
-      });
-
-      _.each(this.columns, function(col){
-            self.tree_fields_cols.push({
-              'header': col['string'],
-              'value': function (node) {
-                var name = col.name,
-                    row_data = {};
-                row_data[name] = {'value': node.original[name]};
-                if (col['filename']) {
-                   row_data[col['filename']] = {'value': node.original[col['filename']]};
-                }
-                // console.log('JSTreeCell.format_value', node.original, row_data);
-
-                return col.format(row_data,
-                                  {model: self.dataset.model,
-                                   id: node.original.id
-                                  });
-                //                  self.fields_view.fields[col.name]);
-                //return instance.web.format_value(node.original[col.attrs.name],
-                //                                 self.fields_view.fields[col.attrs.name]);
-              }
-            });
-      });
-
-      // XXX remove
-      ids = _.uniq(_.filter(this.dataset.ids, function(i){
-        if (!isNaN(i) && typeof i != "string") {
-          return true;
-        }
-      }));
-      this.dataset.alter_ids(ids);
-
-      return config_loaded.done(function() {
-        self.jstree_load();
-      });
     },
     load_records: function (records) {
       var self = this;
@@ -206,17 +81,10 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
           self.records[record.id] = record;
           self.new_records.push(record);
 
-          icon_src = record[self.tree_icon_field] || 'STOCK_FILE';
-          if (!/\//.test(icon_src)) {
-              icon_src = '/web/static/src/img/icons/' + icon_src + '.png';
-          } else {
-              icon_src = icon_src;
-          }
-
           record.text = record[self.tree_name_field];
           record.type = record[self.tree_type_field] || self.model;
           record.tree_type = record.type;
-          record.icon = icon_src;
+          record.icon = null; // TODO fix old icons
           record.children = !!(record[self.field_parent] && record[self.field_parent].length);
       });
     },
@@ -265,12 +133,6 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
           action.context = c;
           return self.do_action(action);
       });
-    },
-    do_show: function (options) {
-      this._super(options);
-    },
-    build_context: function () {
-      return self.dataset.get_context();
     },
     do_create_record: function (form_view, element, context) {
       var self = this;
@@ -334,6 +196,84 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
             });
         });
     },
+    load_tree: function (dragging_on) {
+      if (!this.field_parent)
+        this.field_parent = this.fields_view.field_parent || this.options.field_parent;
+      if (!this.field_parent)
+        return;
+
+      var self = this;
+
+      self.$jstree = $(QWeb.render("JsNodeTreeView", this));
+
+      self.$dragging_option = $('<label/>', {text: 'Перемещение в дереве', class: 'dragging_option'});
+      self.$dragging = $('<input/>', {type: 'checkbox', class: 'dragging_button'}).prop('checked', dragging_on);
+      self.$dragging_option.append(self.$dragging);
+
+      self.tree_name_field = self.fields_view.arch.children[0].attrs.name;
+      self.tree_icon_field = this.fields_view.arch.attrs.icon_field || self.options.icon_field;
+      self.tree_type_field = this.fields_view.arch.attrs.tree_type || self.options.tree_type;
+      self.tree_title_field = this.fields_view.arch.attrs.tree_title_field || self.options.tree_title_field || 'title';
+
+      self.field_parent = this.fields_view.field_parent || this.options.field_parent;
+
+      self.tree_config = {};
+      var config_loaded = $.Deferred();
+      if (this.fields_view.arch.attrs.tree_dynamic_config) {
+          config_loaded = self.dataset._model
+                              .call('get_tree_config', [],
+                                    {'context': self.dataset.get_context()});
+          config_loaded.then(function(result){
+              _.extend(self.tree_config, result || {});
+          })
+      } else {
+          self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
+
+          _.each(self.tree_config, function(element, name){
+              _.each(element.create, function(child){
+                  if (child.model)
+                     _.defaults(self.tree_config[name], {'valid_children': []})
+                     self.tree_config[name]['valid_children'].push(child.model);
+              });
+          });
+          config_loaded.resolve();
+      }
+
+      this.fields_view.fields[self.tree_type_field] = {};
+      this.fields_view.fields[self.tree_title_field] = {};
+      this.fields_view.fields[self.field_parent] = {};
+      if (self.tree_type_field) {
+          this.fields_view.fields[self.tree_type_field] = {};
+      }
+
+      // console.log('JSTree.load', Object.keys(this.fields_view.fields));
+
+      this.tree_fields_cols = [{'header': this.fields_view.arch.attrs.tree_title || 'Структура'}];
+      _.each(this.fields_view.arch.children, function(col){
+        if (col.tag == 'field' && !col.attrs.invisible){
+            self.tree_fields_cols.push({
+              'header': self.fields_view.fields[col.attrs.name]['string'],
+              'value': function (node) {
+                return instance.web.format_value(node.original[col.attrs.name],
+                                                 self.fields_view.fields[col.attrs.name]);
+              }
+            });
+        }
+      });
+      var ids = _.uniq(_.filter(this.dataset.ids, function(i){
+        if (!isNaN(i) && typeof i != "string") {
+          return true;
+        }
+      }));
+      this.dataset.alter_ids(ids);
+
+      return config_loaded.done(function() {
+        self.jstree_load();
+      });
+    },
+
+
+
     jstree_contextmenu_create: function(data) {
       var self = this,
           inst = $.jstree.reference(data.reference),
@@ -496,7 +436,7 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
         }
       }
       if (model_config.delete) {
-        submenu = {};
+        var submenu = {};
         submenu.unlink = {
           "label": "Удалить узел",
           "action": function (data) {
@@ -683,7 +623,7 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
     },
     jstree_move_node: function(event, data) {
       var self = this;
-      console.log('change_parent', this, data);
+      // console.log('change_parent', this, data);
       var local_context = {
         'old_parent': data.old_parent,
         'old_parent_id': self.get_id(data.old_parent),
@@ -715,25 +655,42 @@ var FieldMany2Many = core.form_widget_registry.get('many2many');
           // console.log('JSTree.hover', data);
           $("#" + data.node.id).prop('title', data.node.original[self.tree_title_field]);
         });
+    },
+    reload_content: function () {
+        this.records = {};
+        this.reload_tree();
+        return $.when();
+    },
+    is_valid: function(){
+      return true;
+    }
+  });
+
+  instance.web.ActionManager.include({
+    select_breadcrumb: function(index, subindex) {
+      var self = this;
+      var item = this.breadcrumbs[index];
+      if (item.widget.views.js_node_tree) {
+        item.widget.views.js_node_tree.controller.switch_mode();
+      }
+      return this._super(index, subindex);
     }
   });
 
   var JsNodeTreeViewField = FieldMany2Many.extend({
-    render_value: function() {
-      tmp_opt = this.node.attrs;
-      tmp_opt.nodrag = true;
-      this.jstree = new JsNodeTreeView(this, this.dataset, false, tmp_opt);
-      this.$el.empty();
-      this.jstree.appendTo(this.$el);
-      return this._super();
-    }
+    default_view: 'list',
+    init: function() {
+        this._super.apply(this, arguments);
+        this.x2many_views.list = JsNodeTreeView;
+    },
   });
 
-  core.form_widget_registry.add('js_node_tree', JsNodeTreeView);
-  core.view_registry.add('js_node_tree', JsNodeTreeViewField);
+  core.form_widget_registry.add('js_node_tree', JsNodeTreeViewField);
+  core.view_registry.add('js_node_tree', JsNodeTreeView);
 
 return {
     JsNodeTreeView: JsNodeTreeView,
     JsNodeTreeViewField: JsNodeTreeViewField,
 }
+
 });
