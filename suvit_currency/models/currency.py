@@ -3,7 +3,7 @@ from openerp import api, models, fields, tools
 from openerp import exceptions
 from openerp.tools.translate import _
 
-from ..services.currency_getter import Currency_getter_factory
+#from ..services.currency_getter import Currency_getter_factory
 
 import datetime
 import logging
@@ -108,7 +108,7 @@ class Currency(models.Model):
                 self.avg_rate = 1. / avg_rate
             else:
                 self.avg_rate = 0
-
+    """
     @api.one
     def refrech_empty_date_rates(self):
         current_service = 'RU_CBRF_getter'
@@ -165,6 +165,7 @@ class Currency(models.Model):
                         fields.Datetime.to_string(datetime.datetime.today()),
                         repr(exc), rec.note or '')
                     rec.write({'note': error_msg})
+    """
 
     @api.model
     def check_rates(self):

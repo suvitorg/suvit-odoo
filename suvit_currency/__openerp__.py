@@ -26,7 +26,7 @@
 
         'views/fix_account_menu.xml',
 
-        'migrations/data/0001_currency_rate_update.xml',
+        #'migrations/data/0001_currency_rate_update.xml',
     ],
     'demo': [
     ],
