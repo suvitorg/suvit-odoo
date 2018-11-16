@@ -1,19 +1,26 @@
 odoo.define('suvit.multi.model.tree', function (require) {
 "use strict";
 
-  var instance = window.openerp;
   var core = require('web.core');
   var TreeView = require('web.TreeView');
   var ListView = require('web.ListView');
   var View = require('web.View');
+  var FormView = require('web.FormView');
   var FieldMany2Many = core.form_widget_registry.get('many2many');
   var QWeb = core.qweb;
   var _t = core._t;
+  var Model = require('web.Model');
+  var pyeval = require('web.pyeval');
+  var data = require('web.data');
+  var common = require('web.form_common');
+  var formats = require('web.formats');
+  var One2ManyListView = core.one2many_view_registry.get('list');
+  var ActionManager = require('web.ActionManager');
 
   var process_model = false;
   var document_model = false;
   var field_model = false;
-  var config_model = new instance.web.Model("ir.config_parameter");
+  var config_model = new Model("ir.config_parameter");
   config_model.call("get_param", ['PROCESS_MODEL']).then(function(value) {
     process_model = value || "format.frontend.demo.process";
   });
@@ -24,7 +31,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     field_model = value || "format.frontend.demo.process.document.field";
   });
 
-  instance.web.FormView.include({
+  FormView.include({
     on_button_save: function(e) {
       var self = this;
       return self._super(e).then(function(){
@@ -41,7 +48,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   });
 
 
-  var JsNodeTreeView = instance.web.View.extend({
+  var JsNodeTreeView = View.extend({
     view_type: 'js_node_tree',
     destroy: function () {
       if (this.$jstree)
@@ -115,8 +122,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
       if (parent_id) {
         local_context.default_parent_id = self.get_id(parent_id);
       }
-      var ctx = instance.web.pyeval.eval(
-          'context', new instance.web.CompoundContext(
+      var ctx = pyeval.eval(
+          'context', new data.CompoundContext(
               self.dataset.get_context(), local_context));
 
       return self.rpc('/web/treeview/action', {
@@ -126,7 +133,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
       }).then(function (actions) {
           if (!actions.length) { return; }
           var action = actions[0][2];
-          var c = new instance.web.CompoundContext(local_context).set_eval_context(ctx);
+          var c = new data.CompoundContext(local_context).set_eval_context(ctx);
           if (action.context) {
               c.add(action.context);
           }
@@ -136,7 +143,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
     do_create_record: function (form_view, element, context) {
       var self = this;
-      var pop = new instance.web.form.SelectCreatePopup(this);
+      var pop = new common.SelectCreateDialog(this);
       var domain = {};
       pop.select_element(
           form_view.model,
@@ -149,8 +156,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
                 return form_view.dataset._model.call('create', [data]);
               }
           },
-          new instance.web.CompoundDomain(domain),
-          new instance.web.CompoundContext(form_view.dataset.context, context)
+          new data.CompoundDomain(domain),
+          new data.CompoundContext(form_view.dataset.context, context)
       );
       pop.on('closed', self, function(){
         self.reload_tree(self.$dragging.is(':checked'));
@@ -158,7 +165,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
     do_add_record: function (listView, $node, element, domen) {
         var self = this;
-        var pop = new instance.web.form.SelectCreatePopup(listView);
+        var pop = new common.SelectCreateDialog(listView);
         var tmp_childs = [];
         _.each($node.children, function(num){
           var tmp_node = self.$jstree.jstree(true).get_node(num);
@@ -176,7 +183,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
                 title: _t("Add: ") + element.name,
                 no_create: false,
             },
-            new instance.web.CompoundDomain(result_domain),
+            new data.CompoundDomain(result_domain),
             // {},
             listView.dataset.context
         );
@@ -188,7 +195,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
             _.each(element_ids, function(i){
               vals[element.field].push([4, i]);
             });
-            new instance.web.Model($node.type).call('write', [
+            new Model($node.type).call('write', [
                 [parseInt($node.original.tree_obj_real_id)],
                 vals
             ]).then(function(){
@@ -227,7 +234,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
               _.extend(self.tree_config, result || {});
           })
       } else {
-          self.tree_config = this.fields_view.arch.attrs.tree_config ? instance.web.py_eval(this.fields_view.arch.attrs.tree_config) : {};
+          self.tree_config = this.fields_view.arch.attrs.tree_config ? pyeval.py_eval(this.fields_view.arch.attrs.tree_config) : {};
 
           _.each(self.tree_config, function(element, name){
               _.each(element.create, function(child){
@@ -254,7 +261,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
             self.tree_fields_cols.push({
               'header': self.fields_view.fields[col.attrs.name]['string'],
               'value': function (node) {
-                return instance.web.format_value(node.original[col.attrs.name],
+                return formats.format_value(node.original[col.attrs.name],
                                                  self.fields_view.fields[col.attrs.name]);
               }
             });
@@ -293,10 +300,10 @@ odoo.define('suvit.multi.model.tree', function (require) {
       if (element.model && element.model != self.dataset.model)
         context['default_object_id_selection'] = element.model + ',';
       // console.log('contextmenu.create parent', element, context)
-
-      var dataset = new instance.web.form.One2ManyDataSet(self, self.dataset.model);
-      dataset.o2m = self;
-      var One2ManyFormView = new instance.web.form.One2ManyFormView(self, dataset, false, {});
+      // TODO use X2ManyDataSet
+      var dataset = new data.BufferedDataSet(self, self.dataset.model);
+      dataset.x2m = self;
+      var One2ManyFormView = new One2ManyListView(self, dataset, false, {});
 
       self.do_create_record(One2ManyFormView, element, context);
     },
@@ -304,8 +311,10 @@ odoo.define('suvit.multi.model.tree', function (require) {
       var self = this;
       var element = data.item.config;
       var my_model = self.dataset.model;
-      var dataset = new instance.web.form.Many2ManyDataSet(self, my_model);
-      dataset.m2m = self;
+      // TODO use X2ManyDataSet
+      var dataset = new data.BufferedDataSet(self, my_model);
+      dataset.x2m = self;
+      // TODO use Many2ManyListView
       var Many2ManyListView = new instance.web.form.Many2ManyListView(self, dataset, false, {});
 
       var inst = $.jstree.reference(data.reference);
@@ -328,9 +337,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
           inst = $.jstree.reference(data.reference),
           obj = inst.get_node(data.reference);
 
-      var ctx = new instance.web.CompoundContext(self.dataset.get_context(),
-                                                 {'new_parent': self.get_id(obj.parent)}
-                                                 );
+      var ctx = new data.CompoundContext(self.dataset.get_context(), {'new_parent': self.get_id(obj.parent)});
 
       self.dataset._model
         .call('action_duplicate',
@@ -465,7 +472,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
             var local_context = {
               'new_parent': self.get_id(obj.parent)
             };
-            var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
+            var ctx = new data.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_remove', [self.get_id(obj.id)], {'context': ctx}).then(function(){
               self.reload_tree(self.$dragging.is(':checked'));
@@ -486,7 +493,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
             var local_context = {
               'new_parent': self.get_id(obj.parent)
             };
-            var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
+            var ctx = new data.CompoundContext(self.dataset.get_context(), local_context);
 
             self.dataset._model.call('action_exclude', [self.get_id(obj.id)], {'context': ctx}).then(function(){
               self.reload_tree(self.$dragging.is(':checked'));
@@ -532,7 +539,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
           // 'old_position': data.old_position,
           // 'new_position': data.position,
         };
-        var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
+        var ctx = new data.CompoundContext(self.dataset.get_context(), local_context);
         prom = self.dataset._model.call('change_parent',
            [self.get_id(node.id), self.get_id(par.id)],
            {'context': ctx}).fail(function(){
@@ -632,7 +639,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
         'new_parent_id': self.get_id(data.parent),
         'new_position': data.position,
       };
-      var ctx = new instance.web.CompoundContext(self.dataset.get_context(), local_context);
+      var ctx = new data.CompoundContext(self.dataset.get_context(), local_context);
       self.dataset._model.call('action_change_parent',
                                [self.get_id(data.node.id)],
                                {'context': ctx}).fail(function(){
@@ -666,7 +673,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     }
   });
 
-  instance.web.ActionManager.include({
+  ActionManager.include({
     select_breadcrumb: function(index, subindex) {
       var self = this;
       var item = this.breadcrumbs[index];
