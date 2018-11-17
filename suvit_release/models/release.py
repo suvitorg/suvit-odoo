@@ -8,13 +8,33 @@ class Release(models.Model):
     _name = 'suvit.release'
     _description = u"Релиз"
     _inherit = 'mail.thread'
+    _order = 'create_date desc'
 
-    name = fields.Integer(string=u"Номер релиза")
+    name = fields.Char(string=u"Номер релиза")
     description = fields.Text(string=u"Описание")
+
+    # Возможно заменить на обновление текущего модуля?
+    modules_to_update = fields.Char(string=u'Модули для обновления',
+                                    help=u'Перечисленные через запятую тех. имена модулей, пример suvit_base,suvit_core')
+
+    # TODO
+    module_ids = fields.One2many(string=u'Модули',
+                                 comodel_name='ir.module.module',
+                                 compute='compute_module_ids')
+
+    # Создана в модуле
+    # module_id = fields.Many2one(comodel_name='ir.module.module')
 
     @api.model
     def create(self, values):
+        print 'release.create', self.env.context
         rec = super(Release, self).create(values)
         group = self.env.ref('suvit_release.mail_channel_suvit_release')
         group.message_post(body=values['description'])
         return rec
+
+    @api.multi
+    def compute_module_ids(self):
+        for rec in self:
+            modules = [module.strip() for module in rec.modules_to_update.split(',')]
+            rec.module_ids = self.env['ir.module.module'].search([('module', 'in', modules)])

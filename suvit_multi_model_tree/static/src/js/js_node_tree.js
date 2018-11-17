@@ -4,6 +4,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var core = require('web.core');
   var TreeView = require('web.TreeView');
   var ListView = require('web.ListView');
+  var FormView = require('web.FormView');
   var View = require('web.View');
   var FormView = require('web.FormView');
   var FieldMany2Many = core.form_widget_registry.get('many2many');
@@ -337,8 +338,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
           inst = $.jstree.reference(data.reference),
           obj = inst.get_node(data.reference);
 
-      var ctx = new data.CompoundContext(self.dataset.get_context(), {'new_parent': self.get_id(obj.parent)});
-
+      var ctx = new data.CompoundContext(self.dataset.get_context(),
+                                         {'new_parent': self.get_id(obj.parent)}
+                                         );
       self.dataset._model
         .call('action_duplicate',
               [self.get_id(obj.id)],
