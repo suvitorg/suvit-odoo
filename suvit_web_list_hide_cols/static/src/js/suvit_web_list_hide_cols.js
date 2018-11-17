@@ -25,7 +25,7 @@ odoo.define('suvit_web_list_hide_cols', function (require) {
       localStorage[this.get_hide_cols_id()] = JSON.stringify(data || this.hide_cols);
     },
     add_invisible: function(field, is_invisible, save) {
-      var modifiers = JSON.parse(field.attrs.modifiers);
+      var modifiers = field.attrs.modifiers ? JSON.parse(field.attrs.modifiers) : {};
       modifiers['tree_invisible'] = is_invisible ? '1' : null;
       field.attrs.modifiers = JSON.stringify(modifiers);
       if (!this.hide_cols) this.hide_cols = [];
