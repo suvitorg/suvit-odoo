@@ -180,7 +180,7 @@ class MultiTree(models.AbstractModel):
     @api.multi
     def change_parent(self, new_parent_id):
         new_parent = self.browse(new_parent_id)
-        print 'CHANGE PARENT', self, new_parent
+        #print 'CHANGE PARENT', self, new_parent
 
     @api.multi
     def get_formview_action(self):

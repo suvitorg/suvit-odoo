@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from openerp import models, fields, api, exceptions
-import openerp.tools as tools
+from odoo import models, fields, api, exceptions
+import odoo.tools as tools
 
 logger = logging.getLogger(__name__)
 

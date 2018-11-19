@@ -16,7 +16,7 @@ TODO: Починить MassEditing для Many2many полей
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        'mass_editing',
+        #'mass_editing',
     ],
     'data': [
         'security/ir.model.access.csv',

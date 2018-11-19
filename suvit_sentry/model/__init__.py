@@ -7,4 +7,4 @@ try:
 except ImportError:
     pass
 else:
-    import sentry_logging
+    from . import sentry_logging

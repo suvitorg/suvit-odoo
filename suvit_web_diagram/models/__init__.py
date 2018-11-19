@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
-import base
-import workflow
+from . import base
+from . import workflow

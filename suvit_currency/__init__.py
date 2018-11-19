@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-import models
-import migrations
-import services
+from . import models
+from . import migrations
+from . import services
