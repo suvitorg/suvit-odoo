@@ -95,7 +95,7 @@ class Migration(models.Model):
     @api.multi
     def write(self, values):
         res = super(Migration, self).write(values)
-        if values.keys() == ['state']:
+        if list(values.keys()) == ['state']:
             return res
 
         self.run()

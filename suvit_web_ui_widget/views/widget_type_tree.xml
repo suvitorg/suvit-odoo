@@ -14,15 +14,17 @@
                </field>
             </field>
         </record>
-        <!--<record model="ir.ui.view" id="suvit_node_widget_type_list_view">
+        <record model="ir.ui.view" id="suvit_node_widget_type_list_view">
             <field name="name">Ведомость узлов виджетов</field>
             <field name="model">suvit.node.ui.widget.type</field>
             <field name="mode">primary</field>
             <field name="inherit_id" ref="suvit_multi_model_tree.format_tree_node_list_view"/>
             <field name="arch" type="xml">
-               <tree position="after"></tree>
+               <tree position="inside">
+                  <!-- -->
+               </tree>
             </field>
-        </record>-->
+        </record>
         <record model="ir.ui.view" id="suvit_node_widget_type_jstree_view">
             <field name="name">Дерево виджетов</field>
             <field name="model">suvit.node.ui.widget.type</field>
@@ -53,15 +55,10 @@
         <record model="ir.actions.server" id="action_suvit_node_widget_type_open">
             <field name="name">Переход в карточку узла виджета</field>
             <field name="model_id" ref="model_suvit_node_ui_widget_type"/>
+            <field name="binding_model_id" ref="model_suvit_node_ui_widget_type"/>
             <field name="state">code</field>
             <field name="code">action = self.get_formview_action(cr, uid, context.get('active_id', False), context=context)</field>
         </record>
-        <!--<record model="ir.values" id="action_suvit_node_widget_type_open_value">
-            <field name="key2">tree_but_open</field>
-            <field name="model">suvit.node.ui.widget.type</field>
-            <field name="name">Дерево виджетов Форма</field>
-            <field name="value" eval="'ir.actions.server,%d' % action_suvit_node_widget_type_open"/>
-        </record>-->
 
     </data>
 </openerp>

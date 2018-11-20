@@ -27,7 +27,7 @@ class Release(models.Model):
 
     @api.model
     def create(self, values):
-        print 'release.create', self.env.context
+        print('release.create', self.env.context)
         rec = super(Release, self).create(values)
         group = self.env.ref('suvit_release.mail_channel_suvit_release')
         group.message_post(body=values['description'])
