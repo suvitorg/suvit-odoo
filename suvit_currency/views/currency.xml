@@ -8,11 +8,13 @@
             <field name="inherit_id" ref="base.view_currency_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="replace" />
-                <group col="4" position="before">
+                <!--#TODO Odoo11-->
+                <!--odoo11 NOT group col=4 in view-->
+                <!--<group col="4" position="before">
                     <h1>
                         <span class="oe_format_form_title_prefix">Валюта</span> <field name="name" />
                     </h1>
-                </group>
+                </group>-->
                 <field name="rate" position="replace">
                     <field name="rub_currency_rate"/>
                     <!--<field name="rate_month" readonly="0"-->
@@ -24,12 +26,14 @@
                 <!--<xpath expr="//group[@string='Display']" position="replace"/>-->
                 <!--<group string="Price Accuracy" position="replace" />-->
                 <!--<group string="Display" position="replace" />-->
-                <group col="4" position="after">
+
+                <!--odoo11 NOT group col=4 in view-->
+                <!--<group col="4" position="after">
                     <notebook>
                         <page string="Курсы">
                             <group>
-                                <!--<field mode="tree" name="rate_ids" nolabel="1"-->
-                                       <!--attrs="{'readonly':[('base','=',True)]}">-->
+                                &lt;!&ndash;<field mode="tree" name="rate_ids" nolabel="1"&ndash;&gt;
+                                       &lt;!&ndash;attrs="{'readonly':[('base','=',True)]}">&ndash;&gt;
                                 <field mode="tree" name="rate_ids" nolabel="1">
                                     <tree string="Rates" editable="bottom">
                                         <field name="name" widget="date"/>
@@ -47,7 +51,7 @@
                                     <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
                                 </group>
                                 <group string="Miscellaneous">
-                                    <!--<field name="base"/>-->
+                                    &lt;!&ndash;<field name="base"/>&ndash;&gt;
                                     <field name="active"/>
                                 </group>
                                 <group>
@@ -72,7 +76,7 @@
                             </group>
                         </page>
                     </notebook>
-                </group>
+                </group>-->
             </field>
         </record>
         <record model="ir.ui.view" id="format_currency_tree">

@@ -63,10 +63,12 @@
             <field name="field_parent">tree_child_ids</field>
             <field name="arch" type="xml">
                <!--tree icon_field="icon" tree_type="tree_type" -->
-               <tree tree_title="Структура"
-                     icon_field="icon"
-                     tree_type="tree_type"
-                     tree_config="{}">
+               <tree>
+                  <!--div class="tree_config"
+                       tree_title="Структура"
+                       icon_field="icon"
+                       tree_type="tree_type"
+                       tree_config="{}" /--> 
                   <field name="name" invisible="1"/>
                   <field name="icon" invisible="1"/>
                 </tree>
