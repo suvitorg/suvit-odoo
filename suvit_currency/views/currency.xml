@@ -8,6 +8,7 @@
             <field name="inherit_id" ref="base.view_currency_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="replace" />
+                <!--#TODO Odoo11-->
                 <!--odoo11 NOT group col=4 in view-->
                 <!--<group col="4" position="before">
                     <h1>
