@@ -6,7 +6,6 @@ odoo.define('suvit.web.tree', function(require) {
     var _t = core._t;
     var _lt = core._lt;
     var FormView = require('web.FormView');
-    var TreeView = require('web.TreeView');
     var FieldMany2Many = core.form_widget_registry.get('many2many');
     var data = require('web.data');
     var formats = require ("web.formats");
@@ -39,6 +38,30 @@ odoo.define('suvit.web.tree', function(require) {
             self.ViewManager.views.tree.controller.switch_mode()
       }
     });
+
+    ActionManager = ActionManager.include({
+        select_breadcrumb: function(index, subindex) {
+          var self = this;
+          var item = this.breadcrumbs[index];
+          if (item.widget.views.tree && item.need_update) {
+            item.need_update=false;
+            item.widget.views.tree.controller.switch_mode();
+          }
+          return this._super(index, subindex);
+        },
+        do_action: function(action, options) {
+          if (this.tree_context) {
+            options = _.defaults(options || {}, {
+                additional_context: {},
+            });
+            options.additional_context.tree_ids = this.tree_context.tree_ids;
+          }
+          return this._super(action, options);
+        }
+    });
+
+    /*
+    var TreeView = require('web.TreeView');
 
     TreeView.include({
         init: function (parent, dataset, fields_view, options) {
@@ -142,27 +165,6 @@ odoo.define('suvit.web.tree', function(require) {
         },
     });
 
-    ActionManager = ActionManager.include({
-        select_breadcrumb: function(index, subindex) {
-          var self = this;
-          var item = this.breadcrumbs[index];
-          if (item.widget.views.tree && item.need_update) {
-            item.need_update=false;
-            item.widget.views.tree.controller.switch_mode();
-          }
-          return this._super(index, subindex);
-        },
-        do_action: function(action, options) {
-          if (this.tree_context) {
-            options = _.defaults(options || {}, {
-                additional_context: {},
-            });
-            options.additional_context.tree_ids = this.tree_context.tree_ids;
-          }
-          return this._super(action, options);
-        }
-    });
-
     var Many2ManyTreeField = FieldMany2Many.extend({
         initialize_content: function() {
             if (!(this.field.type == 'many2many' || this.field.type == 'one2many'))
@@ -185,5 +187,6 @@ odoo.define('suvit.web.tree', function(require) {
     });
 
     core.form_widget_registry.add('many2many_tree', Many2ManyTreeField);
+    */
 
 });

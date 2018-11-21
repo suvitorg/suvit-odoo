@@ -1,11 +1,11 @@
 odoo.define('web.autofocus', function (require) {
 "use strict";
 
-  var FormRenderingEngine = require('web.FormRenderingEngine');
+  var FormRenderer = require('web.FormRenderer');
 
-  FormRenderingEngine.include({
+  FormRenderer.include({
 
-    process_notebook: function($notebook) {
+    _renderTagNotebook: function($notebook) {
 
       var action = this.view.ViewManager.action;
       var af_name = action && action.context.autofocus;
