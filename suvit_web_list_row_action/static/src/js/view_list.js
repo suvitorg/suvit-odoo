@@ -1,5 +1,5 @@
 odoo.define('suvit.web.list.row.action', function (require) {
-  var Model = require('web.DataModel');
+  var rpc = require('web.rpc');
   var ListView = require('web.ListView');
   var core = require('web.core');
   //var FieldMany2Many = core.form_widget_registry.get('many2many');
@@ -7,8 +7,11 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var One2ManyListView = core.one2many_view_registry.get('list');
 
   var do_action = function(view, id, context){
-    var model_obj = new Model(view.dataset.model);
-    model_obj.call('get_formview_action', [id], {'context':context}).then(function(action){
+    rpc.query({model: view.dataset.model,
+               method: 'get_formview_action',
+               args: [id],
+               context: context,
+    }).then(function(action){
       action['target'] = context.open_formview;
       view.do_action(action);
     });

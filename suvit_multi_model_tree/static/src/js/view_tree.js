@@ -1,8 +1,9 @@
 odoo.define('suvit.multi_model_tree.old', function (require) {
 "use strict";
 
-var instance = window.openerp;
-var TreeView = require('web.TreeView');
+  var data = require('web.data');
+  //var TreeView = require('web.TreeView');
+  return;
 
   /* Ability
      1. to send all node`s parents to server, to can filter children depends on parent
@@ -25,7 +26,7 @@ var TreeView = require('web.TreeView');
       var self = this;
       if (!self.real_context)
         self.real_context = self.dataset._model._context;
-      self.dataset._model._context = new instance.web.CompoundContext(self.real_context,
+      self.dataset._model._context = new data.CompoundContext(self.real_context,
                                                                       {tree_parent_ids: self.getparents(id)});
 
       return this._super(id, children_ids);
