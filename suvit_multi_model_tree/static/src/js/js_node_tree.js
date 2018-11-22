@@ -6,16 +6,17 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var ListView = require('web.ListView');
   var FormView = require('web.FormView');
   var View = require('web.View');
+  var FormView = require('web.FormView');
   var FieldMany2Many = core.form_widget_registry.get('many2many');
   var QWeb = core.qweb;
   var _t = core._t;
   var Model = require('web.Model');
-  var pyeval = core.pyeval;
+  var pyeval = require('web.pyeval');
   var data = require('web.data');
   var common = require('web.form_common');
   var formats = require('web.formats');
-  var ActionManager = require('web.ActionManager');
   var One2ManyListView = core.one2many_view_registry.get('list');
+  var ActionManager = require('web.ActionManager');
 
   var process_model = false;
   var document_model = false;
@@ -143,7 +144,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
     do_create_record: function (form_view, element, context) {
       var self = this;
-      var pop = new data.form.SelectCreatePopup(this);
+      var pop = new common.SelectCreateDialog(this);
       var domain = {};
       pop.select_element(
           form_view.model,
@@ -300,10 +301,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
       if (element.model && element.model != self.dataset.model)
         context['default_object_id_selection'] = element.model + ',';
       // console.log('contextmenu.create parent', element, context)
-
       // TODO use X2ManyDataSet
       var dataset = new data.BufferedDataSet(self, self.dataset.model);
-      dataset.xd2m = self;
+      dataset.x2m = self;
       var One2ManyFormView = new One2ManyListView(self, dataset, false, {});
 
       self.do_create_record(One2ManyFormView, element, context);
@@ -339,9 +339,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
           obj = inst.get_node(data.reference);
 
       var ctx = new data.CompoundContext(self.dataset.get_context(),
-                                                 {'new_parent': self.get_id(obj.parent)}
-                                                 );
-
+                                         {'new_parent': self.get_id(obj.parent)}
+                                         );
       self.dataset._model
         .call('action_duplicate',
               [self.get_id(obj.id)],

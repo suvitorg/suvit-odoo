@@ -5,6 +5,14 @@
         <t t-jquery='thead tr th[t-att-data-id="column.id"]' t-operation="attributes">
             <attribute name="t-attf-class">#{((options.sortable and column.sortable and column.tag !== 'button') ? 'o_column_sortable' : '')} #{((column.__attrs and column.__attrs.class) ? column.__attrs.class : '')}</attribute>
         </t>
+        <t t-jquery='tfoot tr td[t-foreach="aggregate_columns"]' t-operation="replace">
+                <t t-foreach="columns" t-as="column">
+                    <td t-if="!column.meta and column.invisible !== '1'"
+                        t-att-data-field="column.id" t-att-title="column.label"
+                        t-attf-class="#{((options.sortable and column.sortable and column.tag !== 'button') ? 'o_column_sortable' : '')} #{((column.__attrs and column.__attrs.class) ? column.__attrs.class : '')}">
+                    </td>
+                </t>
+        </t>
     </tr>
 
     <tr t-extend="ListView.row">
