@@ -8,7 +8,7 @@ odoo.define('suvit.web.tree', function(require) {
     var FormView = require('web.FormView');
     var FieldMany2Many = core.form_widget_registry.get('many2many');
     var data = require('web.data');
-    var formats = require ("web.formats");
+    var field_utils = require('web.field_utils');
 
     FormView.include({
       init1: function(parent, dataset, view_id, options) {
@@ -108,7 +108,7 @@ odoo.define('suvit.web.tree', function(require) {
                     'fields_view': self.fields_view.arch.children,
                     'fields': self.fields,
                     'level': $curr_node.data('level') || 0,
-                    'render': formats.format_value,
+                    'render': field_utils.format,
                     'color_for': self.color_for,
                     'row_parent_id': id
                 });
