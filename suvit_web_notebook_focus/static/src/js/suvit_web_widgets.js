@@ -6,9 +6,7 @@ odoo.define('web.autofocus', function (require) {
   FormRenderer.include({
 
     _renderTagNotebook: function($notebook) {
-
-      var action = this.view.ViewManager.action;
-      var af_name = action && action.context.autofocus;
+      var af_name = this.state.context.autofocus;
       if (!af_name)
         return this._super($notebook);
 

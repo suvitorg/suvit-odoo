@@ -6,9 +6,10 @@ odoo.define('suvit.web.tree', function(require) {
     var _t = core._t;
     var _lt = core._lt;
     var FormView = require('web.FormView');
-    var FieldMany2Many = core.form_widget_registry.get('many2many');
     var data = require('web.data');
     var field_utils = require('web.field_utils');
+    var field_registry = require('web.field_registry');
+    var FieldMany2Many = field_registry.get('many2many');
 
     FormView.include({
       init1: function(parent, dataset, view_id, options) {
@@ -186,7 +187,7 @@ odoo.define('suvit.web.tree', function(require) {
         }
     });
 
-    core.form_widget_registry.add('many2many_tree', Many2ManyTreeField);
+    field_registry.add('many2many_tree', Many2ManyTreeField);
     */
 
 });

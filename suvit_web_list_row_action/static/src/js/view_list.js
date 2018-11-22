@@ -2,7 +2,8 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var rpc = require('web.rpc');
   var ListView = require('web.ListView');
   var core = require('web.core');
-  //var FieldMany2Many = core.form_widget_registry.get('many2many');
+  var field_registry = require('web.field_registry');
+  var FieldMany2Many = field_registry.get('many2many');
   //var Many2ManyListView = new FieldMany2Many(field_manager, node).x2many_views.list;
   var One2ManyListView = core.one2many_view_registry.get('list');
 
