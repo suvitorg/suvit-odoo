@@ -5,7 +5,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var field_registry = require('web.field_registry');
   var FieldMany2Many = field_registry.get('many2many');
   //var Many2ManyListView = new FieldMany2Many(field_manager, node).x2many_views.list;
-  var One2ManyListView = core.one2many_view_registry.get('list');
+  var FormController = require('web.FormController');
 
   var do_action = function(view, id, context){
     rpc.query({model: view.dataset.model,
@@ -34,7 +34,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
     }
   });
 
-  One2ManyListView.include({
+  FormController.include({
     do_activate_record: x2m_do_activate_record,
   });
 
