@@ -15,8 +15,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var data = require('web.data');
   var common = require('web.view_dialogs');
   var field_utils = require('web.field_utils');
-  var One2ManyListView = core.one2many_view_registry.get('list');
+  var FormController = require('web.FormController');
   var ActionManager = require('web.ActionManager');
+  var view_registry = require('web.view_registry');
 
   var process_model = false;
   var document_model = false;
@@ -319,7 +320,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
       // TODO use X2ManyDataSet
       var dataset = new data.BufferedDataSet(self, self.dataset.model);
       dataset.x2m = self;
-      var One2ManyFormView = new One2ManyListView(self, dataset, false, {});
+      var One2ManyFormView = new FormController(self, dataset, false, {});
 
       self.do_create_record(One2ManyFormView, element, context);
     },
@@ -710,7 +711,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   });
 
   field_registry.add('js_node_tree', JsNodeTreeViewField);
-  core.view_registry.add('js_node_tree', JsNodeTreeView);
+  view_registry.add('js_node_tree', JsNodeTreeView);
 
 return {
     JsNodeTreeView: JsNodeTreeView,
