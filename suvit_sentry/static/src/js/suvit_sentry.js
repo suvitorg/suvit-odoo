@@ -13,14 +13,14 @@ odoo.define('suvit.sentry', function (require) {
     open: function() {
       var self = this;
       this._super();
-      self.$modal.on('click', '.show_details', function() {
-        self.$modal.find('.hide_details').show();
-        self.$modal.find('.error_details').show();
+      self.$el.on('click', '.show_details', function() {
+        self.$el.find('.hide_details').show();
+        self.$el.find('.error_details').show();
         $(this).hide();
       });
-      self.$modal.on('click', '.hide_details', function() {
-        self.$modal.find('.show_details').show();
-        self.$modal.find('.error_details').hide();
+      self.$el.on('click', '.hide_details', function() {
+        self.$el.find('.show_details').show();
+        self.$el.find('.error_details').hide();
         $(this).hide();
       });
       return self;
