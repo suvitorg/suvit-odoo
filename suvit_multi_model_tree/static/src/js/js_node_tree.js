@@ -6,7 +6,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var FormView = require('web.FormView');
   var BasicView = require('web.BasicView');
   var FormView = require('web.FormView');
-  var FieldMany2Many = core.form_widget_registry.get('many2many');
+  var field_registry = require('web.field_registry');
+  var FieldMany2Many = field_registry.get('many2many');
   var QWeb = core.qweb;
   var _t = core._t;
   var rpc = require('web.rpc');
@@ -708,7 +709,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
   });
 
-  core.form_widget_registry.add('js_node_tree', JsNodeTreeViewField);
+  field_registry.add('js_node_tree', JsNodeTreeViewField);
   core.view_registry.add('js_node_tree', JsNodeTreeView);
 
 return {
