@@ -6,7 +6,7 @@ odoo.define('suvit.sentry', function (require) {
   var Client = require('web.AbstractWebClient')
   var WebClient = require('web.WebClient');
   var CrashManager = require('web.CrashManager');
-  var Model = require('web.Model');
+  var rpc = require('web.rpc');
   var Dialog = require('web.Dialog');
 
   Dialog.include({
@@ -31,7 +31,11 @@ odoo.define('suvit.sentry', function (require) {
     init: function(parent) {
       this._super(parent);
       var self = this;
-      new Model("ir.config_parameter").call("get_param", ['SENTRY_CLIENT_JS_DSN']).then(function(value) {
+      rpc.query({
+          model: "ir.config_parameter",
+          method: 'get_param',
+          args: ['SENTRY_CLIENT_JS_DSN'],
+      }).then(function(value) {
         if (value) {
           Raven.setUserContext({
             name: self.session.username,

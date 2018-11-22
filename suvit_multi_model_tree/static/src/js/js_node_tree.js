@@ -2,35 +2,48 @@ odoo.define('suvit.multi.model.tree', function (require) {
 "use strict";
 
   var core = require('web.core');
-  var TreeView = require('web.TreeView');
   var ListView = require('web.ListView');
   var FormView = require('web.FormView');
-  var View = require('web.View');
+  var BasicView = require('web.BasicView');
   var FormView = require('web.FormView');
-  var FieldMany2Many = core.form_widget_registry.get('many2many');
+  var field_registry = require('web.field_registry');
+  var FieldMany2Many = field_registry.get('many2many');
   var QWeb = core.qweb;
   var _t = core._t;
-  var Model = require('web.Model');
+  var rpc = require('web.rpc');
   var pyeval = require('web.pyeval');
   var data = require('web.data');
-  var common = require('web.form_common');
-  var formats = require('web.formats');
+  var common = require('web.view_dialogs');
+  var field_utils = require('web.field_utils');
   var One2ManyListView = core.one2many_view_registry.get('list');
   var ActionManager = require('web.ActionManager');
 
   var process_model = false;
   var document_model = false;
   var field_model = false;
-  var config_model = new Model("ir.config_parameter");
-  config_model.call("get_param", ['PROCESS_MODEL']).then(function(value) {
-    process_model = value || "format.frontend.demo.process";
+
+  rpc.query({
+      model: 'ir.config_parameter',
+      method: 'get_param',
+      args: ['PROCESS_MODEL'],
+  }).then(function(value) {
+      process_model = value || "format.frontend.demo.process";
   });
-  config_model.call("get_param", ['DOCUMENT_MODEL']).then(function(value) {
-    document_model = value || "format.frontend.demo.process.document";
+  rpc.query({
+      model: 'ir.config_parameter',
+      method: 'get_param',
+      args: ['DOCUMENT_MODEL'],
+  }).then(function(value) {
+      document_model = value || "format.frontend.demo.process.document";
   });
-  config_model.call("get_param", ['FIELD_MODEL']).then(function(value) {
-    field_model = value || "format.frontend.demo.process.document.field";
+  rpc.query({
+      model: 'ir.config_parameter',
+      method: 'get_param',
+      args: ['FIELD_MODEL'],
+  }).then(function(value) {
+      field_model = value || "format.frontend.demo.process.document.field";
   });
+
 
   FormView.include({
     on_button_save: function(e) {
@@ -49,7 +62,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   });
 
 
-  var JsNodeTreeView = View.extend({
+  var JsNodeTreeView = BasicView.extend({
     view_type: 'js_node_tree',
     destroy: function () {
       if (this.$jstree)
@@ -196,11 +209,12 @@ odoo.define('suvit.multi.model.tree', function (require) {
             _.each(element_ids, function(i){
               vals[element.field].push([4, i]);
             });
-            new Model($node.type).call('write', [
-                [parseInt($node.original.tree_obj_real_id)],
-                vals
-            ]).then(function(){
-              self.reload_tree(self.$dragging.is(':checked'));
+            rpc.query({
+                model: $node.type,
+                method: 'write',
+                args: [parseInt($node.original.tree_obj_real_id), vals],
+            }).then(function(){
+                self.reload_tree(self.$dragging.is(':checked'));
             });
         });
     },
@@ -262,8 +276,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
             self.tree_fields_cols.push({
               'header': self.fields_view.fields[col.attrs.name]['string'],
               'value': function (node) {
-                return formats.format_value(node.original[col.attrs.name],
-                                                 self.fields_view.fields[col.attrs.name]);
+                var field = self.fields_view.fields[col.attrs.name];
+                var value = node.original[col.attrs.name];
+                return field_utils.format[field.type](value, field);
               }
             });
         }
@@ -694,7 +709,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
   });
 
-  core.form_widget_registry.add('js_node_tree', JsNodeTreeViewField);
+  field_registry.add('js_node_tree', JsNodeTreeViewField);
   core.view_registry.add('js_node_tree', JsNodeTreeView);
 
 return {
