@@ -13,7 +13,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var pyeval = require('web.pyeval');
   var data = require('web.data');
   var common = require('web.view_dialogs');
-  var formats = require('web.formats');
+  var field_utils = require('web.field_utils');
   var One2ManyListView = core.one2many_view_registry.get('list');
   var ActionManager = require('web.ActionManager');
 
@@ -275,8 +275,9 @@ odoo.define('suvit.multi.model.tree', function (require) {
             self.tree_fields_cols.push({
               'header': self.fields_view.fields[col.attrs.name]['string'],
               'value': function (node) {
-                return formats.format_value(node.original[col.attrs.name],
-                                                 self.fields_view.fields[col.attrs.name]);
+                var field = self.fields_view.fields[col.attrs.name];
+                var value = node.original[col.attrs.name];
+                return field_utils.format[field.type](value, field);
               }
             });
         }
