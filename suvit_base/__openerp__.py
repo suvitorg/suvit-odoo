@@ -19,7 +19,7 @@ TODO
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': ['web',  # odoo/core
-                'disable_openerp_online',  # github/oca/server_tools
+                #'disable_openerp_online',  # github/oca/server_tools
                 # 1. support_branding - С предустановленными полями
                 # 2. web_debranding -C предустановленными полями
                 # 3. support_debranding
@@ -27,7 +27,7 @@ TODO
                 'suvit_sentry',
 
                 # change admin right
-                'base_debug4all',  # oca/server_tools
+                #'base_debug4all',  # oca/server_tools
 
                 # for patch
                 'mail',
