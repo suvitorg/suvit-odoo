@@ -33,3 +33,7 @@ class CurrencyMigration(models.Model):
                 {'service': 'RU_CBRF',
                  'company_id': comp.id,
                  'currency_to_update': [(6, 0, [eur.id, usd.id])]})
+
+    @api.model
+    def remove_key_RU_CBRF_getter(self):
+        self.env['currency.rate.update.service'].search([('service', '=', 'RU_CBRF_getter')]).unlink()
