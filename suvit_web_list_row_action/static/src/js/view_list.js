@@ -2,13 +2,15 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var Model = require('web.DataModel');
   var ListView = require('web.ListView');
   var core = require('web.core');
+
+  var One2ManyListView = core.one2many_view_registry.get('list');
+  // TODO many2many
   //var FieldMany2Many = core.form_widget_registry.get('many2many');
   //var Many2ManyListView = new FieldMany2Many(field_manager, node).x2many_views.list;
-  var One2ManyListView = core.one2many_view_registry.get('list');
 
   var do_action = function(view, id, context){
     var model_obj = new Model(view.dataset.model);
-    model_obj.call('get_formview_action', [id], {'context':context}).then(function(action){
+    model_obj.call('get_formview_action', [id], {'context': context}).then(function(action){
       action['target'] = context.open_formview;
       view.do_action(action);
     });

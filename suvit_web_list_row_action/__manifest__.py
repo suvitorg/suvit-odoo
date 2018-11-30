@@ -1,13 +1,14 @@
 {
-    'name': 'Сувит. Клик на строку Списка',
+    'name': 'ListView. Custom row action',
+    'version': '1.0.0',
     'category': 'Website',
-    'summary': 'Клик на строку Списка',
-    'version': '1.0',
+    'summary': 'Custom row action',
+    'license': 'LGPL-3',
     'description': """
-Клик на строку Списка
+Custom row action
 ===========================
 
-        """,
+""",
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
@@ -15,9 +16,6 @@
     ],
     'data': [
         'static/data/static_data.xml',
-    ],
-    'js': [
-        "static/src/js/view_list.js",
     ],
     'installable': True,
     'auto_install': False,
