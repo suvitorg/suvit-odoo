@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<openerp>
+<odoo>
     <data noupdate="0">
         <record model="suvit.migration" id="set_diagram_spec_base">
             <field name="name">Обновление курса валют</field>
             <field name="method">update_currency_rate</field>
         </record>
+
+        <record model="suvit.migration" id="remove_key_RU_CBRF_getter">
+            <field name="name">Удаление службы с несуществющим ключом из списка обновления криптовалют</field>
+            <field name="method">remove_key_RU_CBRF_getter</field>
+        </record>
     </data>
-</openerp>
+</odoo>
