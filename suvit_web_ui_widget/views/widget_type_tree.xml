@@ -33,10 +33,10 @@
             <field name="mode">primary</field>
             <field name="inherit_id" ref="suvit_multi_model_tree.format_tree_node_jstree_view"/>
             <field name="arch" type="xml">
-               <tree position="attributes">
+               <!--<tree position="attributes">
                    <attribute name="tree_title">Структура дерева виджетов</attribute>
                    <attribute name="tree_dynamic_config">1</attribute>
-               </tree>
+               </tree>-->
                <tree position="inside">
                  <field name="image_html" />
                </tree>
