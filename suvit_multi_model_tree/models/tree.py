@@ -34,7 +34,7 @@ class MultiTree(models.AbstractModel):
 
     @api.multi
     def evaluate_ids(self):
-        if not any(isinstance(id, basestring) for id in self.ids):
+        if not any(isinstance(id, str) for id in self.ids):
             return
 
         new_ids = []

@@ -52,7 +52,7 @@ class SuvitWebUiWidget(models.Model):
             rec.display_name = self.translit(rec.name)
 
     def translit(self, text):
-        if not isinstance(text, basestring):
+        if not isinstance(text, str):
             return text
         text = translify(text, strict=False)
         text = text.replace("'", '')\
