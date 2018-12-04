@@ -16,6 +16,7 @@ class TestNode(TransactionCase):
 
         self.assertEqual(len(root.child_ids), 3)
         # test change name and order of children
+        print ch2.sequence
         self.assertEqual(root.child_ids.mapped('name'),
                          ['Ch1', 'Ch2', 'Ch3-last'])
 
