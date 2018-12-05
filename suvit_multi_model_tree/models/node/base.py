@@ -247,7 +247,6 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def action_change_sequence(self, new_parent, sequence):
-        print 1, sequence
         if sequence is None:
             return
 
