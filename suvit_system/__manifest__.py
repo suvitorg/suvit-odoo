@@ -18,7 +18,7 @@
         'suvit_multi_model_tree',
     ],
     'data': [
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
         # 'views/assets.xml',
         # 'views/node.xml',
     ],
