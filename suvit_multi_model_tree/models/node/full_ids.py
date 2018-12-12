@@ -14,28 +14,23 @@ class TreeNode(models.AbstractModel):
     @api.multi
     def evaluate_ids(self):
         if not any(isinstance(id, basestring) for id in self.ids):
-            return
+            return self.ids
 
         # logger.info('Node.evaluate_ids before %s', self.ids)
         new_ids = []
         for id in self.ids:
             new_ids.append(int(str(id).split('-')[-1]))
 
-        # XXX This is needed to clear cache string ids
-        self.invalidate_cache()
-        self._ids = new_ids
-        # logger.info('Node.evaluate_ids after %s', self.ids)
+        return new_ids
 
     @api.multi
     def read(self, fields=None, *args, **kwargs):
         if not self._use_full_ids:
             return super(TreeNode, self).read(fields, *args, **kwargs)
 
-        self.evaluate_ids()
-
-        # logger.info('Node.read %s %s', self.ids, fields)
-
-        res = super(TreeNode, self).read(fields, *args, **kwargs)
+        new_ids = self.evaluate_ids()
+        real_recs = self.search([('id', 'in', new_ids)])
+        res = super(TreeNode, real_recs).read(fields, *args, **kwargs)
 
         parents = self.env.context.get('tree_parent_ids')
         if parents:
