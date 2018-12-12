@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<templates>
-    <t t-name="ListView.open_groups">
-      <div class="btn-group oe_view_open_groups_menu">
-        <button type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
-      </div>
-    </t>
-</templates>
