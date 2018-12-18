@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
-import urllib
+import urllib.parse
 
 from openerp import api, fields, models
 
@@ -41,7 +41,7 @@ class SuvitWidgetBase(models.AbstractModel):
                       'field': img_field_name}
         if img_field_name == 'image':
             query_dict['filename_field'] = 'image_fname'
-        query = urllib.urlencode(query_dict)
+        query = urllib.parse.urlencode(query_dict)
         image_url = '/web/binary/%s?' % type + query
 
         return image_url
