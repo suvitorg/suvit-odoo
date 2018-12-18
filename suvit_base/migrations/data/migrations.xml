@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="suvit.migration" id="remove_unrelated_mail_records">
+            <field name="name">Удаление непривязанных записей в mail.followers и mail.messages</field>
+            <field name="method">remove_unrelated_mail_records</field>
+        </record>
+    </data>
+</odoo>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'СУВИТ. Ядро',
-    'version': '0.0.1',
+    'version': '0.1.1',
     'category': 'SUVIT',
     'complexity': 'easy',
     'description': """
@@ -24,11 +24,12 @@ TODO
                 # 3. support_debranding
                 # 4. hide_db_manager_link oca/server_tools
                 'suvit_sentry',
-
+                'suvit_migration',
                 # for patch
                 'mail',
                 ],
     'data': [
+        'migrations/data/migrations.xml'
     ],
     'js': [
     ],
