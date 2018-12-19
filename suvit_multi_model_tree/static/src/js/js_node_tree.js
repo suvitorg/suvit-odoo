@@ -57,7 +57,12 @@ odoo.define('suvit.multi.model.tree', function (require) {
       this._super();
     },
     init: function (parent, dataset, fields_view, options) {
+      if (parent.action && parent.action.context && parent.action.context.tree_domain){
+          var domain = new data.CompoundDomain(dataset.domain, parent.action.context.tree_domain);
+          dataset = new data.DataSetSearch(this, parent.action.res_model, dataset.context, domain);
+      }
       this._super(parent, dataset, fields_view, options);
+
       this.records = {};
       var attrs = parent.x2m ? parent.x2m.node.attrs : fields_view.arch.attrs
       this.field_parent = attrs.field_parent;
