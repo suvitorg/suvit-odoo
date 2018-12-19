@@ -51,6 +51,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
 
   var JsNodeTreeView = View.extend({
     view_type: 'js_node_tree',
+    className: 'js_node_tree',
     destroy: function () {
       if (this.$jstree)
         this.$jstree.jstree('destroy');
