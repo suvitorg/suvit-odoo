@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'СУВИТ. Ядро',
-    'version': '0.1.2',
+    'version': '0.1.3',
     'category': 'SUVIT',
     'complexity': 'easy',
     'description': """
