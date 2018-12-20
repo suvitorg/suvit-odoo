@@ -4,6 +4,7 @@ from openerp import models, fields, api
 
 logger = logging.getLogger(__name__)
 
+
 class Release(models.Model):
     _name = 'suvit.release'
     _description = u"Релиз"
@@ -17,7 +18,6 @@ class Release(models.Model):
     modules_to_update = fields.Char(string=u'Модули для обновления',
                                     help=u'Перечисленные через запятую тех. имена модулей, пример suvit_base,suvit_core')
 
-    # TODO
     module_ids = fields.One2many(string=u'Модули',
                                  comodel_name='ir.module.module',
                                  compute='compute_module_ids')
@@ -27,7 +27,6 @@ class Release(models.Model):
 
     @api.model
     def create(self, values):
-        print 'release.create', self.env.context
         rec = super(Release, self).create(values)
         group = self.env.ref('suvit_release.mail_channel_suvit_release')
         group.message_post(body=values['description'])
