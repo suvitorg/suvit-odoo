@@ -12,7 +12,9 @@ class Release(models.Model):
     _order = 'create_date desc'
 
     name = fields.Char(string=u"Номер релиза")
-    description = fields.Text(string=u"Описание")
+
+    description = fields.Text(string=u"Описание",
+                              required=True)
 
     # Возможно заменить на обновление текущего модуля?
     modules_to_update = fields.Char(string=u'Модули для обновления',
@@ -28,8 +30,9 @@ class Release(models.Model):
     @api.model
     def create(self, values):
         rec = super(Release, self).create(values)
-        group = self.env.ref('suvit_release.mail_channel_suvit_release')
-        group.message_post(body=values['description'])
+        channel = self.env.ref('suvit_release.mail_channel_suvit_release')
+        channel.message_post(body=values['description'],
+                             subtype='mail.mt_comment')
         return rec
 
     @api.multi
