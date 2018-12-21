@@ -710,7 +710,8 @@ odoo.define('suvit.multi.model.tree', function (require) {
     },
   });
 
-  field_registry.add('js_node_tree', JsNodeTreeViewField);
+  //TODO fix js_node_tree field widget
+  //field_registry.add('js_node_tree', JsNodeTreeViewField);
   view_registry.add('js_node_tree', JsNodeTreeView);
 
 return {
