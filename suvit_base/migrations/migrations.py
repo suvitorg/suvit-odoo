@@ -19,16 +19,22 @@ class CurrencyMigration(models.Model):
             cr.execute(query, tuple(res_models_to_remove))
             cr.commit()
 
+        def delete_unexisted_records(recordset, model_field, id_field, message):
+            _logger.debug(message)
+            res_models = list(set(recordset.search([]).mapped(model_field)))
+            for model in res_models:
+                _logger.debug(u"Search unexisted records in model: %s" % model)
+                ids_to_delete = recordset.search(
+                    [(model_field, '=', model), (id_field, 'not in', self.env[model].search([]).ids)])
+                _logger.debug(u"Deleting next ids: %s" % u", ".join(str(ident) for id in ids_to_delete.ids))
+                ids_to_delete.unlink()
+
         Followers = self.env['mail.followers']
         cr = Followers._cr
         res_models_to_remove = list(set(Followers.search([('res_model', 'not in', self.env.keys())]).mapped('res_model')))
         if res_models_to_remove:
             query_delete_records(cr, res_models_to_remove, "res_model", "mail_followers")
-        for rec in Followers.search([]):
-            if not self.env[rec.res_model].browse(rec.res_id):
-                _logger.debug("Delete mail followers record with id: %d related to res_model: %s, res_id: %d" % (
-                    rec.id, rec.res_model, rec.res_id))
-                rec.unlink()
+        delete_unexisted_records(Followers, 'res_model', 'res_id', u'Start checking mail.followers')
 
         Messages = self.env['mail.message']
         cr = Messages._cr
@@ -38,8 +44,4 @@ class CurrencyMigration(models.Model):
         if res_models_to_remove:
             query_delete_records(cr, res_models_to_remove, "model", "mail_message")
         Messages.search([('model', '=', False)]).unlink()
-        for rec in Messages.search([]):
-            if not self.env[rec.model].browse(rec.res_id):
-                _logger.debug("Delete mail message record with id: %d related to model: %s, res_id: %d" % (
-                    rec.id, rec.model, rec.res_id))
-                rec.unlink()
+        delete_unexisted_records(Messages, 'model', 'res_id', u'Start checking mail.message')
