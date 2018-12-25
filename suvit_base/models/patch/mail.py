@@ -6,7 +6,7 @@ from openerp import api, models
 _logger = logging.getLogger(__name__)
 
 
-class PatchedMailThread(models.Model):
+class PatchedMailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     # TODO monkey patch odoo.mail.mail_thread to use unicode keys in selections
