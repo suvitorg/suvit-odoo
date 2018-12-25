@@ -4,7 +4,7 @@
     'summary': 'Виджеты для Odoo',
     'website': 'https://suvit.ru',
     'version': '1.0',
-    'description': "Редирект на https://suvit.ru",
+    'description': "Ссылка поддержки изменена на https://suvit.ru",
     'author': 'Suvit LLC',
     'depends': ['web'],
     'installable': True,

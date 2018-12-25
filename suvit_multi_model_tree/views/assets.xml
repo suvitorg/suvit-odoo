@@ -12,7 +12,7 @@
             <script type="text/javascript" src="/suvit_multi_model_tree/static/lib/jstreegrid/jstreegrid.js"></script>
 
             <script type="text/javascript" src="/suvit_multi_model_tree/static/src/js/js_node_tree.js"></script>
-            <link rel="stylesheet" href="/suvit_multi_model_tree/static/src/css/js_node_tree.css"/>
+            <link rel="stylesheet" href="/suvit_multi_model_tree/static/src/css/js_node_tree.less"/>
         </xpath>
     </template>
 

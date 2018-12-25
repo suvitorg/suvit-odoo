@@ -1,2 +1,2 @@
-raven~=6.0.0
+raven~=6.9.0
 raven-sanitize-openerp~=0.1.2

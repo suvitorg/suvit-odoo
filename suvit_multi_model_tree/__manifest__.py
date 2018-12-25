@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'СУВИТ. Дерево',
-    'version': '0.0.1',
+    'version': '0.1.1',
     'category': 'SUVIT',
     'complexity': 'easy',
     'description': """

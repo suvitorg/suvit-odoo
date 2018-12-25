@@ -39,7 +39,10 @@ class MassObjectRel(models.Model):
     @api.onchange('model_id')
     def compute_model_ids(self):
         for rec in self:
-            rec.model_ids = rec.mass_id.onchange_model_id(rec.model_id.id)['value']['model_ids']
+            rec.model_ids = [int(id_str)
+                             for id_str in (rec.mass_id.model_list or '').split(',')
+                             if id_str]
+
 
 
 class MassObject(models.Model):

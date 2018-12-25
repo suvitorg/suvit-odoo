@@ -2,6 +2,8 @@
 
 import datetime
 import logging
+import socket
+import os
 
 from odoo import _, api, models, fields, exceptions
 from odoo.tools.translate import _
@@ -182,19 +184,32 @@ class Currency(models.Model):
 
         domain = CURRENCY_DOMAIN + [('name', '!=', 'RUB')]
         for cur in self.search(domain):
+            _logger.info('Begin update for currency {}'.format(cur.name))
             recs = self.env['res.currency.rate'].search(
                 [('currency_id', '=', cur.id),
                  ('name', '>=', fields.Datetime.to_string(date))])
             if recs:
                 continue
+            cron_currency_update_id = self.env.ref('currency_rate_update.ir_cron_currency_update_every_day')
+            last_run_date = fields.Datetime.from_string(cron_currency_update_id.nextcall) - datetime.timedelta(days=1)
+            hostname = socket.gethostname()
+            work_dir = os.abspath(__file__)
 
-            message = u'<div>Валюта {} не обновлялась c {}.</div>'.format(cur.name,
-                                                                          date.strftime('%d-%m-%Y'))
+            message = u'<div>Валюта {} не обновлялась c {}.</div>'\
+                      u'<div>Последний запуск обновления: {}</div>'\
+                      u'<div>Следующий запуск обновления: {}</div>'\
+                      u'<div>Хост: {}</div>'\
+                      u'<div>Директория: {}</div>'.format(cur.name, date.strftime('%d-%m-%Y'),
+                                                          last_run_date.strftime('%d-%m-%Y'),
+                                                          cron_currency_update_id.nextcall,
+                                                          hostname, work_dir)
+
             mess = Mail.create({
                 'email_to': admin.email,
                 'subject': u'Нет обновления валюты {}!'.format(cur.name),
                 'body_html': message})
             mess.send()
+            _logger.info('Letter sent about currency {} update.'.format(cur.name))
 
 class Rate(models.Model):
     _inherit = "res.currency.rate"
