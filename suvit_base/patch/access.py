@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-import cStringIO
 import csv
 import os
+from io import BytesIO
 
 import odoo
 import openerp
@@ -11,6 +11,7 @@ from openerp.modules.loading import load_modules as oe_load_modules
 from odoo.tools.convert import convert_csv_import
 from odoo import SUPERUSER_ID, _
 from odoo.tools.misc import ustr
+from odoo.tools import pycompat
 
 _logger = logging.getLogger(__name__)
 
@@ -46,9 +47,8 @@ def format_convert_csv_import(cr, module, fname, csvcontent, idref=None, mode='i
     #remove folder path from model
     head, model = os.path.split(model)
 
-    input = cStringIO.StringIO(csvcontent) #FIXME
-    reader = csv.reader(input, quotechar='"', delimiter=',')
-    fields = reader.next()
+    reader = pycompat.csv_reader(BytesIO(csvcontent), quotechar='"', delimiter=',')
+    fields = next(reader)
 
     if not (mode == 'init' or 'id' in fields):
         _logger.error("Import specification does not contain 'id' and we are in init mode, Cannot continue.")
@@ -61,7 +61,7 @@ def format_convert_csv_import(cr, module, fname, csvcontent, idref=None, mode='i
         if not line[0]:
             continue
         try:
-            datas.append(map(ustr, line))
+            datas.append(line)
         except Exception:
             _logger.error("Cannot import the line: %s", line)
 
