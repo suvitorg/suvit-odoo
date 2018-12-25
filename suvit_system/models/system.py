@@ -71,7 +71,8 @@ class SystemNode(models.Model):
     _description = u'Узел дерева системы'
     _inherit = ['suvit.tree.node.mixin',
                 'mail.thread',
-                'ir.needaction_mixin',
+                # Odoo 11 activity
+                # 'ir.needaction_mixin',
                 ]
     _order = 'parent_id,sequence,id'
 
