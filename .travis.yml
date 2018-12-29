@@ -2,8 +2,8 @@ language: python3
 sudo: false
 cache: pip3
 
-# python:
-#   - "3.5"
+python:
+  - "3.5"
 
 addons:
   apt:
