@@ -1,6 +1,6 @@
-language: python3
+language: python
 sudo: false
-cache: pip3
+cache: pip
 
 python:
   - "3.5"
@@ -9,7 +9,7 @@ addons:
   apt:
     packages:
       - expect-dev  # provides unbuffer utility
-      - python3-lxml # because pip installation is slow
+      - python-lxml # because pip installation is slow
 
 env:
   global:
@@ -19,14 +19,13 @@ env:
   # - LINT_CHECK="1"
   - TESTS="1" ODOO_REPO="odoo/odoo"
 
-virtualenv:
-  system_site_packages: true
+#virtualenv:
+#  system_site_packages: true
 
 install:
   # for currency_rate_update
   #- git clone --depth 1 --single-branch https://github.com/barachka/account-financial-tools ${HOME}/dependencies/account-financial-tools
   - pip --version
-  - pip install -U pip
   - git clone --depth 1 https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
