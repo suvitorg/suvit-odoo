@@ -1,15 +1,15 @@
-language: python3
+language: python
 sudo: false
 cache: pip
 
-# python:
-#   - "3.5"
+python:
+  - "3.5"
 
 addons:
   apt:
     packages:
       - expect-dev  # provides unbuffer utility
-      - python3-lxml # because pip installation is slow
+      - python-lxml # because pip installation is slow
 
 env:
   global:
