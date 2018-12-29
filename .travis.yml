@@ -1,6 +1,6 @@
 language: python3
 sudo: false
-cache: pip
+cache: pip3
 
 # python:
 #   - "3.5"
