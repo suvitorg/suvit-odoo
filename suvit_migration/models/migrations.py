@@ -28,6 +28,10 @@ class Migration(models.Model):
     implemented = fields.Boolean(string=u"Выполнена",
                                  compute='compute_implemented',
                                  )
+    date_done = fields.Date(string=u"Дата выполнения",
+                            compute='compute_date_done',
+                            store=True,
+                            )
 
     module_id = fields.Many2one(string=u"Модуль",
                                 comodel_name='ir.module.module',
@@ -36,6 +40,16 @@ class Migration(models.Model):
     method = fields.Char(string=u"Метод",
                          required=True,
                          )
+
+    @api.multi
+    @api.depends('state')
+    def compute_date_done(self):
+        today = fields.Date.today()
+        for rec in self:
+            if rec.state == 'done':
+                rec.date_done = today
+            elif rec.date_done:
+                rec.date_done = False
 
     @api.multi
     def compute_implemented(self):
