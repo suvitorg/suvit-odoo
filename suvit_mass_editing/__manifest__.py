@@ -16,12 +16,12 @@ TODO: Починить MassEditing для Many2many полей
     'author': 'Suvit LLC',
     'website': 'https://suvit.ru',
     'depends': [
-        #'mass_editing',
+        'mass_editing',
     ],
     'data': [
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
 
-        #'views/mass_editing_view.xml',
+        'views/mass_editing_view.xml',
     ],
     'installable': True,
     'auto_install': False,
