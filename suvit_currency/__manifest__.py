@@ -15,24 +15,24 @@
     'website': 'https://suvit.ru',
     'depends': [
         'suvit_migration',
-        'currency_rate_update',  # from barachka with RusCB support
+        #'currency_rate_update',  # from barachka with RusCB support
     ],
     'init': [
     ],
     'data': [
-        'data/cron.xml',
+        #'data/cron.xml',
 
-        'views/currency.xml',
+        #'views/currency.xml',
 
-        'views/fix_account_menu.xml',
+        #'views/fix_account_menu.xml',
 
-        'migrations/data/migrations.xml',
+        #'migrations/data/migrations.xml',
     ],
     'demo': [
     ],
     'qweb': [
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': True,
     'external_dependencies': {

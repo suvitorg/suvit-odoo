@@ -74,7 +74,7 @@ class PatchedMailThread(models.AbstractModel):
         if tracked_fields:
             self.message_track(tracked_fields, initial_values)
 
-        self.message_auto_subscribe(vals.keys(), values=vals)
+        #self.message_auto_subscribe(vals.keys(), values=vals)
 
         return result
 

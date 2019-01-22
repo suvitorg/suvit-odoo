@@ -9,7 +9,7 @@ from odoo import _, api, models, fields, exceptions
 from odoo.tools.translate import _
 
 # from ..services.currency_getter import Currency_getter_factory
-from ..services.update_service_RU_CBRF import RU_CBRF_getter
+#from ..services.update_service_RU_CBRF import RU_CBRF_getter
 
 _logger = logging.getLogger(__name__)
 CURRENCY_DOMAIN = [('name', 'in', ['RUB', 'USD', 'EUR'])]
