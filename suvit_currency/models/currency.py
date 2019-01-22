@@ -114,6 +114,7 @@ class Currency(models.Model):
 
     @api.one
     def refrech_empty_date_rates(self):
+        return
         current_service = 'RU_CBRF'
 
         if self.name == 'RUB':

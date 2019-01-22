@@ -22,7 +22,7 @@
     'data': [
         #'data/cron.xml',
 
-        #'views/currency.xml',
+        'views/currency.xml',
 
         #'views/fix_account_menu.xml',
 
@@ -32,7 +32,7 @@
     ],
     'qweb': [
     ],
-    'installable': False,
+    'installable': True,
     'auto_install': False,
     'application': True,
     'external_dependencies': {

@@ -11,7 +11,7 @@ odoo.define('suvit.multi.model.tree', function (require) {
   var QWeb = core.qweb;
   var _t = core._t;
   var rpc = require('web.rpc');
-  var pyeval = require('web.pyeval');
+  var pyeval = require('web.py_utils').eval;
   var data = require('web.data');
   var common = require('web.view_dialogs');
   var field_utils = require('web.field_utils');
