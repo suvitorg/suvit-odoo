@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+
+      <record model="suvit.migration" id="clear_bad_mail_followers">
+        <field name="name">Удаление подписчиков на несуществующие объекты</field>
+        <field name="method">clear_bad_mail_followers</field>
+      </record>
+
+      <record model="suvit.migration" id="clear_bad_mail_messages">
+        <field name="name">Удаление сообщений на несуществующие объекты</field>
+        <field name="method">clear_bad_mail_messages</field>
+      </record>
+
+    </data>
+</openerp>
