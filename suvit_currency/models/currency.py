@@ -193,7 +193,7 @@ class Currency(models.Model):
             cron_currency_update_id = self.env.ref('currency_rate_update.ir_cron_currency_update_every_day')
             last_run_date = fields.Datetime.from_string(cron_currency_update_id.nextcall) - datetime.timedelta(days=1)
             hostname = socket.gethostname()
-            work_dir = os.abspath(__file__)
+            work_dir = os.path.abspath(__file__)
 
             message = u'<div>Валюта {} не обновлялась c {}.</div>'\
                       u'<div>Последний запуск обновления: {}</div>'\
