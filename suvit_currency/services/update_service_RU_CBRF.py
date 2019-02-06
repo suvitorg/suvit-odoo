@@ -33,7 +33,7 @@ class RU_CBRF_getter(CurrencyGetterInterface):
                                 params=params)
         response.encoding = 'cp1251'
         rates = {}
-        text = response.text.encode('utf-8').replace('windows-1251', 'utf-8')
+        text = response.text.replace('windows-1251', 'utf-8')
         cbr = parse(text)
         for valute in cbr['ValCurs']['Valute']:
             valute['Value'] = float(valute['Value'].replace(',', '.'))
