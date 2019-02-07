@@ -19,9 +19,6 @@ env:
   # - LINT_CHECK="1"
   - TESTS="1" ODOO_REPO="odoo/odoo"
 
-virtualenv:
-  system_site_packages: true
-
 install:
   # for currency_rate_update
   #- git clone --depth 1 --single-branch https://github.com/barachka/account-financial-tools ${HOME}/dependencies/account-financial-tools

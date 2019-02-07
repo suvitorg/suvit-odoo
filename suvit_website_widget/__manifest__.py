@@ -7,9 +7,9 @@
     'author': 'Suvit LLC',
     'version': '1.0',
     'description': """
-        Модель Виджета для Odoo
-        ===========================
-        Дерево виджетов
+Модель Виджета для Odoo
+========================
+Дерево виджетов
 
     """,
     # any module necessary for this one to work correctly
