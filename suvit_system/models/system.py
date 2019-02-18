@@ -1,5 +1,6 @@
 ﻿# -*- coding: utf-8 -*-
 import logging
+import os
 from collections import OrderedDict
 
 from openerp import api, fields, models
