@@ -3,7 +3,24 @@ import logging
 
 from odoo import api, _
 from odoo.tools import config
-from odoo.addons.base.module.module import Module, ACTION_DICT
+from odoo.addons.base.module.module import Module, ACTION_DICT, assert_log_admin_access
+from odoo.modules.graph import Node
+
+
+def add_child(self, name, info):
+    node = Node(name, self.graph, info)
+    node.depth = self.depth + 1
+    if node not in self.children:
+        self.children.append(node)
+    for attr in ('init', 'update', 'demo'):
+        if attr == 'update' and self.name == config.options.get('update_fast_module_run'):
+            continue
+        if hasattr(self, attr):
+            setattr(node, attr, True)
+    self.children.sort(key=lambda x: x.name)
+    return node
+
+Node.add_child = add_child
 
 
 def format_parse_config():
@@ -18,12 +35,13 @@ def format_parse_config():
 
 format_parse_config()
 
-
+@assert_log_admin_access
 @api.multi
 def format_button_upgrade(self):
     if self.name in config['update_fast']:
         # remove module from config update_fast to use fast update just once when server started
         config.options['update_fast'].remove(self.name)
+        config.options['update_fast_module_run'] = self.name
         return button_upgrade_fast(self)
     return orig_button_upgrade(self)
 
