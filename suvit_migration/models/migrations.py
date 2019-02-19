@@ -36,6 +36,8 @@ class Migration(models.Model):
     method = fields.Char(string=u"Метод",
                          required=True,
                          )
+    date_done = fields.Date(string=u"Дата выполнения",
+                            )
 
     @api.multi
     def compute_implemented(self):
@@ -66,6 +68,7 @@ class Migration(models.Model):
 
     @api.multi
     def run(self):
+        now = fields.Date.today()
         if tools.config.options['test_enable']:
             self.write({'state': 'done'})
             return
@@ -82,6 +85,7 @@ class Migration(models.Model):
                 rec.state = 'error'
             else:
                 rec.state = 'done'
+                rec.date_done = now
                 logger.info('finish migration "%s"', migration_name)
 
     @api.model
@@ -95,7 +99,7 @@ class Migration(models.Model):
     @api.multi
     def write(self, values):
         res = super(Migration, self).write(values)
-        if list(values.keys()) == ['state']:
+        if list(values.keys()) == ['state'] or list(values.keys()) == ['date_done']:
             return res
 
         self.run()
