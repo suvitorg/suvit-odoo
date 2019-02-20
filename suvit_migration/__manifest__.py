@@ -2,7 +2,7 @@
     'name': 'Сувит. Миграции',
     'category': 'Website',
     'summary': 'Миграции',
-    'version': '1.0',
+    'version': '1.0.1',
     'description': """
 Миграции
 ===========================
