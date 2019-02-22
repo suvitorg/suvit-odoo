@@ -16,5 +16,6 @@ variables:
   VENDOR: "${TRAVIS_BUILD_DIR}/vendor"
   CACHE_KEY: "cache-${CI_PROJECT_NAME}-${VERSION}-${VERSION_DEV}"
 
+
 include:
   - https://gitlab.suvit.ru/suvit-public/suvit-gitlab/raw/T3239/main.yml
