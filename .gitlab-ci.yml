@@ -1,0 +1,20 @@
+image: suvitorg/py3-odoo-ci:latest
+
+services:
+  - postgres:9.6
+
+variables:
+  TRAVIS_BUILD_DIR: '/builds/suvitorg/suvit-odoo'
+  ODOO_REPO: 'odoo/odoo'
+  VERSION: '11.0'
+  LINT_CHECK: '0'
+  SERVER_EXPECTED_ERROR: "1"
+  PYTHONIOENCODING: 'UTF-8'
+  PHANTOMJS_VERSION: "OS"
+  PYTHONDONTWRITEBYTECODE: 'True'
+  VERSION_DEV: '0.1'
+  VENDOR: "${TRAVIS_BUILD_DIR}/vendor"
+  CACHE_KEY: "cache-${CI_PROJECT_NAME}-${VERSION}-${VERSION_DEV}"
+
+include:
+  - https://gitlab.suvit.ru/suvit-public/suvit-gitlab/raw/master/main.yml
