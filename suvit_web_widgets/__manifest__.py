@@ -12,7 +12,7 @@
     'author': 'Suvit LLC',
     'depends': ['web'],
     'installable': False,
-    'auto_install': True,
+    # 'auto_install': True,
     'data': [
         'suvit_web_widgets_data.xml',
     ],
