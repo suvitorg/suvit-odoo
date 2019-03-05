@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Сувит. Валюта',
-    'version': '0.0.1',
+    'version': '0.0.2',
     'category': 'Suvit',
     'complexity': 'easy',
     'description': """
