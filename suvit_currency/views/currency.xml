@@ -8,32 +8,23 @@
             <field name="inherit_id" ref="base.view_currency_form"/>
             <field name="arch" type="xml">
                 <field name="name" position="replace" />
-                <!--#TODO Odoo11-->
-                <!--odoo11 NOT group col=4 in view-->
-                <!--<group col="4" position="before">
+                <xpath expr="//div[hasclass('oe_button_box')]" position="after">
                     <h1>
                         <span class="oe_format_form_title_prefix">Валюта</span> <field name="name" />
                     </h1>
-                </group>-->
+                </xpath>
+
                 <field name="rate" position="replace">
                     <field name="rub_currency_rate"/>
-                    <!--<field name="rate_month" readonly="0"-->
-                           <!--attrs="{'invisible': [('name', '=', 'RUB')]}"/>-->
-                    <!--<field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>-->
+                    <field name="rate_month" readonly="0"
+                           attrs="{'invisible': [('name', '=', 'RUB')]}"/>
+                    <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
                 </field>
-                <!--<xpath expr="//group[@string='Price Accuracy']" position="replace"/>-->
-                <xpath expr="//group[2]" position="replace"/>
-                <!--<xpath expr="//group[@string='Display']" position="replace"/>-->
-                <!--<group string="Price Accuracy" position="replace" />-->
-                <!--<group string="Display" position="replace" />-->
 
-                <!--odoo11 NOT group col=4 in view-->
-                <!--<group col="4" position="after">
+                <xpath expr="//form/sheet/group[2]" position="replace">
                     <notebook>
                         <page string="Курсы">
                             <group>
-                                &lt;!&ndash;<field mode="tree" name="rate_ids" nolabel="1"&ndash;&gt;
-                                       &lt;!&ndash;attrs="{'readonly':[('base','=',True)]}">&ndash;&gt;
                                 <field mode="tree" name="rate_ids" nolabel="1">
                                     <tree string="Rates" editable="bottom">
                                         <field name="name" widget="date"/>
@@ -51,7 +42,7 @@
                                     <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
                                 </group>
                                 <group string="Miscellaneous">
-                                    &lt;!&ndash;<field name="base"/>&ndash;&gt;
+                                    <!--<field name="base"/>-->
                                     <field name="active"/>
                                 </group>
                                 <group>
@@ -76,7 +67,7 @@
                             </group>
                         </page>
                     </notebook>
-                </group>-->
+                </xpath>
             </field>
         </record>
         <record model="ir.ui.view" id="format_currency_tree">

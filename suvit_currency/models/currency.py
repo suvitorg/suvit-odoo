@@ -167,8 +167,8 @@ class Currency(models.Model):
                 if rec:
                     error_msg = '\n%s ERROR : %s %s' % (
                         fields.Datetime.to_string(datetime.datetime.today()),
-                        repr(exc), rec.note or '')
-                    rec.write({'note': error_msg})
+                        repr(exc), '')
+                    #rec.write({'note': error_msg})
 
     @api.model
     def check_rates(self):
