@@ -13,7 +13,7 @@ def add_child(self, name, info):
     if node not in self.children:
         self.children.append(node)
     for attr in ('init', 'update', 'demo'):
-        if attr == 'update' and self.name == config.options.get('update_fast_module_run'):
+        if attr == 'update' and self.name in config.options.get('update_fast_module_run', []):
             continue
         if hasattr(self, attr):
             setattr(node, attr, True)
@@ -38,12 +38,22 @@ format_parse_config()
 @assert_log_admin_access
 @api.multi
 def format_button_upgrade(self):
-    if self.name in config['update_fast']:
-        # remove module from config update_fast to use fast update just once when server started
-        config.options['update_fast'].remove(self.name)
-        config.options['update_fast_module_run'] = self.name
-        return button_upgrade_fast(self)
-    return orig_button_upgrade(self)
+    fast = []
+    orig = []
+    config.options['update_fast_module_run'] = []
+    for module in self:
+        if module.name in config['update_fast']:
+            # remove module from config update_fast to use fast update just once when server started
+            config.options['update_fast'].remove(module.name)
+            config.options['update_fast_module_run'].append(module.name)
+            fast.append(module.id)
+        else:
+            orig.append(module.id)
+    if fast:
+        button_upgrade_fast(self.browse(fast))
+    if orig:
+        orig_button_upgrade(self.browse(orig))
+    return dict(ACTION_DICT, name=_('Apply Schedule Upgrade'))
 
 @api.multi
 def button_upgrade_fast(self):
