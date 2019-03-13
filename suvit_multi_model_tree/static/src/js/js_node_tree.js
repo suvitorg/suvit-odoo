@@ -1,5 +1,6 @@
 odoo.define('suvit.multi.model.tree', function (require) {
 "use strict";
+return;
 
   var core = require('web.core');
   var ListView = require('web.ListView');
