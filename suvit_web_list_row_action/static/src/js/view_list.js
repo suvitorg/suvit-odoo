@@ -25,7 +25,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
 
   FieldOne2Many.include({
     _onOpenRecord: function (ev) {
-        var context = ev.target.state.context;
+        var context = this.record.getContext(this.recordParams);
         if (context && context.open_formview){
             return do_action(this, ev, context);
         }
