@@ -24,7 +24,9 @@ class SuvitWebUiWidget(models.Model):
     _inherit = 'suvit.ui.widget.base'
 
     group_id = fields.Many2one(string=u"Группа",
-                               comodel_name='odoo.suvit.web.ui.widget.group', )
+                               comodel_name='odoo.suvit.web.ui.widget.group',
+                               index=True,
+                               )
 
     features_ids = fields.One2many(string=u"Свойства виджета",
                                    comodel_name='odoo.suvit.web.ui.widget.feature',
@@ -37,7 +39,9 @@ class SuvitWebUiWidget(models.Model):
     descr = fields.Text(string=u"Описание виджета")
 
     parent_id = fields.Many2one(string=u'Принадлежность',
-                                comodel_name=_name)
+                                comodel_name=_name,
+                                index=True,
+                                )
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
                                 inverse_name='parent_id')
@@ -90,9 +94,12 @@ class SuvitWebUiWidgetFature(models.Model):
     name = fields.Char(string=u"Свойство виджета", )
 
     group_id = fields.Many2one(string=u"Группа свойств виджета",
-                               comodel_name='odoo.suvit.web.ui.widget.features.group', )
+                               comodel_name='odoo.suvit.web.ui.widget.features.group',
+                               index=True,
+                               )
     widget_id = fields.Many2one(string=u"Виджет",
                                 comodel_name='odoo.suvit.web.ui.widget',
+                                index=True,
                                 )
 
     descr = fields.Text(string=u"Описание свойства")
