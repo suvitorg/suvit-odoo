@@ -37,7 +37,9 @@ class WidgetType(models.Model):
     options = fields.Text(string=u'Настройки')
 
     parent_id = fields.Many2one(string=u'Принадлежность',
-                                comodel_name=_name)
+                                comodel_name=_name,
+                                index=True,
+                                )
     child_ids = fields.One2many(string=u'Состав',
                                 comodel_name=_name,
                                 inverse_name='parent_id')
