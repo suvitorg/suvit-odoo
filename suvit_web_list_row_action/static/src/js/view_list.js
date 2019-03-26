@@ -1,26 +1,66 @@
 odoo.define('suvit.web.list.row.action', function (require) {
-  var rpc = require('web.rpc');
-  var ListView = require('web.ListView');
-  var core = require('web.core');
+
   var field_registry = require('web.field_registry');
   var FieldMany2Many = field_registry.get('many2many');
   var FieldOne2Many = field_registry.get('one2many');
-  var FormController = require('web.FormController');
 
   var do_action = function(field, ev, context){
-    var parent = field.renderer.getParent().getParent().getParent();
-    var id = ev.data.id;
     ev.stopPropagation();
-    if (typeof id == 'string' && parent.model)
-        id = parent.model.localData[id].data.id;
-    rpc.query({model: field.field.relation,
-               method: 'get_formview_action',
-               args: [id],
-               context: context,
-    }).then(function(action){
-      action['target'] = context.open_formview;
-      field.do_action(action);
-    });
+
+    var controller = field.renderer.getParent().getParent().getParent();
+    var act_manager = controller.getParent().action_manager;
+
+    var id = ev.data.id;
+    var rec;
+    var parent_rec;
+
+    if (typeof id == 'string' && controller.model) {
+        rec = controller.model.localData[id];
+        parent_rec = controller.model.localData[rec.parentID];
+        id = rec.data.id;
+    }
+
+    var act = {
+        action_binding_ids:[],
+        auto_search:true,
+        binding_act_ids:[],
+        binding_model_id:false,
+        binding_type:"action",
+        context:context,
+        domain: parent_rec ? [['id', 'in', parent_rec.res_ids]] : [],
+        filter:false,
+        flags:{views_switcher: true,
+               search_view: true,
+               action_buttons: true,
+               sidebar: true,
+               pager: true,
+               search_disable_custom_filters: undefined,
+               search_view: true,
+               sidebar: true,
+               views_switcher: true},
+        groups_id:[],
+        limit:80,
+        menu_id:null,
+        multi:false,
+        name:"...",  // TODO maybe need to delete list breadcrumb
+        res_id:id,
+        res_model:field.field.relation,
+        search_view_id:false,
+        src_model:false,
+        target:"current",
+        type:"ir.actions.act_window",
+        usage:false,
+        view_id:false,
+        view_ids:[],
+        view_mode:"list,form",
+        views:[[false, 'list'], [false, 'form']],
+    }
+
+    act_manager.do_action(act).then(function(res){
+        var view_manager = act_manager.action_stack.slice(-1)[0].widget;
+        view_manager.switch_mode('form', {mode: controller.mode});
+    })
+
   };
 
   FieldOne2Many.include({
