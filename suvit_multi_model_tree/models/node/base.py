@@ -46,6 +46,7 @@ class TreeNode(models.AbstractModel):
     shortcut_id = fields.Many2one(string="Дубль к",
                                   comodel_name=_name,
                                   ondelete='cascade',
+                                  index=True,
                                   track_visibility='onchange')
     duplicate_ids = fields.One2many(string=u'Дубли',
                                     comodel_name=_name,
