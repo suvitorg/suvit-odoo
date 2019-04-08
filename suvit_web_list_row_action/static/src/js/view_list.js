@@ -57,12 +57,19 @@ odoo.define('suvit.web.list.row.action', function (require) {
         views:[[false, 'list'], [false, 'form']],
     }
 
+    if ($.blockUI) {
+        $.blockUI.defaults.overlayCSS["opacity"] = 1;
+    }
+
     framework.blockUI();
     act_manager.do_action(act).then(function(res){
         var view_manager = act_manager.action_stack.slice(-1)[0].widget;
         _.last(view_manager.view_stack).multi_record = false;
         view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
             framework.unblockUI();
+            if ($.blockUI) {
+                $.blockUI.defaults.overlayCSS["opacity"] = 0.6;
+            }
         });
     });
 
