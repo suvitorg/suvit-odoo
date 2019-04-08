@@ -3,6 +3,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var field_registry = require('web.field_registry');
   var FieldMany2Many = field_registry.get('many2many');
   var FieldOne2Many = field_registry.get('one2many');
+  var framework = require('web.framework');
 
   var do_action = function(field, ev, context){
     ev.stopPropagation();
@@ -56,10 +57,16 @@ odoo.define('suvit.web.list.row.action', function (require) {
         views:[[false, 'list'], [false, 'form']],
     }
 
+    framework.blockUI();
     act_manager.do_action(act).then(function(res){
         var view_manager = act_manager.action_stack.slice(-1)[0].widget;
-        view_manager.switch_mode('form', {mode: controller.mode});
-    })
+        _.last(view_manager.view_stack).multi_record = false;
+        view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
+            framework.unblockUI();
+        });
+    });
+
+
 
   };
 
