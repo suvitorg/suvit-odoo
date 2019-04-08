@@ -10,7 +10,8 @@ class MailThread(models.AbstractModel):
         tracked_fields = super()._get_tracked_fields(updated_fields)
         tracked_fields_list = []
         for name, field in self._fields.items():
-            if getattr(field, 'track_visibility', 'onchange') and name not in tracked_fields:
+            default_track = 'onchange' if field.type not in ['one2many', 'many2many'] else False
+            if getattr(field, 'track_visibility', default_track) and name not in tracked_fields:
                 tracked_fields_list.append(name)
 
         if tracked_fields_list:
