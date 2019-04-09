@@ -6,7 +6,7 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
     @api.model
-    def _get_tracked_fields(self, updated_fields):
+    def _get_tracked_fields2(self, updated_fields):
         tracked_fields = super()._get_tracked_fields(updated_fields)
         tracked_fields_list = []
         for name, field in self._fields.items():
