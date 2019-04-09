@@ -91,7 +91,7 @@ class Migration(models.Model):
     @api.model
     def create(self, values):
         rec = super(Migration, self).create(values)
-        if not tools.config.options['test_enable']:
+        if not (rec.state == 'done' or tools.config.options['test_enable']):
             rec.run()
 
         return rec
