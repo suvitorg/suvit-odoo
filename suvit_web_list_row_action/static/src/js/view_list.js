@@ -54,7 +54,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         view_id:false,
         view_ids:[],
         view_mode:"list,form",
-        views:[[false, 'list'], [false, 'form']],
+        views:[[false, 'list', field.view], [false, 'form']],
     }
 
     if ($.blockUI) {
