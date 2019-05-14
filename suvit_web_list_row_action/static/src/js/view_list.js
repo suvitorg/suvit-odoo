@@ -5,6 +5,20 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var FieldOne2Many = field_registry.get('one2many');
   var framework = require('web.framework');
 
+  var do_block = function () {
+    if ($.blockUI) {
+        $.blockUI.defaults.overlayCSS["opacity"] = 1;
+    }
+    framework.blockUI();
+  }
+
+  var do_unblock = function () {
+    framework.unblockUI();
+    if ($.blockUI) {
+        $.blockUI.defaults.overlayCSS["opacity"] = 0.6;
+    }
+  }
+
   var do_action = function(field, ev, context){
     ev.stopPropagation();
 
@@ -57,23 +71,14 @@ odoo.define('suvit.web.list.row.action', function (require) {
         views:[[false, 'list', field.view], [false, 'form']],
     }
 
-    if ($.blockUI) {
-        $.blockUI.defaults.overlayCSS["opacity"] = 1;
-    }
-
-    framework.blockUI();
     act_manager.do_action(act).then(function(res){
         var view_manager = act_manager.action_stack.slice(-1)[0].widget;
         _.last(view_manager.view_stack).multi_record = false;
+        do_block();
         view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
-            framework.unblockUI();
-            if ($.blockUI) {
-                $.blockUI.defaults.overlayCSS["opacity"] = 0.6;
-            }
+            do_unblock();
         });
     });
-
-
 
   };
 
