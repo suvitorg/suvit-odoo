@@ -41,7 +41,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         binding_act_ids:[],
         binding_model_id:false,
         binding_type:"action",
-        context:context,
+        context:{},
         domain: parent_rec ? [['id', 'in', parent_rec.res_ids]] : [],
         filter:false,
         flags:{views_switcher: true,
