@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import logging
 
 from odoo import models, fields, api, exceptions
@@ -69,7 +70,7 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         now = fields.Date.today()
-        if tools.config.options['test_enable']:
+        if tools.config.options['test_enable'] or os.environ.get('GITLAB_CI', False):
             self.write({'state': 'done'})
             return
 
