@@ -26,6 +26,23 @@ odoo.define('suvit.web.list.row.action', function (require) {
     var act_manager = controller.getParent().action_manager;
 
     var id = ev.data.id;
+
+    if (context.x2m_pager_disable) {
+        if (typeof id == 'string' && controller.model) {
+            var rec = controller.model.localData[id];
+            var res_id = rec.data.id;
+        }
+        return field._rpc({model: field.field.relation,
+                           method: 'get_formview_action',
+                           args: [[res_id]],
+                           context: context,
+                           })
+                           .then(function (action) {
+                               console.log('DISABLE ACT', action)
+                               field.trigger_up('do_action', {action: action});
+                           });
+    }
+
     var parent_rec;
     var res_id = id;
     var res_model = field.field.relation;
