@@ -20,7 +20,7 @@ omit =
     vendor/*
 
 skip_covered = True
-fail_under = 50
+fail_under = 25
 precision = 1
 
 # Regexes for lines to exclude from consideration
