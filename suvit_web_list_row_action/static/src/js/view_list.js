@@ -26,13 +26,33 @@ odoo.define('suvit.web.list.row.action', function (require) {
     var act_manager = controller.getParent().action_manager;
 
     var id = ev.data.id;
-    var rec;
     var parent_rec;
+    var res_id = id;
+    var res_model = field.field.relation;
+    var res_ids = [];
 
     if (typeof id == 'string' && controller.model) {
-        rec = controller.model.localData[id];
+        var rec = controller.model.localData[id];
+        res_id = rec.data.id;
         parent_rec = controller.model.localData[rec.parentID];
-        id = rec.data.id;
+        if (context.open_formview_model && context.open_formview_field && parent_rec._cache) {
+            var fname = context.open_formview_field;
+            _.each(parent_rec.res_ids, function (res_rec_id) {
+                var res_rec = controller.model.localData[parent_rec._cache[res_rec_id]];
+                var res_id_val = res_rec.data[fname];
+                var dom_res_id = res_id_val;
+                if (typeof res_id_val == 'string') {
+                    var f_rec = controller.model.localData[res_id_val];
+                    dom_res_id = f_rec.data.id;
+                }
+                if (res_rec_id == res_id)
+                    res_id = dom_res_id;
+                res_ids.push(dom_res_id);
+            });
+            res_model = context.open_formview_model;
+        } else {
+            res_ids = parent_rec.res_ids;
+        }
     }
 
     var act = {
@@ -42,7 +62,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         binding_model_id:false,
         binding_type:"action",
         context:{},
-        domain: parent_rec ? [['id', 'in', parent_rec.res_ids]] : [],
+        domain: res_ids ? [['id', 'in', res_ids]] : [],
         filter:false,
         flags:{views_switcher: true,
                search_view: true,
@@ -58,8 +78,8 @@ odoo.define('suvit.web.list.row.action', function (require) {
         menu_id:null,
         multi:false,
         name:"...",  // TODO maybe need to delete list breadcrumb
-        res_id:id,
-        res_model:field.field.relation,
+        res_id:res_id,
+        res_model:res_model,
         search_view_id:false,
         src_model:false,
         target:"current",
