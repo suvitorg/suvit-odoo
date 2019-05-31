@@ -47,6 +47,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
     var res_id = id;
     var res_model = field.field.relation;
     var res_ids = [];
+    var field_view = field.view
 
     if (typeof id == 'string' && controller.model) {
         var rec = controller.model.localData[id];
@@ -67,6 +68,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
                 res_ids.push(dom_res_id);
             });
             res_model = context.open_formview_model;
+            field_view = null;
         } else {
             res_ids = parent_rec.res_ids;
         }
@@ -105,7 +107,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         view_id:false,
         view_ids:[],
         view_mode:"list,form",
-        views:[[false, 'list', field.view], [false, 'form']],
+        views:[[false, 'list', field_view], [false, 'form']],
     }
 
     act_manager.do_action(act).then(function(res){
