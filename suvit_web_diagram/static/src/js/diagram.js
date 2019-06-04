@@ -1,4 +1,4 @@
-openerp.suvit_web_diagram = function(instance, local) {
+odoo.suvit_web_diagram = function(instance, local) {
   instance.web.DiagramView.include({
     init: function(parent, dataset, view_id, options) {
         var self = this;

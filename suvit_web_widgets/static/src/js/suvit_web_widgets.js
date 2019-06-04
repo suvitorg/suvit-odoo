@@ -1,4 +1,4 @@
-openerp.suvit_web_widgets = function(instance, local) {
+odoo.suvit_web_widgets = function(instance, local) {
 
   /*** TREE IMAGE ***/
   instance.web.list.ImageField = instance.web.list.Column.extend({
