@@ -23,7 +23,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
     ev.stopPropagation();
 
     var controller = field.renderer.getParent().getParent().getParent();
-    var act_manager = controller.getParent().action_manager;
+    var act_manager = controller.getParent().action_manager || controller.getParent().getParent().getParent().action_manager;
 
     var id = ev.data.id;
 
@@ -38,7 +38,6 @@ odoo.define('suvit.web.list.row.action', function (require) {
                            context: context,
                            })
                            .then(function (action) {
-                               console.log('DISABLE ACT', action)
                                field.trigger_up('do_action', {action: action});
                            });
     }
