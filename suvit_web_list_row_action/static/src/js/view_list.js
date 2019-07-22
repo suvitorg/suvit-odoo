@@ -4,6 +4,26 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var FieldMany2Many = field_registry.get('many2many');
   var FieldOne2Many = field_registry.get('one2many');
   var framework = require('web.framework');
+  var ListController = require('web.ListController');
+
+  ListController.include({
+    _onOpenRecord: function (event) {
+        var self = this;
+        var record = this.model.get(event.data.id, {raw: true});
+        var ctx = record.getContext();
+        if (!ctx.open_formview)
+            return this._super(event);
+
+        event.stopPropagation();
+        return this._rpc({model: self.modelName,
+                          method: 'get_formview_action',
+                          args: [[record.res_id]],
+                          })
+                   .then(function (action) {
+                       self.do_action(action);
+                   });
+    },
+  });
 
   var do_block = function () {
     if ($.blockUI) {
