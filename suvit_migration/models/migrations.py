@@ -96,18 +96,15 @@ class Migration(models.Model):
                 logger.info('finish migration "%s"', migration_name)
 
     @api.model
-    def create(self, values):
-        rec = super(Migration, self).create(values)
-        if not (rec.state == 'done' or tools.config.options['test_enable']):
-            rec.run()
-
+    def create(self, vals):
+        rec = super(Migration, self).create(vals)
+        rec.run()
         return rec
 
     @api.multi
-    def write(self, values):
-        res = super(Migration, self).write(values)
-        if list(values.keys()) == ['state'] or list(values.keys()) == ['date_done']:
-            return res
-
-        self.run()
+    def write(self, vals):
+        res = super(Migration, self).write(vals)
+        # При чтении xml-файла, идет write на все описанные. (Например method/name)
+        if 'method' in vals:
+            self.run()
         return res
