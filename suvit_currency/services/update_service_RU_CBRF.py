@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import requests
+from requests import Session
 
 from xmltodict import parse
 
@@ -19,6 +20,10 @@ class RU_CBRF_getter(CurrencyGetterInterface):
         "RON", "XDR", "SGD", "TJS", "TRY", "TMT", "UZS", "UAH", "CZK", "SEK",
         "CHF", "ZAR", "KRW", "JPY"]
 
+    session = Session()
+    # Не использовать родной UserAgent, потому что cbr.ru не отдает данные для python-requests
+    session.headers.update({'user-agent': 'odoo-crb.ru-get/0.0.1'})
+
     def get_updated_currency(self, currency_array, main_currency,
                              max_delta_days, date_req=None):
         """implementation of abstract method of Currency_getter_interface"""
@@ -29,9 +34,12 @@ class RU_CBRF_getter(CurrencyGetterInterface):
         else:
             # always set day, CB set rate from yesterday to tommorow
             params['date_req'] = datetime.date.today().strftime('%d/%m/%Y')
-        response = requests.get('http://www.cbr.ru/scripts/XML_daily.asp',
+        # print('GET cbr', params)
+        response = self.session.get('http://www.cbr.ru/scripts/XML_daily.asp',
                                 params=params)
         response.encoding = 'cp1251'
+        # print('after GET cbr')
+
         rates = {}
         text = response.text.replace('windows-1251', 'utf-8')
         cbr = parse(text)
