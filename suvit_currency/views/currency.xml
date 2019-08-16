@@ -75,6 +75,9 @@
             <field name="model">res.currency</field>
             <field name="inherit_id" ref="base.view_currency_tree"/>
             <field name="arch" type="xml">
+                <field name="active" position="attributes">
+                    <attribute name="widget"></attribute>
+                </field>
               <field name="rate" position="replace">
                 <field name="rub_currency_rate"/>
                 <field name="avg_rate" attrs="{'invisible': [('name', '=', 'RUB')]}"/>
