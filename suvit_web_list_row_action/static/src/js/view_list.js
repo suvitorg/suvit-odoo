@@ -11,7 +11,9 @@ odoo.define('suvit.web.list.row.action', function (require) {
         var self = this;
         var record = this.model.get(event.data.id, {raw: true});
         var ctx = record.getContext();
-        if (!ctx.open_formview)
+        var mode = this.mode + '_open_formview';
+        var open_formview = ctx[mode] || ctx.open_formview;
+        if (!open_formview)
             return this._super(event);
 
         event.stopPropagation();
@@ -20,6 +22,9 @@ odoo.define('suvit.web.list.row.action', function (require) {
                           args: [[record.res_id]],
                           })
                    .then(function (action) {
+                       if (open_formview != true)
+                           action.target = open_formview;
+                       console.log('ACTION', act, ctx, record, self)
                        self.do_action(action);
                    });
     },
@@ -42,10 +47,15 @@ odoo.define('suvit.web.list.row.action', function (require) {
   var do_action = function(field, ev, context){
     ev.stopPropagation();
 
+    var mode = field.mode + '_open_formview';
+    var open_formview = context[mode] || context.open_formview;
+
     var controller = field.renderer.getParent().getParent().getParent();
     var act_manager = controller.getParent().action_manager || controller.getParent().getParent().getParent().action_manager;
 
     var id = ev.data.id;
+
+    var target = open_formview != true ? open_formview : "current";
 
     if (context.x2m_pager_disable) {
         if (typeof id == 'string' && controller.model) {
@@ -58,6 +68,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
                            context: context,
                            })
                            .then(function (action) {
+                               action.target = target;
                                field.trigger_up('do_action', {action: action});
                            });
     }
@@ -120,16 +131,19 @@ odoo.define('suvit.web.list.row.action', function (require) {
         res_model:res_model,
         search_view_id:false,
         src_model:false,
-        target:"current",
+        target: target,
         type:"ir.actions.act_window",
         usage:false,
         view_id:false,
         view_ids:[],
-        view_mode:"list,form",
-        views:[[false, 'list', field_view], [false, 'form']],
+        view_mode: target == "new" ? "form" : "list,form",
+        views:target == "new" ? [[false, 'form']] : [[false, 'list', field_view], [false, 'form']],
     }
 
     act_manager.do_action(act).then(function(res){
+        if (act.target == 'new') {
+            return;
+        }
         var view_manager = act_manager.action_stack.slice(-1)[0].widget;
         _.last(view_manager.view_stack).multi_record = false;
         do_block();
@@ -143,7 +157,8 @@ odoo.define('suvit.web.list.row.action', function (require) {
   FieldOne2Many.include({
     _onOpenRecord: function (ev) {
         var context = this.record.getContext(this.recordParams);
-        if (context && context.open_formview){
+        var mode = this.mode + '_open_formview';
+        if (context && (context.open_formview || context[mode])){
             return do_action(this, ev, context);
         }
         return this._super(ev);
@@ -153,7 +168,8 @@ odoo.define('suvit.web.list.row.action', function (require) {
   FieldMany2Many.include({
     _onOpenRecord: function (ev) {
         var context = this.record.getContext(this.recordParams);
-        if (context && context.open_formview){
+        var mode = this.mode + '_open_formview';
+        if (context && (context.open_formview || context[mode])){
             return do_action(this, ev, context);
         }
         return this._super(ev);
