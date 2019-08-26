@@ -71,7 +71,10 @@ class Migration(models.Model):
     def run(self):
         now = fields.Date.today()
         if tools.config.options['test_enable'] or os.environ.get('GITLAB_CI', False):
-            self.write({'state': 'done'})
+            self.write({'state': 'done',
+                        'date_done': now
+                        # TODO add flag autodone
+                        })
             return
 
         # all migration must be called by SUPERUSER_ID and do not check active
@@ -79,29 +82,29 @@ class Migration(models.Model):
                        .filtered(lambda r: not r.implemented):
             migration_name = rec.method
             logger.info('start migration "%s"', migration_name)
+            self.env.cr.execute('SAVEPOINT migration_%d' % rec.id)
             try:
                 getattr(rec, migration_name)()
             except:
+                self.env.cr.execute('ROLLBACK TO SAVEPOINT migration_%d' % rec.id)
                 logger.exception('Exception in migration "%s"', migration_name)
                 rec.state = 'error'
             else:
-                rec.state = 'done'
-                rec.date_done = now
+                rec.write({'state': 'done',
+                           'date_done': now
+                           })
                 logger.info('finish migration "%s"', migration_name)
 
     @api.model
-    def create(self, values):
-        rec = super(Migration, self).create(values)
-        if not (rec.state == 'done' or tools.config.options['test_enable']):
-            rec.run()
-
+    def create(self, vals):
+        rec = super(Migration, self).create(vals)
+        rec.run()
         return rec
 
     @api.multi
-    def write(self, values):
-        res = super(Migration, self).write(values)
-        if list(values.keys()) == ['state'] or list(values.keys()) == ['date_done']:
-            return res
-
-        self.run()
+    def write(self, vals):
+        res = super(Migration, self).write(vals)
+        # При чтении xml-файла, идет write на все описанные. (Например method/name)
+        if 'method' in vals:
+            self.run()
         return res
