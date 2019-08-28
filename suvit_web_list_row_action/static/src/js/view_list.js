@@ -24,7 +24,6 @@ odoo.define('suvit.web.list.row.action', function (require) {
                    .then(function (action) {
                        if (open_formview != true)
                            action.target = open_formview;
-                       console.log('ACTION', act, ctx, record, self)
                        self.do_action(action);
                    });
     },
