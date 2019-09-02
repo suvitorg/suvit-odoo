@@ -155,6 +155,10 @@ odoo.define('suvit.web.list.row.action', function (require) {
 
   FieldOne2Many.include({
     _onOpenRecord: function (ev) {
+        if (ev.data.target.tagName == 'IMG') {
+            ev.stopPropagation();
+            return false;
+        }
         var context = this.record.getContext(this.recordParams);
         var mode = this.mode + '_open_formview';
         if (context && (context.open_formview || context[mode])){
@@ -166,6 +170,10 @@ odoo.define('suvit.web.list.row.action', function (require) {
 
   FieldMany2Many.include({
     _onOpenRecord: function (ev) {
+        if (ev.data.target.tagName == 'IMG') {
+            ev.stopPropagation();
+            return false;
+        }
         var context = this.record.getContext(this.recordParams);
         var mode = this.mode + '_open_formview';
         if (context && (context.open_formview || context[mode])){
