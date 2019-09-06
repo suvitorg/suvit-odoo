@@ -216,6 +216,7 @@ class TreeNode(models.AbstractModel):
 
     @api.multi
     def compute_self(self):
+        self = self.exists()
         for rec in self:
             self_id = rec
             while self_id.shortcut_id:
