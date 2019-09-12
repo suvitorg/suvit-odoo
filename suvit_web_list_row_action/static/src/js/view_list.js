@@ -103,6 +103,10 @@ odoo.define('suvit.web.list.row.action', function (require) {
         }
     }
 
+    context = _.omit(context, function(value, key, object) {
+      return key.startsWith('search_default_');
+    });
+
     var act = {
         action_binding_ids:[],
         auto_search:true,
