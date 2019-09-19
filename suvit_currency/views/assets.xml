@@ -4,7 +4,7 @@
 
     <template id="assets_backend" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
-            <script type="text/javascript" src="/format_frontend/static/src/js/systray.js"></script>
+            <script type="text/javascript" src="/suvit_currency/static/src/js/systray.js"></script>
         </xpath>
     </template>
 
