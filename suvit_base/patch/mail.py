@@ -93,6 +93,8 @@ class PatchedMailThread(models.AbstractModel):
 
         # generate tracked_values data structure: {'col_name': {col_info, new_value, old_value}}
         for col_name, col_info in tracked_fields.items():
+            if not col_info.get('store', True):
+                continue
             track_visibility = getattr(self._fields[col_name], 'track_visibility', 'onchange')
             initial_value = initial[col_name]
             new_value = getattr(self, col_name)
