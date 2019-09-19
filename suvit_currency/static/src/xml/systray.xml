@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="CurrencyRateMenu">
+        <li class="o_mail_navbar_item">
+            <a>1€=<span class="o_currency_rate"/>₽</a>
+        </li>
+    </t>
+</templates>
+

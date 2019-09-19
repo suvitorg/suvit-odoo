@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Сувит. Валюта',
-    'version': '0.0.3',
+    'version': '0.0.4',
     'category': 'Suvit',
     'complexity': 'easy',
     'description': """
@@ -20,6 +20,8 @@
     'init': [
     ],
     'data': [
+        'views/assets.xml',
+
         'data/cron.xml',
 
         'views/currency.xml',
@@ -31,6 +33,7 @@
     'demo': [
     ],
     'qweb': [
+        "static/src/xml/*.xml",
     ],
     'installable': True,
     'auto_install': False,
