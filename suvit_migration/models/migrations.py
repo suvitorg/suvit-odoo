@@ -70,7 +70,10 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         now = fields.Date.today()
-        if tools.config.options['test_enable'] or os.environ.get('GITLAB_CI', False):
+
+        if not os.environ.get('RUN_MIGRATION', False) \
+            and (tools.config.options['test_enable'] \
+                 or os.environ.get('GITLAB_CI', False)):
             self.write({'state': 'done',
                         'date_done': now
                         # TODO add flag autodone
