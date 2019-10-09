@@ -70,6 +70,13 @@ class Migration(models.Model):
     @api.multi
     def run(self):
         now = fields.Date.today()
+        
+        print('='*50)
+        print(os.environ.get('RUN_MIGRATION', False))
+        print(tools.config.options['test_enable'])
+        print(os.environ.get('GITLAB_CI', False))
+        print('='*50)
+
         if not os.environ.get('RUN_MIGRATION', False) \
             and tools.config.options['test_enable'] \
             or os.environ.get('GITLAB_CI', False):
