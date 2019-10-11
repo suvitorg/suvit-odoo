@@ -159,7 +159,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
 
   FieldOne2Many.include({
     _onOpenRecord: function (ev) {
-        if (ev.data.target.tagName == 'IMG') {
+        if (this.nodeOptions.no_open || ev.data.target.tagName == 'IMG') {
             ev.stopPropagation();
             return false;
         }
@@ -174,7 +174,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
 
   FieldMany2Many.include({
     _onOpenRecord: function (ev) {
-        if (ev.data.target.tagName == 'IMG') {
+        if (this.nodeOptions.no_open || ev.data.target.tagName == 'IMG') {
             ev.stopPropagation();
             return false;
         }
