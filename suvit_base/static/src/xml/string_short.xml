@@ -1,20 +1,5 @@
 <templates>
 
-	    <t t-name="format.TimeDeltaTemplate">
-	        <div>
-	        	<t t-if="! widget.get('effective_readonly')">
-		            <input t-attf-class="timedelta_days" t-att-size="1" t-att-maxlength="2" t-att-value="timedelta_days"/> д
-		        	<input t-attf-class="timedelta_hours" t-att-size="1" t-att-maxlength="2" t-att-value="timedelta_hours"/> ч
-		        	<input t-attf-class="timedelta_mins" t-att-size="1" t-att-maxlength="2" t-att-value="timedelta_mins"/> мин
-		        </t>
-		        <t t-if="widget.get('effective_readonly')">
-		            <t t-esc="timedelta_days"/> д
-		        	<t t-esc="timedelta_hours"/> ч
-		        	<t t-esc="timedelta_mins"/> мин
-		        </t>
-	        </div>
-	    </t>
-
 		<t t-extend="WidgetLabel.tooltip">
 			<t t-jquery=".oe_tooltip_string" t-operation="replace">
 				<div class="oe_tooltip_string" t-if="widget.string">
