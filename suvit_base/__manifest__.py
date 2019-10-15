@@ -32,6 +32,9 @@ TODO
     ],
     'js': [
     ],
+    'qweb': [
+        'static/src/xml/*.xml',
+    ],
     'installable': True,
     'auto_install': False,
 }

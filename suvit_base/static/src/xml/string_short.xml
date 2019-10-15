@@ -1,0 +1,11 @@
+<templates>
+
+		<t t-extend="WidgetLabel.tooltip">
+			<t t-jquery=".oe_tooltip_string" t-operation="replace">
+				<div class="oe_tooltip_string" t-if="widget.string">
+					<t t-esc="widget.field.title || widget.string"/> <t t-if="debug and widget.nolabel">(nolabel)</t>
+				</div>
+			</t>
+		</t>
+
+</templates>

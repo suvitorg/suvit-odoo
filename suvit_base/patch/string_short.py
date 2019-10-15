@@ -24,7 +24,7 @@ for field_type in fields.MetaField.by_type.values():
 class ViewStringShort(models.Model):
     _inherit = 'ir.ui.view'
 
-    def postprocess_and_fields1(self, model, node, view_id):
+    def postprocess_and_fields(self, model, node, view_id):
         arch, fields = super(ViewStringShort, self).postprocess_and_fields(model, node, view_id)
         if node.tag == 'tree':
             for vals in fields.values():
