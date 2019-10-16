@@ -263,3 +263,11 @@ class Model(models.Model):
         patch_json_request_dispatch()
 
         return res
+
+
+class IrConfigParameter(models.Model):
+    _inherit = 'ir.config_parameter'
+
+    @api.model
+    def get_param_sentry_client_js_dsn(self):
+        return self.sudo().get_param('SENTRY_CLIENT_JS_DSN', False)
