@@ -15,8 +15,7 @@ odoo.define('suvit.sentry', function (require) {
       var self = this;
       rpc.query({
           model: "ir.config_parameter",
-          method: 'get_param',
-          args: ['SENTRY_CLIENT_JS_DSN'],
+          method: 'get_param_sentry_client_js_dsn',
       }).then(function(value) {
         if (value) {
           Raven.setUserContext({
