@@ -75,7 +75,7 @@ class SystemNode(models.Model):
                 # 'ir.needaction_mixin',
                 ]
     _order = 'parent_id,sequence,id'
-
+    parent_path = fields.Char(index=True)
     object_id = fields.Reference(selection='compute_selection_object_id',
                                  )
 

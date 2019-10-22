@@ -55,6 +55,7 @@ class WidgetTree(models.Model):
     # XXX. restore
     _order = 'parent_id,sequence,id'
 
+    parent_path = fields.Char(index=True)
 
     image_read = fields.Binary(string=u"Изображение",
                                compute='compute_image_read')
