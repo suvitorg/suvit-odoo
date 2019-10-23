@@ -49,19 +49,15 @@ class Currency(models.Model):
     def usd_id(self):
         return self.env.ref('base.USD')
 
-    @api.v8
     def compute_rub(self, from_amount, round=True):
         return self.compute(from_amount, self.rub_id, round)
 
-    @api.v8
     def compute_eur(self, from_amount, round=True):
         return self.compute(from_amount, self.eur_id, round)
 
-    @api.v8
     def compute_usd(self, from_amount, round=True):
         return self.compute(from_amount, self.usd_id, round)
 
-    @api.multi
     def compute_rub_currency(self):
         for rec in self:
             if rec.rate:
@@ -88,13 +84,11 @@ class Currency(models.Model):
 
         return months_sel
 
-    @api.multi
     def compute_rate_month_selection(self):
         rate_month = self.get_rate_month_selection()[-1][0]
         for rec in self:
             rec.rate_month = rate_month
 
-    @api.one
     @api.onchange('rate_month')
     def compute_avg_rate(self):
         if self.name == 'RUB':
@@ -112,7 +106,6 @@ class Currency(models.Model):
             else:
                 self.avg_rate = 0
 
-    @api.one
     def refrech_empty_date_rates(self):
         return
         current_service = 'RU_CBRF'
@@ -222,7 +215,6 @@ class Rate(models.Model):
 
     rate = fields.Float(digits=(12, 8))
 
-    @api.multi
     def compute_rub_currency(self):
         for rec in self:
             if rec.rate:

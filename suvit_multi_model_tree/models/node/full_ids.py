@@ -11,7 +11,6 @@ class TreeNode(models.AbstractModel):
     _use_full_ids = True
 
     # API for full ids
-    @api.multi
     def evaluate_ids(self):
         if not any(isinstance(id, str) for id in self.ids):
             return self.ids
@@ -23,7 +22,6 @@ class TreeNode(models.AbstractModel):
 
         return new_ids
 
-    @api.multi
     def read(self, fields=None, *args, **kwargs):
         if not self._use_full_ids:
             return super(TreeNode, self).read(fields, *args, **kwargs)

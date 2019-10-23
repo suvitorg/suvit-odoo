@@ -54,7 +54,6 @@ class OdooModel(models.Model):
         # TODO cache
         return get_odoo_icons()
 
-    @api.multi
     @api.onchange('system_tree_odoo_icon')
     def compute_tree_icon_display(self):
         for rec in self:
@@ -87,7 +86,6 @@ class SystemNode(models.Model):
 
         return result
 
-    @api.multi
     @api.onchange('object_id', 'shortcut_id')
     def compute_icon(self):
         for rec in self:

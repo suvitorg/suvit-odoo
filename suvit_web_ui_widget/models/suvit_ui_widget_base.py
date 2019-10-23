@@ -20,7 +20,6 @@ class SuvitWidgetBase(models.AbstractModel):
     image_write_html = fields.Html(string=u'Скачать изображение',
                                    compute='compute_image_read')
 
-    @api.multi
     def compute_image_read(self):
         for rec in self:
             if rec.image_read:
@@ -33,7 +32,6 @@ class SuvitWidgetBase(models.AbstractModel):
                                        (rec.get_image_url(img_field_name='image_write', type='image'),
                                         rec.get_image_url(img_field_name='image_write'))
 
-    @api.multi
     def get_image_url(self, img_field_name='image', type='saveas'):
         self.ensure_one()
         query_dict = {'model': self._name,

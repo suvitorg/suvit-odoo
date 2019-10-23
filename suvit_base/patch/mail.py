@@ -28,7 +28,6 @@ class MailTracking(models.Model):
             return values
         return super(MailTracking, self).create_tracking_values(initial_value, new_value, col_name, col_info)
 
-    @api.multi
     def get_display_value(self, type):
         result = super(MailTracking, self).get_display_value(type)
         for i, record in enumerate(self):#.filtered(lambda r: r.field_type in ['one2many', 'many2many']):
@@ -40,7 +39,6 @@ class MailTracking(models.Model):
 class PatchedMailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
-    @api.multi
     def get_track_initial_values(self, tracked_fields, vals):
         initial_values = {}
         for rec in self:
@@ -53,7 +51,6 @@ class PatchedMailThread(models.AbstractModel):
             initial_values[rec.id] = rec_vals
         return initial_values
 
-    @api.multi
     def write(self, vals):
         if self._context.get('tracking_disable'):
             return super(PatchedMailThread, self).write(vals)
@@ -78,7 +75,6 @@ class PatchedMailThread(models.AbstractModel):
 
         return result
 
-    @api.multi
     def _message_track(self, tracked_fields, initial):
         """ For a given record, fields to check (tuple column name, column info)
         and initial values, return a structure that is a tuple containing :

@@ -35,7 +35,6 @@ class Release(models.Model):
                              subtype='mail.mt_comment')
         return rec
 
-    @api.multi
     def compute_module_ids(self):
         for rec in self:
             modules = [module.strip() for module in rec.modules_to_update.split(',')]

@@ -7,7 +7,6 @@ from openerp.addons.base.ir.ir_model import MODULE_UNINSTALL_FLAG
 class IrModelField(models.Model):
     _inherit = 'ir.model.fields'
 
-    @api.multi
     def _drop_column(self):
         # Allow to skip this step during field unlink
         # The super method crashes if the field.model cannot be instantiated
@@ -26,7 +25,6 @@ class CleanupPurgeLineField(models.TransientModel):
                                 readonly=True)
     model = fields.Char(string=u"Модель")
 
-    @api.multi
     def purge(self):
         Model = self.env['ir.model']
         Field = self.env['ir.model.fields']

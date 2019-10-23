@@ -32,7 +32,6 @@ class MultiTree(models.AbstractModel):
                                       compute='compute_child_ids',
                                       )
 
-    @api.multi
     def evaluate_ids(self):
         if not any(isinstance(id, str) for id in self.ids):
             return self.ids
@@ -43,7 +42,6 @@ class MultiTree(models.AbstractModel):
 
         return new_ids
 
-    @api.multi
     def read(self, fields=None, *args, **kwargs):
         if not self._use_full_ids:
             return super(MultiTree, self).read(fields, *args, **kwargs)
@@ -70,7 +68,6 @@ class MultiTree(models.AbstractModel):
                 row['tree_child_ids'] = new_children
         return res
 
-    @api.multi
     def unlink(self):
         for rec in self:
             if rec.tree_obj_id:
@@ -92,7 +89,6 @@ class MultiTree(models.AbstractModel):
     def get_tree_ref_models(self):
         return [model[0] for model in self._fields['tree_obj_id'].selection]
 
-    @api.multi
     def compute_obj_id(self):
         tree_field = self.get_tree_field()
         tree_models = self.get_tree_ref_models()
@@ -106,25 +102,21 @@ class MultiTree(models.AbstractModel):
                     rec.tree_obj_real_id = obj.id
                     break
 
-    @api.multi
     def compute_name(self):
         for rec in self:
             if rec.tree_obj_id:
                 rec.tree_name = getattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, False)
 
-    @api.multi
     def inverse_name(self):
         for rec in self:
             if rec.tree_obj_id:
                 setattr(rec.tree_obj_id, rec.tree_obj_id._rec_name, rec.tree_name)
 
-    @api.multi
     def compute_type(self):
         for rec in self:
             if rec.tree_obj_id:
                 rec.tree_type = rec.tree_obj_id._name
 
-    @api.multi
     def compute_parent_id(self):
         tree_parent_field = self.get_tree_parent_field()
         tree_field = self.get_tree_field()
@@ -147,7 +139,6 @@ class MultiTree(models.AbstractModel):
 
         return [('id', operator, value)]
 
-    @api.multi
     def compute_child_ids(self):
         tree_field = self.get_tree_field()
         tree_childs_field = self.get_tree_childs_field()
@@ -175,12 +166,10 @@ class MultiTree(models.AbstractModel):
     #
     #    return res
 
-    @api.multi
     def change_parent(self, new_parent_id):
         new_parent = self.browse(new_parent_id)
         #print 'CHANGE PARENT', self, new_parent
 
-    @api.multi
     def get_formview_action(self):
         self.ensure_one()
 

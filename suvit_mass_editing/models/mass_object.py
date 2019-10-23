@@ -35,7 +35,6 @@ class MassObjectRel(models.Model):
                                  compute='compute_model_ids',
                                  )
 
-    @api.multi
     @api.onchange('model_id')
     def compute_model_ids(self):
         for rec in self:
@@ -57,7 +56,6 @@ class MassObject(models.Model):
                                 compute='compute_field_ids',
                                 )
 
-    @api.multi
     def compute_field_ids(self):
         for rec in self:
             rec.field_ids = [r.field_id.id for r in rec.field_rel_ids]

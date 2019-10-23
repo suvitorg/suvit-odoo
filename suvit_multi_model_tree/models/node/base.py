@@ -81,7 +81,6 @@ class TreeNode(models.AbstractModel):
                                       comodel_name=_name,
                                       compute='compute_all_parent_ids')
 
-    @api.multi
     def compute_all_child_ids(self):
         for rec in self:
             straight_child_ids = self.search(
@@ -90,7 +89,6 @@ class TreeNode(models.AbstractModel):
             # XXX need to get correct childs all_child_ids from child.self_id
             rec.all_child_ids = straight_child_ids + straight_child_ids.mapped('shortcut_id.all_child_ids')
 
-    @api.multi
     def compute_all_parent_ids(self):
         for rec in self:
             rec.all_parent_ids = self.search(
@@ -98,7 +96,6 @@ class TreeNode(models.AbstractModel):
                  ('parent_right', '>', rec.parent_right)],
                 order='parent_left')
 
-    @api.multi
     @api.onchange('object_id', 'shortcut_id')
     def compute_icon(self):
         for rec in self:
@@ -116,7 +113,6 @@ class TreeNode(models.AbstractModel):
         result = []
         return result
 
-    @api.multi
     @api.depends('object_id', 'shortcut_id')
     def compute_tree_type(self):
         for rec in self:
@@ -134,7 +130,6 @@ class TreeNode(models.AbstractModel):
 
             # print 'TreeNode._add_field', cls.__name__, name, field.comodel_name
 
-    @api.one
     @api.constrains('parent_id')
     def check_recursion(self):
         super(TreeNode, self)._check_recursion()
@@ -150,7 +145,6 @@ class TreeNode(models.AbstractModel):
 
         return new_obj
 
-    @api.multi
     def write(self, vals):
         # print 'TreeNode.write', self, vals
         res = super(TreeNode, self).write(vals)
@@ -168,7 +162,6 @@ class TreeNode(models.AbstractModel):
 
         return res
 
-    @api.multi
     @api.onchange('shortcut_id', 'object_id', 'duplicate_ids')
     # api.depends('shortcut_id.name', 'object_id', 'duplicate_ids')
     def compute_name(self):
@@ -182,7 +175,6 @@ class TreeNode(models.AbstractModel):
                                rec.object_id._rec_name or u'title', u'-')
             rec.name = name
 
-    @api.multi
     def compute_full_name(self):
         for rec in self:
             if self._parent_store:
@@ -200,12 +192,10 @@ class TreeNode(models.AbstractModel):
     def root_child_ids(self):
         return self.search(self._root_domain)
 
-    @api.multi
     def compute_tree_child_ids(self):
         for rec in self:
             rec.tree_child_ids = rec.self_id.child_ids
 
-    @api.multi
     def compute_title(self):
         for rec in self:
             tooltip = getattr(rec.object_id, 'tooltip', None)
@@ -213,7 +203,6 @@ class TreeNode(models.AbstractModel):
                 tooltip = getattr(rec.object_id, 'title', rec.name)
             rec.title = tooltip
 
-    @api.multi
     def compute_self(self):
         for rec in self:
             self_id = rec
@@ -222,7 +211,6 @@ class TreeNode(models.AbstractModel):
 
             rec.self_id = self_id
 
-    @api.multi
     def action_change_parent(self):
         new_parent_id = self.env.context.get('new_parent_id')
         if new_parent_id:
@@ -245,7 +233,6 @@ class TreeNode(models.AbstractModel):
 
         self.action_change_sequence(new_parent, sequence)
 
-    @api.multi
     def action_change_sequence(self, new_parent, sequence):
         if sequence is None:
             return
@@ -281,7 +268,6 @@ class TreeNode(models.AbstractModel):
         # update parent_left, parent_right
         child_ids.update_parent_left_right({'parent_id': new_parent.id})
 
-    @api.multi
     def get_formview_action(self):
         self.ensure_one()
 
@@ -295,18 +281,15 @@ class TreeNode(models.AbstractModel):
         act = obj.get_formview_action()
         return act[0] if type(act) == list else act
 
-    @api.multi
     def get_origin_duplicate_ids(self):
         orig_ids = self.filtered(lambda r: not r.shortcut_id)
         return orig_ids, self - orig_ids
 
-    @api.multi
     def fix_copy_name(self):
         for rec in self:
             if rec.name and not rec.name.endswith(rec._copy_suffix):
                 rec.name = u"%s %s" % (rec.name, rec._copy_suffix)
 
-    @api.multi
     def fix_duplicate_name(self):
         for rec in self:
             if rec.shortcut_id or rec.duplicate_ids:
@@ -316,13 +299,11 @@ class TreeNode(models.AbstractModel):
                 if rec.name and rec.name.startswith(rec._duplicate_prefix):
                     rec.name = rec.name[len(rec._duplicate_prefix):]
 
-    @api.multi
     def unlink(self):
         orig_ids, dupl_ids = self.get_origin_duplicate_ids()
         self = orig_ids + dupl_ids.mapped('shortcut_id')
         return super(TreeNode, self).unlink()
 
-    @api.multi
     def action_remove(self):
         orig_ids, dupl_ids = self.get_origin_duplicate_ids()
         orig_ids.write({'parent_id': False})
@@ -331,7 +312,6 @@ class TreeNode(models.AbstractModel):
         shortcut_ids.fix_duplicate_name()
         dupl_ids.unlink()
 
-    @api.multi
     def action_exclude(self):
         orig_ids, dupl_ids = self.get_origin_duplicate_ids()
         if dupl_ids:
@@ -340,7 +320,6 @@ class TreeNode(models.AbstractModel):
             rec.self_id.child_ids.write({'parent_id': rec.parent_id.id})
             rec.unlink()
 
-    @api.multi
     def action_copy(self, default=None):
         for rec in self:
             rec = rec.self_id
@@ -350,13 +329,11 @@ class TreeNode(models.AbstractModel):
                 default = {'parent_id': copy.id}
                 child.action_copy(default)
 
-    @api.multi
     def action_duplicate(self):
         for rec in self:
             copy = rec.copy(default={'shortcut_id': rec.self_id.id})
             (copy + rec).fix_duplicate_name()
 
-    @api.multi
     def update_parent_left_right(self, vals):
         if not self._parent_store:
             return

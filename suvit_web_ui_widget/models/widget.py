@@ -101,7 +101,6 @@ class WidgetTree(models.Model):
                 ('suvit.ir.ui.widget.type', u'Виджет'),
                 ]
 
-    @api.multi
     def get_image_url(self, img_field_name='image', type='saveas'):
         self.ensure_one()
         query_dict = {'model': self._name,
@@ -114,7 +113,6 @@ class WidgetTree(models.Model):
 
         return image_url
 
-    @api.multi
     def compute_image_read(self):
         for rec in self:
             if not rec.object_id:

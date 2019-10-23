@@ -45,7 +45,6 @@ class SuvitWebUiWidget(models.Model):
                                compute='compute_cpu',
                                store=True)
 
-    @api.multi
     @api.depends('name')
     def compute_cpu(self):
         for rec in self:
@@ -63,7 +62,6 @@ class SuvitWebUiWidget(models.Model):
                    .replace(' ', '_')
         return text
 
-    @api.multi
     def compute_feature_group_ids(self):
         for rec in self:
             rec.features_group_ids = rec.features_ids.mapped('group_id')

@@ -37,18 +37,15 @@ class Migration(models.Model):
                          required=True,
                          )
 
-    @api.multi
     def compute_implemented(self):
         for rec in self:
             rec.implemented = rec.state == 'done'
 
-    @api.one
     @api.constrains('method')
     def check_method(self):
         if not hasattr(self, self.method):
             exceptions.ValidationError(u"Миграция %s не найдена" % self.method)
 
-    @api.multi
     def compute_model_data(self):
         data_obj = self.env['ir.model.data']
         module_obj = self.env['ir.module.module']
@@ -64,7 +61,6 @@ class Migration(models.Model):
     def run_all(self):
         self.search([('state', '=', 'new')]).run()
 
-    @api.multi
     def run(self):
         if tools.config.options['test_enable']:
             self.write({'state': 'done'})
@@ -92,7 +88,6 @@ class Migration(models.Model):
 
         return rec
 
-    @api.multi
     def write(self, values):
         res = super(Migration, self).write(values)
         if list(values.keys()) == ['state']:
