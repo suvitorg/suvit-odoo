@@ -2,6 +2,7 @@
 import logging
 
 from odoo import api, models, _, fields
+from odoo.addons.mail.models.mail_thread import MailThread
 
 _logger = logging.getLogger(__name__)
 
@@ -55,8 +56,10 @@ class PatchedMailThread(models.AbstractModel):
 
     @api.multi
     def write(self, vals):
-        if self._context.get('tracking_disable'):
-            return super(PatchedMailThread, self).write(vals)
+        tracking_disable_dict = self._context.get('tracking_disable_dict', {})
+        tracking_disable = self._context.get('tracking_disable') or tracking_disable_dict.get(self._name)
+        if tracking_disable:
+            return super(MailThread, self).write(vals)
         # Track initial values of tracked fields
         track_ctx = dict(self._context)
         if 'lang' not in track_ctx:
@@ -69,7 +72,8 @@ class PatchedMailThread(models.AbstractModel):
         if tracked_fields:
             initial_values = self.get_track_initial_values(tracked_fields, vals)
 
-        result = super(PatchedMailThread, self.with_context(tracking_disable=True)).write(vals)
+        tracking_disable_dict[self._name] = True
+        result = super(MailThread, self.with_context(tracking_disable_dict=tracking_disable_dict)).write(vals)
 
         if tracked_fields:
             self.message_track(tracked_fields, initial_values)
