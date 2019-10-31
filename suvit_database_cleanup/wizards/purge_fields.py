@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from openerp import models, fields, api
-# from openerp.tools.translate import _
-from openerp.addons.base.ir.ir_model import MODULE_UNINSTALL_FLAG
+from odoo import models, fields, api
+# from odoo.tools.translate import _
+from odoo.addons.base.ir.ir_model import MODULE_UNINSTALL_FLAG
 
 
 class IrModelField(models.Model):

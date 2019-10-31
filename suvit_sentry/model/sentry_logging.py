@@ -3,9 +3,9 @@ import logging
 import psycopg2
 import threading
 
-from openerp import api, exceptions, models, SUPERUSER_ID
-from openerp.http import request
-from openerp.tools import config
+from odoo import api, exceptions, models, SUPERUSER_ID
+from odoo.http import request
+from odoo.tools import config
 
 from raven import Client
 from raven.conf import setup_logging

@@ -2,7 +2,7 @@
 import re
 from pytils.translit import translify
 
-from openerp import api, models, fields
+from odoo import api, models, fields
 
 CYRILLIC_PATTERN = re.compile(u"[^а-яА-Я]")
 
