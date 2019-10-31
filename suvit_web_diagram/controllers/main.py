@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import openerp
-from openerp.addons.web_diagram.controllers.main import DiagramView
+import odoo
+from odoo.addons.web_diagram.controllers.main import DiagramView
 
 
 class Controller(DiagramView):
 
-    @openerp.http.route('/web_diagram/diagram/get_diagram_info', type='json', auth='user')
+    @odoo.http.route('/web_diagram/diagram/get_diagram_info', type='json', auth='user')
     def get_diagram_info(self, req, id, model, node, connector,
                          src_node, des_node, label, **kw):
         result = super(Controller, self).get_diagram_info(req, id, model, node, connector,

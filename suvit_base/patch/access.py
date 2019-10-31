@@ -5,9 +5,9 @@ import os
 from io import BytesIO
 
 import odoo
-import openerp
-from openerp import models
-from openerp.modules.loading import load_modules as oe_load_modules
+import odoo
+from odoo import models
+from odoo.modules.loading import load_modules as oe_load_modules
 from odoo.tools.convert import convert_csv_import
 from odoo import SUPERUSER_ID, _
 from odoo.tools.misc import ustr
@@ -20,12 +20,12 @@ def format_load_modules(db, force_demo=False, status=None, update_module=False):
     oe_load_modules(db, force_demo, status, update_module)
 
     cr = db.cursor()
-    registry = openerp.registry(cr.dbname)
+    registry = odoo.registry(cr.dbname)
 
     err = []
     cr.execute("""select model,name from ir_model where id NOT IN (select distinct model_id from ir_model_access)""")
     for (model, name) in cr.fetchall():
-        if model in registry and not registry[model].is_transient() and not isinstance(registry[model], openerp.osv.orm.AbstractModel):
+        if model in registry and not registry[model].is_transient() and not isinstance(registry[model], odoo.osv.orm.AbstractModel):
             err.append('The model %s has no access rules, consider adding one. E.g. access_%s,access_%s,model_%s,,1,0,0,0' %
                        (model, model.replace('.', '_'), model.replace('.', '_'), model.replace('.', '_')))
     cr.close()
@@ -33,7 +33,7 @@ def format_load_modules(db, force_demo=False, status=None, update_module=False):
         pass
         # raise Exception("\n".join(err))
 
-openerp.modules.load_modules = format_load_modules
+odoo.modules.load_modules = format_load_modules
 
 def format_convert_csv_import(cr, module, fname, csvcontent, idref=None, mode='init',
         noupdate=False):

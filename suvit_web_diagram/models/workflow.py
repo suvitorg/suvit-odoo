@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import openerp
-from openerp import models, fields
+import odoo
+from odoo import models, fields
 
 
 class Activity(models.Model):
