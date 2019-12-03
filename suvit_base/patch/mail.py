@@ -9,7 +9,9 @@ _logger = logging.getLogger(__name__)
 
 def convert_for_display(value, col_info):
     if col_info['type'] in ['one2many', 'many2many'] and isinstance(value, models.BaseModel):
-        return u"<ul><li>%s</li></ul>" % (u"</li><li>".join([n[1] for n in value.name_get()])
+        if value and not isinstance(value.name_get()[1], str):
+            _logger.warning('bad value for convert_to_display %s (%s)', value.name_get(), value)
+        return u"<ul><li>%s</li></ul>" % (u"</li><li>".join([str(n[1]) for n in value.name_get()])
                                           if value else u"Пусто")
     return value
 
