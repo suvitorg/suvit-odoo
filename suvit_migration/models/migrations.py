@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+import traceback
 
 from odoo import models, fields, api, exceptions
 import odoo.tools as tools
@@ -39,6 +40,8 @@ class Migration(models.Model):
                          )
     date_done = fields.Date(string=u"Дата выполнения",
                             )
+    trace = fields.Html(string="Описание Ошибки",
+                        )
 
     @api.multi
     def compute_implemented(self):
@@ -88,10 +91,12 @@ class Migration(models.Model):
             self.env.cr.execute('SAVEPOINT migration_%d' % rec.id)
             try:
                 getattr(rec, migration_name)()
-            except:
+            except Exception:
                 self.env.cr.execute('ROLLBACK TO SAVEPOINT migration_%d' % rec.id)
                 logger.exception('Exception in migration "%s"', migration_name)
-                rec.state = 'error'
+                rec.write({'state': 'error',
+                           'trace': '<pre>%s</pre>' % traceback.format_exc(),
+                           })
             else:
                 rec.write({'state': 'done',
                            'date_done': now

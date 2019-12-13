@@ -2,11 +2,41 @@
 <odoo>
     <data>
 
+        <record model="ir.ui.view" id="view_suvit_migration_form">
+            <field name="name">suvit.migration.form</field>
+            <field name="model">suvit.migration</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                      <h1>
+                        <span class="oe_format_form_title_prefix">Миграция </span><field name="id"/>
+                      </h1>
+                      <group>
+                        <group name="first">
+                            <field name="state"/>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="module_id"/>
+                            <field name="method"/>
+                            <field name="date_done"/>
+                            <field name="implemented"/>
+                            <button name="run" type="object" string="Запуск"
+                                    attrs="{'invisible': [('state', '=', 'done')]}"/>
+                        </group>
+                        <group name="second">
+                            <field name="trace" attrs="{'invisible': [('state', '!=', 'error')]}"/>
+                        </group>
+                      </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="suvit_migration_tree">
             <field name="name">suvit.migration.tree</field>
             <field name="model">suvit.migration</field>
             <field name="arch" type="xml">
-                <tree editable="top">
+                <tree>
                     <field name="name"/>
                     <field name="module_id"/>
                     <field name="method"/>
@@ -21,7 +51,7 @@
         <record model="ir.actions.act_window" id="action_suvit_migration">
             <field name="name">Список Миграций</field>
             <field name="res_model">suvit.migration</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">tree,form</field>
         </record>
 
         <record id="suvit_migration_run_action" model="ir.actions.server">
