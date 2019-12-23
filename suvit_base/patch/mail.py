@@ -50,9 +50,11 @@ class PatchedMailThread(models.AbstractModel):
         for rec in self:
             rec_vals = {}
             for key, field in tracked_fields.items():
+                if not hasattr(rec, key):
+                    continue
                 val = getattr(rec, key)
                 if field['type'] in ['one2many', 'many2many']:
-                    val = convert_for_display(getattr(rec, key), field)
+                    val = convert_for_display(val, field)
                 rec_vals[key] = val
             initial_values[rec.id] = rec_vals
         return initial_values
@@ -100,7 +102,7 @@ class PatchedMailThread(models.AbstractModel):
 
         # generate tracked_values data structure: {'col_name': {col_info, new_value, old_value}}
         for col_name, col_info in tracked_fields.items():
-            if not col_info.get('store', True):
+            if not col_info.get('store', True) or col_name not in self._fields:
                 continue
             track_visibility = getattr(self._fields[col_name], 'track_visibility', 'onchange')
             initial_value = initial[col_name]
