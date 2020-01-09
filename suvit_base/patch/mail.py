@@ -38,6 +38,11 @@ class MailTracking(models.Model):
         for i, record in enumerate(self):#.filtered(lambda r: r.field_type in ['one2many', 'many2many']):
             if record.field_type in ['one2many', 'many2many']:
                 result[i] = record['%s_value_text' % type]
+            elif record.field_type == 'boolean':
+                if type == 'old' and not result[i]:
+                    continue
+                result[i] = 'Да' if result[i] else 'Нет'
+
         return result
 
 
@@ -108,6 +113,8 @@ class PatchedMailThread(models.AbstractModel):
             track_visibility = getattr(self._fields[col_name], 'track_visibility', 'onchange')
             initial_value = initial[col_name]
             new_value = getattr(self, col_name)
+            if not (initial_value or new_value):
+                continue
             # recovered method for this 1 row
             new_value = convert_for_display(new_value, col_info)
 
