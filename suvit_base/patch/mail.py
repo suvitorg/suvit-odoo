@@ -38,7 +38,7 @@ class MailTracking(models.Model):
         for i, record in enumerate(self):#.filtered(lambda r: r.field_type in ['one2many', 'many2many']):
             if record.field_type in ['one2many', 'many2many']:
                 result[i] = record['%s_value_text' % type]
-            if record.field_type == 'boolean':
+            elif record.field_type == 'boolean':
                 if type == 'old' and not result[i]:
                     continue
                 result[i] = 'Да' if result[i] else 'Нет'
