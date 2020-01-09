@@ -26,8 +26,8 @@ class MailTracking(models.Model):
             values = {'field': col_name,
                       'field_desc': col_info['string'],
                       'field_type': col_info['type'],
-                      'old_value_text': str(initial_value) or '',
-                      'new_value_text': str(new_value) or '',
+                      'old_value_text': initial_value and str(initial_value) or '',
+                      'new_value_text': new_value and str(new_value) or '',
                       }
             return values
         return super(MailTracking, self).create_tracking_values(initial_value, new_value, col_name, col_info)
@@ -53,6 +53,7 @@ class PatchedMailThread(models.AbstractModel):
                 if not hasattr(rec, key):
                     continue
                 val = getattr(rec, key)
+
                 if field['type'] in ['one2many', 'many2many']:
                     val = convert_for_display(val, field)
                 rec_vals[key] = val
