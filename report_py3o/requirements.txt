@@ -1,0 +1,2 @@
+﻿py3o.template==0.10.0
+py3o.formats==0.3

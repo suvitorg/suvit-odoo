@@ -2,3 +2,4 @@
 -r suvit_currency/requirements.txt
 -r suvit_sentry/requirements.txt
 -r suvit_web_ui_widget/requirements.txt
+-r report_py3o/requirements.txt
