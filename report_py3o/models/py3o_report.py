@@ -195,11 +195,15 @@ class Py3oReport(models.TransientModel):
         report_xml = self.ir_actions_report_id
         context = Py3oParserContext(self.env).localcontext
 
-        # TODO
-        # context.update(
-        #     report_xml._get_rendering_context(model_instance.ids, data)
-        # )
-
+        docids = report_xml.ids
+        model = report_xml.model
+        docs = self.env[model].browse(docids)
+        context.update({
+            'doc_ids': docids,
+            'doc_model': model,
+            'docs': docs,
+        })
+        
         context['objects'] = model_instance
         self._extend_parser_context(context, report_xml)
         return context
