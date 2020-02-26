@@ -49,6 +49,27 @@ class MailTracking(models.Model):
 class PatchedMailThread(models.AbstractModel):
     _inherit = 'mail.thread'
 
+    # TODO проверить меньше стало логов?
+    @api.model
+    def _get_tracked_fields(self, updated_fields):
+        """ Return a structure of tracked fields for the current model.
+            :param list updated_fields: modified field names
+            :return dict: a dict mapping field name to description, containing
+                always tracked fields and modified on_change fields
+        """
+        tracked_fields = []
+        for name, field in self._fields.items():
+            if name not in updated_fields:
+                # Берем только поля по которым прошел write
+                continue
+
+            if getattr(field, 'track_visibility', False):
+                tracked_fields.append(name)
+
+        if tracked_fields:
+            return self.fields_get(tracked_fields)
+        return {}
+
     @api.multi
     def get_track_initial_values(self, tracked_fields, vals):
         initial_values = {}
