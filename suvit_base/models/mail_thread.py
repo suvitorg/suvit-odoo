@@ -2,25 +2,6 @@
 from odoo import api, models
 
 
-class MailThread(models.AbstractModel):
-    _inherit = 'mail.thread'
-
-    @api.model
-    def _get_tracked_fields(self, updated_fields):
-        tracked_fields = super()._get_tracked_fields(updated_fields)
-        tracked_fields_list = []
-        for name, field in self._fields.items():
-            default_track = 'onchange' if (field.store and \
-                                           #field.type not in ['one2many', 'many2many'] and # track x2many fields by default
-                                           not field.automatic) else False
-            if getattr(field, 'track_visibility', default_track) and name not in tracked_fields:
-                tracked_fields_list.append(name)
-
-        if tracked_fields_list:
-            tracked_fields.update(self.fields_get(tracked_fields_list))
-
-        return tracked_fields
-
 # TODO maybe this no needed
 class IrModelField(models.Model):
     _inherit = 'ir.model.fields'

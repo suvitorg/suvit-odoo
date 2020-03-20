@@ -63,7 +63,10 @@ class PatchedMailThread(models.AbstractModel):
                 # Берем только поля по которым прошел write
                 continue
 
-            if getattr(field, 'track_visibility', False):
+            default_track = 'onchange' if (field.store and \
+                                       #field.type not in ['one2many', 'many2many'] and # track x2many fields by default
+                                       not field.automatic) else False
+            if getattr(field, 'track_visibility', default_track):
                 tracked_fields.append(name)
 
         if tracked_fields:
