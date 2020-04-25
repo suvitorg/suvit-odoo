@@ -117,6 +117,18 @@ class PatchedMailThread(models.AbstractModel):
 
         return result
 
+    @api.model
+    def invalidate_cache(self, fnames=None, ids=None):
+        # Перекрыт из-за того что message_subscribe вызывает полную очистку кеша
+        if fnames:
+            return super().invalidate_cache(fnames, ids or self.ids)
+        # Пересчитать только список сообщений
+        fnames = []
+        for fname in self._fields.keys():
+            if fname.startswith('message_'):
+                fnames.append(fname)
+        return super().invalidate_cache(fnames, self.ids)
+
     @api.multi
     def _message_track(self, tracked_fields, initial):
         """ For a given record, fields to check (tuple column name, column info)
@@ -168,6 +180,12 @@ class PatchedMailMessage(models.Model):
     @api.model
     def refresh(self):
         pass
+
+    # Перекрыт, потому что self._notify вызывал очистку всего кеша у self.parent_id
+    # Перекрыт чтобы вызывал очистку только у данного recordset
+    @api.model
+    def invalidate_cache(self, fnames=None, ids=None):
+        return super().invalidate_cache(fnames, ids or self.ids)
 
 
 class PatchedMailFollowers(models.Model):
