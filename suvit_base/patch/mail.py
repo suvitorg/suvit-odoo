@@ -120,9 +120,10 @@ class PatchedMailThread(models.AbstractModel):
     @api.model
     def invalidate_cache(self, fnames=None, ids=None):
         # Перекрыт из-за того что message_subscribe вызывает полную очистку кеша
-        if fnames:
+        if fnames or ids:
             return super().invalidate_cache(fnames, ids or self.ids)
-        # Пересчитать только список сообщений
+
+        # Пересчитать только message_* поля
         fnames = []
         for fname in self._fields.keys():
             if fname.startswith('message_'):
@@ -185,7 +186,10 @@ class PatchedMailMessage(models.Model):
     # Перекрыт чтобы вызывал очистку только у данного recordset
     @api.model
     def invalidate_cache(self, fnames=None, ids=None):
-        return super().invalidate_cache(fnames, ids or self.ids)
+        if self._context.get('smart_invalidate_cache'):
+            return super().invalidate_cache(fnames, ids or self.ids)
+        else:
+            return super().invalidate_cache(fnames, ids)
 
 
 class PatchedMailFollowers(models.Model):
