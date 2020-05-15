@@ -216,6 +216,7 @@ class Rate(models.Model):
 
     rub_currency_rate = fields.Float(string=u"Курс",
                                      compute='compute_rub_currency',
+                                     inverse='inverse_rub_currency',
                                      digits=(12, 4),
                                      )
 
@@ -226,3 +227,9 @@ class Rate(models.Model):
         for rec in self:
             if rec.rate:
                 rec.rub_currency_rate = 1. / rec.rate
+
+    @api.multi
+    def inverse_rub_currency(self):
+        for rec in self:
+            if rec.rub_currency_rate:
+                rec.rate = 1. / rec.rub_currency_rate
