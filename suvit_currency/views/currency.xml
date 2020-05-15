@@ -29,7 +29,7 @@
                                     <tree string="Rates" editable="bottom">
                                         <field name="name" widget="date"/>
                                         <field name="rub_currency_rate"/>
-                                        <field name="rate" string="Обратный курс"/>
+                                        <field name="rate" string="Обратный курс" readonly="1"/>
                                     </tree>
                                 </field>
                             </group>
