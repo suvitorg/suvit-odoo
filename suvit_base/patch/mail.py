@@ -186,10 +186,7 @@ class PatchedMailMessage(models.Model):
     # Перекрыт чтобы вызывал очистку только у данного recordset
     @api.model
     def invalidate_cache(self, fnames=None, ids=None):
-        if self._context.get('smart_invalidate_cache'):
-            return super().invalidate_cache(fnames, ids or self.ids)
-        else:
-            return super().invalidate_cache(fnames, ids)
+        return super().invalidate_cache(fnames, ids or self.ids)
 
 
 class PatchedMailFollowers(models.Model):
