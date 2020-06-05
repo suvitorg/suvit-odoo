@@ -114,7 +114,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         binding_model_id:false,
         binding_type:"action",
         context:context,
-        domain: res_ids ? [['id', 'in', res_ids]] : [],
+        domain: res_ids ? [['id', 'in', res_ids], ['active', '!=', null]] : [],
         filter:false,
         flags:{views_switcher: true,
                search_view: true,
@@ -147,11 +147,30 @@ odoo.define('suvit.web.list.row.action', function (require) {
         if (act.target == 'new') {
             return;
         }
-        var view_manager = act_manager.action_stack.slice(-1)[0].widget;
-        _.last(view_manager.view_stack).multi_record = false;
+
         do_block();
-        view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
-            do_unblock();
+
+        var view_manager = act_manager.action_stack.slice(-1)[0].widget;
+        var list_view = _.last(view_manager.view_stack);
+        list_view.multi_record = false;
+        var list_controller = list_view.controller;
+        var list_renderer = list_controller.renderer;
+
+        var x2m_state = field.renderer.state;
+
+        if (!x2m_state.orderedBy || !x2m_state.orderedBy.length) {
+            view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
+                do_unblock();
+            });
+            return;
+        }
+
+        x2m_state.domain = act.domain;
+        x2m_state.context = {orderedBy: x2m_state.orderedBy};
+        list_controller.update(x2m_state).then(function(){
+            view_manager.switch_mode('form', {mode: controller.mode}).then(function(){
+                do_unblock();
+            });
         });
     });
 
