@@ -1,6 +1,6 @@
 {
     'name': 'ListView. Custom row action',
-    'version': '1.0.0',
+    'version': '1.0.1a',
     'category': 'Website',
     'summary': 'Custom row action',
     'license': 'LGPL-3',
