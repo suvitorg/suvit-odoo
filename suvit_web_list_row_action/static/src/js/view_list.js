@@ -107,6 +107,11 @@ odoo.define('suvit.web.list.row.action', function (require) {
       return key.startsWith('search_default_');
     });
 
+    var domain = [['id', 'in', res_ids]];
+    var rec_domain = field.record.getDomain(field.recordParams);
+    if (rec_domain && rec_domain.length)
+        domain = domain.concat(rec_domain);
+
     var act = {
         action_binding_ids:[],
         auto_search:true,
@@ -114,7 +119,7 @@ odoo.define('suvit.web.list.row.action', function (require) {
         binding_model_id:false,
         binding_type:"action",
         context:context,
-        domain: res_ids ? [['id', 'in', res_ids], ['active', '!=', null]] : [],
+        domain: res_ids ? domain : [],
         filter:false,
         flags:{views_switcher: true,
                search_view: true,
