@@ -165,6 +165,8 @@ odoo.define('suvit.web.list.row.action', function (require) {
             return;
         }
 
+        // TODO исправить сортировку по m2o полям
+
         x2m_state.domain = act.domain;
         x2m_state.context = {orderedBy: x2m_state.orderedBy};
         list_controller.update(x2m_state).then(function(){
