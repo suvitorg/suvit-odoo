@@ -46,7 +46,7 @@ class Migration(models.Model):
     @api.multi
     def compute_implemented(self):
         for rec in self:
-            rec.implemented = rec.state == 'done'
+            rec.implemented = rec.state in ['done', 'cancel']
 
     @api.one
     @api.constrains('method')
@@ -85,7 +85,7 @@ class Migration(models.Model):
 
         # all migration must be called by SUPERUSER_ID and do not check active
         for rec in self.sudo().with_context(active_test=False)\
-                       .filtered(lambda r: not r.implemented and r.state not in ['cancel']):
+                       .filtered(lambda r: not r.implemented):
             migration_name = rec.method
             logger.info('start migration "%s"', migration_name)
             self.env.cr.execute('SAVEPOINT migration_%d' % rec.id)
