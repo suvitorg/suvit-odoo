@@ -20,9 +20,6 @@ odoo.define('suvit.sentry', function (require) {
         if (value) {
           Sentry.init({
             dsn: value,
-            lang: 'ru',
-            title: 'Произошла ошибка',
-            subtitle: 'Опишите Ваши действия, так нам будет проще исправить ее',
             beforeSend: function(event, hint) {
               if (event.exception) {
                 Sentry.showReportDialog({eventId: event.event_id,
@@ -40,6 +37,11 @@ odoo.define('suvit.sentry', function (require) {
               return event;
             },
           });
+          Sentry.setUser({username: session.username,
+                          name: session.name,
+                          id: session.uid,
+                          context: session.user_context,
+                          });
         }
       });
     },
