@@ -18,12 +18,30 @@ odoo.define('suvit.sentry', function (require) {
           method: 'get_param_sentry_client_js_dsn',
       }).then(function(value) {
         if (value) {
-          Raven.setUserContext({
-            name: session.username,
-            context: session.user_context,
-            id: session.uid
+          Sentry.init({
+            dsn: value,
+            beforeSend: function(event, hint) {
+              if (event.exception) {
+                Sentry.showReportDialog({eventId: event.event_id,
+                                         lang: 'ru',
+                                         title: 'Произошла ошибка',
+                                         subtitle: 'Мы уже работаем над ее исправлением.',
+                                         subtitle2: 'Опишите Ваши действия, эта информация поможет нам.',
+                                         labelName: 'ФИО',
+                                         labelComments: 'Ваши действия',
+                                         labelClose: 'Отмена',
+                                         labelSubmit: 'Отправить',
+                                         successMessage: 'Ваш отчет отправлен. Спасибо!',
+                                         });
+              }
+              return event;
+            },
           });
-          Raven.config(value).install();
+          Sentry.setUser({username: session.username,
+                          name: session.name,
+                          id: session.uid,
+                          context: session.user_context,
+                          });
         }
       });
     },
@@ -32,8 +50,8 @@ odoo.define('suvit.sentry', function (require) {
         var onerror_func = window.onerror
         window.onerror = function (message, file, line, col, error) {
           if (!window.onOriginError)
-            Raven.captureException(error);
-          onerror_func(message, file, line, col, error);
+            Sentry.captureException(error);
+          //onerror_func(message, file, line, col, error);
         };
     }
   });
