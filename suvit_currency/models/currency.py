@@ -18,9 +18,11 @@ CURRENCY_DOMAIN = [('name', 'in', ['RUB', 'USD', 'EUR'])]
 class Currency(models.Model):
     _inherit = 'res.currency'
 
+    # Перекрыто число знаков после запятой
+    rate = fields.Float(digits=(12, 8))
     rub_currency_rate = fields.Float(string=u"Курс",
                                      compute='compute_rub_currency',
-                                     digits=(12, 4),
+                                     digits=(12, 8),
                                      )
 
     rate_month = fields.Selection(string=u"Месяц",
@@ -217,9 +219,10 @@ class Rate(models.Model):
     rub_currency_rate = fields.Float(string=u"Курс",
                                      compute='compute_rub_currency',
                                      inverse='inverse_rub_currency',
-                                     digits=(12, 4),
+                                     digits=(12, 8),
                                      )
 
+    # Перекрыто число после запятой
     rate = fields.Float(digits=(12, 8))
 
     @api.multi
