@@ -20,9 +20,11 @@ class Currency(models.Model):
 
     # Перекрыто число знаков после запятой
     rate = fields.Float(digits=(12, 8))
+
+    # У обратного курса Увеличено кол-во знаков после запятой, из-за ошибок округления
     rub_currency_rate = fields.Float(string=u"Курс",
                                      compute='compute_rub_currency',
-                                     digits=(12, 8),
+                                     digits=(12, 12),
                                      )
 
     rate_month = fields.Selection(string=u"Месяц",
@@ -216,14 +218,15 @@ class Currency(models.Model):
 class Rate(models.Model):
     _inherit = "res.currency.rate"
 
+    # Перекрыто число после запятой
+    rate = fields.Float(digits=(12, 8))
+
+    # У обратного курса Увеличено кол-во знаков после запятой, из-за ошибок округления
     rub_currency_rate = fields.Float(string=u"Курс",
                                      compute='compute_rub_currency',
                                      inverse='inverse_rub_currency',
-                                     digits=(12, 8),
+                                     digits=(12, 12),
                                      )
-
-    # Перекрыто число после запятой
-    rate = fields.Float(digits=(12, 8))
 
     @api.multi
     def compute_rub_currency(self):
