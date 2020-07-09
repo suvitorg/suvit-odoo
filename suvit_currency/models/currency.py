@@ -21,6 +21,7 @@ class Currency(models.Model):
     # Перекрыто число знаков после запятой
     # должно быть больше обратно курса, потому что при вводе обратно делается два раза деление 1 / x
     rate = fields.Float(digits=(12, 16))
+    rounding = fields.Float(digits=(12, 16))
 
     # У обратного курса Увеличено кол-во знаков после запятой, из-за ошибок округления
     rub_currency_rate = fields.Float(string=u"Курс",
