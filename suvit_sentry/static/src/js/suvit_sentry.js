@@ -21,15 +21,22 @@ odoo.define('suvit.sentry', function (require) {
           Sentry.init({
             dsn: value,
             beforeSend: function(event, hint) {
+              // Нужно тестирование
+              return;
+
               if (event.exception) {
                 Sentry.showReportDialog({eventId: event.event_id,
+                                         user: {
+                                           name: session.name,
+                                           email: session.username
+                                         },
                                          lang: 'ru',
                                          title: 'Произошла ошибка',
                                          subtitle: 'Мы уже работаем над ее исправлением.',
                                          subtitle2: 'Опишите Ваши действия, эта информация поможет нам.',
                                          labelName: 'ФИО',
-                                         labelComments: 'Ваши действия',
-                                         labelClose: 'Отмена',
+                                         labelComments: 'Опишите ошибку',
+                                         labelClose: 'Закрыть',
                                          labelSubmit: 'Отправить',
                                          successMessage: 'Ваш отчет отправлен. Спасибо!',
                                          });
@@ -51,7 +58,7 @@ odoo.define('suvit.sentry', function (require) {
         window.onerror = function (message, file, line, col, error) {
           if (!window.onOriginError)
             Sentry.captureException(error);
-          //onerror_func(message, file, line, col, error);
+          onerror_func(message, file, line, col, error);
         };
     }
   });
